@@ -187,13 +187,12 @@
 	        $pdf->SetFont('Arial','B',8.5);
 	        $pdf->SetFillColor(226,232,240);
 	        $pdf->Cell(8,7,'NO',1,0,'C',1);
-	        $pdf->Cell(50,7,'MATA PELAJARAN',1,0,'L',1);
+	        $pdf->Cell(56,7,'MATA PELAJARAN',1,0,'L',1);
 	        $pdf->Cell(10,7,'KKM',1,0,'C',1);
 	        $pdf->Cell(13,7,'ANGKA',1,0,'C',1);
-	        $pdf->Cell(11,7,'HURUF',1,0,'C',1);
 	        $pdf->Cell(27,7,'KETERCAPAIAN',1,0,'C',1);
 	        $pdf->Cell(15,7,'RATA',1,0,'C',1);
-	        $pdf->Cell(46,7,'DESKRIPSI KEMAMPUAN',1,1,'C',1);
+	        $pdf->Cell(51,7,'DESKRIPSI KEMAMPUAN',1,1,'C',1);
 
 	        // daftar mapel UNIK milik kelas siswa pada semester aktif (bukan semua sesi jadwal)
 	        $sqlMapel = "SELECT tm.nama_mapel, MIN(tj.id_jadwal) AS id_jadwal
@@ -219,13 +218,12 @@
 	            if ($ada) { $total += (int) $nilai; $cnt++; }
 
 	            $pdf->Cell(8,6,$no,1,0,'C',$fill);
-	            $pdf->Cell(50,6,$m->nama_mapel,1,0,'L',$fill);
+	            $pdf->Cell(56,6,$m->nama_mapel,1,0,'L',$fill);
 	            $pdf->Cell(10,6,$kkm,1,0,'C',$fill);
 	            $pdf->Cell(13,6,$ada ? $nilai : '-',1,0,'C',$fill);
-	            $pdf->Cell(11,6,$this->huruf_mutu($nilai),1,0,'C',$fill);
 	            $pdf->Cell(27,6,$ada ? $this->ketercapaian_kopetensi($nilai) : '-',1,0,'L',$fill);
 	            $pdf->Cell(15,6,($rata === null || (float)$rata == 0) ? '-' : ceil((float)$rata),1,0,'C',$fill);
-	            $pdf->Cell(46,6,'-',1,1,'L',$fill);
+	            $pdf->Cell(51,6,'-',1,1,'L',$fill);
 	            $no++;
 	        }
 
@@ -235,13 +233,12 @@
 	        $pdf->SetFillColor(226,232,240);
 	        $pdf->SetFont('Arial','B',8.5);
 	        $pdf->Cell(8,6,'',1,0,'C',$fill);
-	        $pdf->Cell(50,6,'RATA-RATA',1,0,'L',$fill);
+	        $pdf->Cell(56,6,'RATA-RATA',1,0,'L',$fill);
 	        $pdf->Cell(10,6,'',1,0,'C',$fill);
 	        $pdf->Cell(13,6,$avg > 0 ? round($avg,1) : '-',1,0,'C',$fill);
-	        $pdf->Cell(11,6,$avg > 0 ? $this->huruf_mutu(round($avg)) : '-',1,0,'C',$fill);
 	        $pdf->Cell(27,6,$avg > 0 ? $this->ketercapaian_kopetensi(round($avg)) : '-',1,0,'L',$fill);
 	        $pdf->Cell(15,6,'',1,0,'C',$fill);
-	        $pdf->Cell(46,6,'',1,1,'C',$fill);
+	        $pdf->Cell(51,6,'',1,1,'C',$fill);
 
 	        // ---------- CATATAN WALI KELAS ----------
 	        $pdf->Ln(3);
