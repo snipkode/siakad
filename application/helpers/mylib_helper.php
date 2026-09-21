@@ -17,6 +17,36 @@
 		return $cmb;
 	}
 
+	// identitas sekolah dinamis (tabel tbl_identitas), fallback ke config.php
+	function identitas($field = '')
+	{
+		$ci  = get_instance();
+		static $row = null;
+
+		if ($row === null) {
+			$q   = $ci->db->get('tbl_identitas');
+			$row = ($q->num_rows() > 0) ? $q->row_array() : array();
+		}
+
+		if ($field === '') {
+			return $row;
+		}
+
+		$val = isset($row[$field]) ? $row[$field] : '';
+
+		if (trim($val) === '') {
+			$map = array('nama_sekolah' => 'sekolah_nama', 'alamat' => 'sekolah_alamat');
+			if (isset($map[$field])) {
+				$cfg = $ci->config->item($map[$field]);
+				if ($cfg !== null) {
+					$val = $cfg;
+				}
+			}
+		}
+
+		return $val;
+	}
+
 	// untuk mendapatkan tahun akademik aktif dan biar mudah untuk dipanggil 
 	function get_tahun_akademik($field)
 	{
