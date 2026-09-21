@@ -16,7 +16,7 @@
 
 			$data['kelas']  = $this->db->query($kelas)->row_array();
 			$data['siswa'] 	= $this->db->query($siswa);
-			$this->template->load('template', 'Laporan_nilai/list_siswa', $data);
+			$this->template->load('template', 'laporan_nilai/list_siswa', $data);
 		}
 
 
@@ -85,7 +85,7 @@
 	            $pdf->Cell(12,5,  $nilai,1,0,'L');
 	            $pdf->Cell(30,5,  Terbilang($nilai),1,0,'L');
 	            $pdf->Cell(23,5,  $this->ketercapaian_kopetensi($nilai),1,0,'L');
-	            $pdf->Cell(20,5,  ceil($this->rata_rata_nilai($m->id_jadwal)),1,0,'L');
+	            $pdf->Cell(20,5,  ceil((float)$this->rata_rata_nilai($m->id_jadwal)),1,0,'L');
 	            $pdf->Cell(37,5,'Deskripsi Kemampuan',1,1,'L');
 	            $no++;
 	    }
