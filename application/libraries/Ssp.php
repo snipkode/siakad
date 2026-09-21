@@ -121,12 +121,14 @@ class SSP {
 			for ( $i=0, $ien=count($request['order']) ; $i<$ien ; $i++ ) {
 				// Convert the column index into the column data property
 				$columnIdx = intval($request['order'][$i]['column']);
-				$requestColumn = $request['columns'][$columnIdx];
+				$requestColumn = isset($request['columns'][$columnIdx]) ? $request['columns'][$columnIdx] : null;
+				if ($requestColumn === null) { continue; }
 
 				$columnIdx = array_search( $requestColumn['data'], $dtColumns );
+				if ($columnIdx === false || !isset($columns[$columnIdx])) { continue; }
 				$column = $columns[ $columnIdx ];
 
-				if ( $requestColumn['orderable'] == 'true' ) {
+				if ( isset($requestColumn['orderable']) && $requestColumn['orderable'] == 'true' ) {
 					$dir = $request['order'][$i]['dir'] === 'asc' ?
 						'ASC' :
 						'DESC';
@@ -135,7 +137,7 @@ class SSP {
 				}
 			}
 
-			$order = 'ORDER BY '.implode(', ', $orderBy);
+			$order = count( $orderBy ) ? 'ORDER BY '.implode(', ', $orderBy) : '';
 		}
 
 		return $order;
@@ -163,15 +165,16 @@ class SSP {
 		$columnSearch = array();
 		$dtColumns = self::pluck( $columns, 'dt' );
 
-		if ( isset($request['search']) && $request['search']['value'] != '' ) {
+		if ( isset($request['search'], $request['columns']) && $request['search']['value'] != '' ) {
 			$str = $request['search']['value'];
 
 			for ( $i=0, $ien=count($request['columns']) ; $i<$ien ; $i++ ) {
 				$requestColumn = $request['columns'][$i];
 				$columnIdx = array_search( $requestColumn['data'], $dtColumns );
+				if ($columnIdx === false || !isset($columns[$columnIdx])) { continue; }
 				$column = $columns[ $columnIdx ];
 
-				if ( $requestColumn['searchable'] == 'true' ) {
+				if ( isset($requestColumn['searchable']) && $requestColumn['searchable'] == 'true' ) {
 					$binding = self::bind( $bindings, '%'.$str.'%', PDO::PARAM_STR );
 					$globalSearch[] = "`".$column['db']."` LIKE ".$binding;
 				}
@@ -183,11 +186,12 @@ class SSP {
 			for ( $i=0, $ien=count($request['columns']) ; $i<$ien ; $i++ ) {
 				$requestColumn = $request['columns'][$i];
 				$columnIdx = array_search( $requestColumn['data'], $dtColumns );
+				if ($columnIdx === false || !isset($columns[$columnIdx])) { continue; }
 				$column = $columns[ $columnIdx ];
 
-				$str = $requestColumn['search']['value'];
+				$str = isset($requestColumn['search']['value']) ? $requestColumn['search']['value'] : '';
 
-				if ( $requestColumn['searchable'] == 'true' &&
+				if ( isset($requestColumn['searchable']) && $requestColumn['searchable'] == 'true' &&
 				 $str != '' ) {
 					$binding = self::bind( $bindings, '%'.$str.'%', PDO::PARAM_STR );
 					$columnSearch[] = "`".$column['db']."` LIKE ".$binding;
@@ -303,7 +307,7 @@ class SSP {
 	 *  @param  string $whereAll WHERE condition to apply to all queries
 	 *  @return array          Server-side processing response array
 	 */
-	static function complex ( $request, $conn, $table, $primaryKey, $columns, $whereResult=null, $whereAll=null )
+	static function complex ( $request, $conn, $table, $primaryKey, $columns, $whereResult=null, $whereAll=null, $join = null )
 	{
 		$bindings = array();
 		$db = self::db( $conn );
@@ -315,6 +319,8 @@ class SSP {
 		$limit = self::limit( $request, $columns );
 		$order = self::order( $request, $columns );
 		$where = self::filter( $request, $columns, $bindings );
+
+		$from = "`$table`".( $join ? " $join" : '' );
 
 		$whereResult = self::_flatten( $whereResult );
 		$whereAll = self::_flatten( $whereAll );
@@ -333,10 +339,10 @@ class SSP {
 			$whereAllSql = 'WHERE '.$whereAll;
 		}
 
-		// Main query to actually get the data
+// Main query to actually get the data
 		$data = self::sql_exec( $db, $bindings,
 			"SELECT `".implode("`, `", self::pluck($columns, 'db'))."`
-			 FROM `$table`
+			 FROM $from
 			 $where
 			 $order
 			 $limit"
@@ -345,15 +351,15 @@ class SSP {
 		// Data set length after filtering
 		$resFilterLength = self::sql_exec( $db, $bindings,
 			"SELECT COUNT(`{$primaryKey}`)
-			 FROM   `$table`
+			 FROM   $from
 			 $where"
 		);
 		$recordsFiltered = $resFilterLength[0][0];
 
 		// Total data set length
-		$resTotalLength = self::sql_exec( $db, $bindings,
+		$resTotalLength = self::sql_exec( $db,
 			"SELECT COUNT(`{$primaryKey}`)
-			 FROM   `$table` ".
+			 FROM   $from ".
 			$whereAllSql
 		);
 		$recordsTotal = $resTotalLength[0][0];

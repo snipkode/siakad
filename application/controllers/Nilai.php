@@ -6,24 +6,61 @@
 		function __construct()
 		{
 			parent::__construct();
+			$this->load->library('ssp');
 			//checkAksesModule();
 		}
 		
 		function index()
 		{
-			// Guru (id_level_user 3) hanya melihat jadwal yang diampunya; admin melihat semua.
-			// Hanya tampilkan jadwal yang sudah lengkap (hari & jam sudah dicocokkan).
-			$where = "tj.kd_kelas = tk.kd_kelas AND tj.kd_jurusan = tju.kd_jurusan AND tj.kd_ruangan = tr.kd_ruangan AND tj.kd_mapel = tm.kd_mapel AND tj.kd_tingkatan = ttk.kd_tingkatan AND TRIM(tj.hari) <> '' AND TRIM(tj.jam) <> ''";
+			$this->template->load('template', 'nilai/list_kelas');
+		}
+
+		// Server-side processing (pagination + live search) untuk DataTables
+		// "Daftar Kelas yang Diajar" memakai view v_jadwal_nilai.
+		function data()
+		{
+			$table      = 'v_jadwal_nilai';
+			$primaryKey = 'id_jadwal';
+
+			$columns = array(
+				array('db' => 'id_jadwal', 'dt' => 0),
+				array('db' => 'nama_kelas', 'dt' => 1),
+				array('db' => 'jurusan_tingkatan', 'dt' => 2),
+				array('db' => 'nama_mapel', 'dt' => 3),
+				array('db' => 'hari', 'dt' => 4),
+				array('db' => 'jam', 'dt' => 5),
+				array('db' => 'nama_ruangan', 'dt' => 6),
+				array(
+					'db' => 'id_jadwal',
+					'dt' => 7,
+					'formatter' => function($d) {
+						return anchor('nilai/kelas/'.$d, '<i class="fa fa-eye" aria-hidden="true"></i>',
+							array('class'=>'inline-flex h-8 w-8 items-center justify-center rounded-lg bg-sky-50 text-sky-600 hover:bg-sky-100',
+								  'data-placement' => 'top', 'title' => 'Input Nilai'));
+					}
+				)
+			);
+
+			// Hanya jadwal tahun akademik aktif, semester berjalan, dan sudah lengkap (hari & jam).
+			$whereAll  = "id_tahun_akademik = ".(int) get_tahun_akademik('id_tahun_akademik');
+			$whereAll .= " AND semester = ".$this->db->escape(get_tahun_akademik('semester'));
+			$whereAll .= " AND TRIM(hari) <> '' AND TRIM(jam) <> ''";
+			// Guru (id_level_user 3) hanya melihat jadwal yang diampunya.
 			if ($this->session->userdata('id_level_user') == 3) {
-				$where .= " AND tj.id_guru = ".(int) $this->session->userdata('id_guru');
+				$whereAll .= " AND id_guru = ".(int) $this->session->userdata('id_guru');
 			}
 
-			$sql = "SELECT tk.nama_kelas, tj.kd_kelas, tj.id_jadwal, tju.nama_jurusan, ttk.nama_tingkatan, tm.nama_mapel, tj.jam, 
-					tr.nama_ruangan, tj.hari, tj.semester 
-					FROM tbl_jadwal AS tj, tbl_kelas AS tk, tbl_jurusan AS tju, tbl_ruangan AS tr, tbl_mapel AS tm, tbl_tingkatan_kelas AS ttk
-					WHERE ".$where." ORDER BY tj.kd_kelas, tj.kd_mapel";
-			$data['jadwal'] =$this->db->query($sql);
-			$this->template->load('template', 'nilai/list_kelas', $data);
+			$sql_details = array(
+				'user' => $this->db->username,
+				'pass' => $this->db->password,
+				'db'   => $this->db->database,
+				'host' => $this->db->hostname
+			);
+
+			// dt 0 = nomor urut diisi saat draw.dt (seperti halaman siswa), tidak ikut order/search.
+			echo json_encode(
+				SSP::complex($_GET, $sql_details, $table, $primaryKey, $columns, null, $whereAll)
+			);
 		}
 
 		function kelas()

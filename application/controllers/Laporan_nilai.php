@@ -5,22 +5,40 @@
 		
 		function index()
 		{
-			// Guru (id_level_user 3) hanya melihat siswa di kelas walikelasnya; admin melihat semua siswa.
 			$is_guru 	= ($this->session->userdata('id_level_user') == 3);
 			$tahun 		= (int) get_tahun_akademik('id_tahun_akademik');
 			$semester 	= (string) get_tahun_akademik('semester');
+
+			// Filter (admin): pencarian + kelas terpilih
+			$cari	 	= trim((string) $this->input->get('cari'));
+			$kd_kelas 	= trim((string) $this->input->get('kelas'));
 
 			if ($is_guru) {
 				$id_guru 	= (int) $this->session->userdata('id_guru');
 				$walikelas 	= $this->db->get_where('tbl_walikelas', array('id_guru' => $id_guru))->row_array();
 				$kd_kelas 	= (!empty($walikelas['kd_kelas'])) ? $walikelas['kd_kelas'] : null;
-
-				$kelas 		= "SELECT tk.nama_kelas, tju.nama_jurusan, tm.nama_mapel, ttk.nama_tingkatan 
-								  FROM tbl_jadwal AS tj, tbl_jurusan AS tju,  tbl_kelas AS tk, tbl_mapel AS tm, tbl_tingkatan_kelas AS ttk
-								  WHERE tj.kd_jurusan = tju.kd_jurusan AND tj.kd_kelas = tk.kd_kelas AND tj.kd_mapel = tm.kd_mapel AND tj.kd_tingkatan = ttk.kd_tingkatan AND tj.kd_kelas = ".$this->db->escape($kd_kelas);
-			} else {
-				$kelas = null;
 			}
+
+			// info kelas (wali kelas => kelasnya; admin => kelas filter bila dipilih)
+			$kelas_pilih = ($kd_kelas === '') ? null : $kd_kelas;
+			if ($is_guru) {
+				$qk = ($kelas_pilih !== null)
+					? $this->db->query("SELECT tk.nama_kelas, tju.nama_jurusan, ttk.nama_tingkatan
+										FROM tbl_kelas AS tk
+										JOIN tbl_jurusan AS tju ON tju.kd_jurusan = tk.kd_jurusan
+										JOIN tbl_tingkatan_kelas AS ttk ON ttk.kd_tingkatan = tk.kd_tingkatan
+										WHERE tk.kd_kelas = ".$this->db->escape($kelas_pilih))
+					: null;
+			} else {
+				$qk = ($kelas_pilih !== null)
+					? $this->db->query("SELECT tk.nama_kelas, tju.nama_jurusan, ttk.nama_tingkatan
+										FROM tbl_kelas AS tk
+										JOIN tbl_jurusan AS tju ON tju.kd_jurusan = tk.kd_jurusan
+										JOIN tbl_tingkatan_kelas AS ttk ON ttk.kd_tingkatan = tk.kd_tingkatan
+										WHERE tk.kd_kelas = ".$this->db->escape($kelas_pilih))
+					: null;
+			}
+			$kelas = ($qk !== null && $qk->num_rows() > 0) ? $qk->row_array() : null;
 
 			$siswa 		= "SELECT ts.nim, ts.nama, ts.gender, trk.kd_kelas, tk.nama_kelas,
 							  (SELECT COUNT(DISTINCT tj2.kd_mapel)
@@ -35,8 +53,11 @@
 							  JOIN tbl_riwayat_kelas AS trk ON trk.nim = ts.nim
 							  LEFT JOIN tbl_kelas AS tk ON tk.kd_kelas = trk.kd_kelas
 							  WHERE 1=1";
-			if ($is_guru) {
-				$siswa .= " AND trk.kd_kelas = ".$this->db->escape($kd_kelas);
+			if ($kelas !== null) {
+				$siswa .= " AND trk.kd_kelas = ".$this->db->escape($kelas_pilih);
+			}
+			if ($cari !== '') {
+				$siswa .= " AND (ts.nama LIKE ".$this->db->escape('%'.$cari.'%')." OR ts.nim LIKE ".$this->db->escape('%'.$cari.'%').")";
 			}
 			$siswa .= " AND trk.id_tahun_akademik = ".$tahun." ORDER BY tk.nama_kelas, ts.nama";
 
@@ -50,13 +71,38 @@
 				$jml_mapel_kelas[$r->kd_kelas] = (int) $r->c;
 			}
 
-			$data['kelas'] 			= ($kelas) ? $this->db->query($kelas)->row_array() : null;
-			$data['siswa'] 			= $this->db->query($siswa);
+			$data['kelas'] 			= $kelas;
+			$q_siswa 			= $this->db->query($siswa);
+			$data['siswa'] 			= $q_siswa;
+			$data['total_siswa'] 		= $q_siswa->num_rows();
 			$data['jml_mapel_kelas'] 	= $jml_mapel_kelas;
 			$data['is_guru'] 		= $is_guru;
+			$data['cari'] 			= $cari;
+			$data['kelas_pilih'] 		= $kelas_pilih;
+			$data['jurusan_filter'] 	= trim((string) $this->input->get('jurusan'));
+			$data['tingkatan_filter'] 	= trim((string) $this->input->get('tingkatan'));
 			$this->template->load('template', 'laporan_nilai/list_siswa', $data);
 		}
 
+		function tampil_kelas()
+		{
+			$jurusannya 		= trim((string) $this->input->get('jurusan'));
+			$tingkatannya 		= trim((string) $this->input->get('tingkatan'));
+			$terpilih 			= trim((string) $this->input->get('kelas'));
+
+			$this->db->where('kd_jurusan', $jurusannya);
+			$this->db->where('kd_tingkatan', $tingkatannya);
+			$this->db->order_by('kd_kelas');
+			$kelas = $this->db->get('tbl_kelas')->result();
+
+			echo "<select id='slcKelas' name='kelas' class='form-control'>";
+			echo "<option value=''>-- Pilih Kelas --</option>";
+			foreach ($kelas as $row) {
+				$sel = ($row->kd_kelas == $terpilih) ? ' selected' : '';
+				echo "<option value='$row->kd_kelas'$sel>$row->nama_kelas</option>";
+			}
+			echo "</select>";
+		}
 
 		function nilai_semester(){
        		// blok query info siswa (kelas = riwayat pada tahun akademik aktif)
