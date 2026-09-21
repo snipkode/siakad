@@ -1,11 +1,53 @@
-<div class="mb-4 grid grid-cols-2 gap-3 lg:max-w-xl">
-  <div class="rounded-2xl border border-slate-200 bg-white px-4 py-3 shadow-sm">
-    <p class="text-[11px] font-semibold uppercase tracking-wide text-slate-400">Tahun Akademik</p>
-    <p class="mt-0.5 text-sm font-bold text-slate-800"><?php echo get_tahun_akademik('tahun_akademik'); ?></p>
+<div class="mb-6 grid grid-cols-1 gap-3 sm:grid-cols-3 lg:max-w-3xl">
+  <div class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+    <div class="flex items-center gap-2.5 bg-gradient-to-br from-sky-500 to-indigo-600 px-4 py-3 text-white">
+      <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-white/20">
+        <i class="fa fa-calendar" aria-hidden="true"></i>
+      </span>
+      <div>
+        <p class="text-sm font-bold leading-tight">Tahun Akademik</p>
+        <p class="text-[11px] leading-tight text-sky-100">Tahun berjalan</p>
+      </div>
+    </div>
+    <div class="px-4 py-3">
+      <p class="text-lg font-extrabold text-slate-800"><?php echo get_tahun_akademik('tahun_akademik'); ?></p>
+      <p class="text-[11px] text-slate-400">Periode <?php echo get_tahun_akademik('tahun_akademik'); ?></p>
+    </div>
   </div>
-  <div class="rounded-2xl border border-slate-200 bg-white px-4 py-3 shadow-sm">
-    <p class="text-[11px] font-semibold uppercase tracking-wide text-slate-400">Semester</p>
-    <p class="mt-0.5 text-sm font-bold capitalize text-slate-800"><?php echo get_tahun_akademik('semester'); ?></p>
+
+  <div class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+    <div class="flex items-center gap-2.5 bg-gradient-to-br from-teal-500 to-emerald-600 px-4 py-3 text-white">
+      <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-white/20">
+        <i class="fa fa-list-alt" aria-hidden="true"></i>
+      </span>
+      <div>
+        <p class="text-sm font-bold leading-tight">Semester</p>
+        <p class="text-[11px] leading-tight text-teal-100">Periode aktif</p>
+      </div>
+    </div>
+    <div class="px-4 py-3">
+      <p class="text-lg font-extrabold capitalize text-slate-800"><?php echo get_tahun_akademik('semester'); ?></p>
+      <p class="text-[11px] text-slate-400"><?php echo get_tahun_akademik('semester'); ?> ganjil / genap</p>
+    </div>
+  </div>
+
+  <div class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+    <div class="flex items-center gap-2.5 bg-gradient-to-br from-amber-500 to-orange-600 px-4 py-3 text-white">
+      <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-white/20">
+        <i class="fa fa-book-open" aria-hidden="true"></i>
+      </span>
+      <div>
+        <p class="text-sm font-bold leading-tight">Jadwal</p>
+        <p class="text-[11px] leading-tight text-amber-100">Kelas yang diajar</p>
+      </div>
+    </div>
+    <div class="px-4 py-3">
+      <p class="mt-0.5 flex items-baseline gap-1.5 text-lg font-extrabold text-slate-800 pl-0">
+        <span id="total-jadwal" class="inline-flex items-center justify-center rounded-full bg-amber-100 px-2 py-0.5 text-[11px] font-bold text-amber-700">0</span>
+        <span class="text-sm font-semibold text-slate-500">Jadwal</span>
+      </p>
+      <p class="text-[11px] text-slate-400">Semua mapel terbagi</p>
+    </div>
   </div>
 </div>
 
@@ -17,11 +59,7 @@
       </span>
       <div>
         <h3 class="text-sm font-bold text-slate-800">Daftar Kelas yang Diajar</h3>
-        <p class="text-xs text-slate-500">
-          Total
-          <span id="total-jadwal" class="inline-flex items-center justify-center rounded-full bg-sky-100 px-2 py-0.5 text-[11px] font-bold text-sky-700">0</span>
-          jadwal
-        </p>
+        <p class="text-xs text-slate-500">Kelola jadwal, lalu input nilai per mapel</p>
       </div>
     </div>
   </div>
