@@ -1,4 +1,3 @@
-"NISN","NAMA","TANGGAL LAHIR","TEMPAT LAHIR"
-"20180000001","Muhammad Athallah Zhuhry","1996-12-19","Banda Aceh"
-"20180000002","Muhammad Mulvi","1996-02-01","Banda Aceh"
-"20180000003","Nardin","1996-05-01","Sinabang"
+NIM,NAMA,TANGGAL LAHIR,TEMPAT LAHIR
+18SI1099,Test Siswa Import,1999-08-17,Jakarta
+18SI1088,Test Siswa Kedua,2000-01-01,Bandung

@@ -322,6 +322,31 @@ INSERT INTO `tbl_nilai` (`id_nilai`, `id_jadwal`, `nim`, `nilai`) VALUES
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `tbl_pembayaran`
+--
+
+CREATE TABLE `tbl_pembayaran` (
+  `id_pembayaran` int(11) NOT NULL,
+  `nim` varchar(11) NOT NULL,
+  `jenis_bayar` varchar(100) NOT NULL,
+  `jumlah` int(11) NOT NULL,
+  `id_tahun_akademik` int(11) NOT NULL,
+  `tanggal_bayar` date NOT NULL,
+  `keterangan` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `tbl_pembayaran`
+--
+
+INSERT INTO `tbl_pembayaran` (`id_pembayaran`, `nim`, `jenis_bayar`, `jumlah`, `id_tahun_akademik`, `tanggal_bayar`, `keterangan`) VALUES
+(1, '18SI1000', 'Pendaftaran PSB', 500000, 1, '2026-07-01', 'Pelunasan'),
+(2, '18SI1001', 'OSIS', 25000, 1, '2026-07-10', ''),
+(3, '18TI2000', 'Seragam', 750000, 1, '2026-07-11', '');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `tbl_riwayat_kelas`
 --
 
@@ -508,7 +533,8 @@ INSERT INTO `tbl_user_rule` (`id_rule`, `id_menu`, `id_level_user`) VALUES
 (17, 11, 3),
 (19, 17, 3),
 (20, 18, 3),
-(21, 12, 3);
+(21, 12, 3),
+(22, 16, 1);
 
 -- --------------------------------------------------------
 
@@ -606,6 +632,32 @@ CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW 
 -- --------------------------------------------------------
 
 --
+-- Stand-in structure for view `view_pembayaran`
+--
+CREATE TABLE `view_pembayaran` (
+`id_pembayaran` int(11)
+,`nama` varchar(40)
+,`nim` varchar(11)
+,`jenis_bayar` varchar(100)
+,`jumlah` int(11)
+,`tahun_akademik` varchar(10)
+,`semester` varchar(10)
+,`tanggal_bayar` date
+,`keterangan` varchar(255)
+);
+
+-- --------------------------------------------------------
+
+--
+-- Structure for view `view_pembayaran`
+--
+DROP TABLE IF EXISTS `view_pembayaran`;
+
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `view_pembayaran`  AS  select `tp`.`id_pembayaran` AS `id_pembayaran`,`ts`.`nama` AS `nama`,`tp`.`nim` AS `nim`,`tp`.`jenis_bayar` AS `jenis_bayar`,`tp`.`jumlah` AS `jumlah`,`tta`.`tahun_akademik` AS `tahun_akademik`,`tta`.`semester` AS `semester`,`tp`.`tanggal_bayar` AS `tanggal_bayar`,`tp`.`keterangan` AS `keterangan` from ((`tbl_pembayaran` `tp` join `tbl_siswa` `ts`) join `tbl_tahun_akademik` `tta`) where ((`tp`.`nim` = `ts`.`nim`) and (`tp`.`id_tahun_akademik` = `tta`.`id_tahun_akademik`)) ;
+
+-- --------------------------------------------------------
+
+--
 -- Structure for view `view_walikelas`
 --
 DROP TABLE IF EXISTS `view_walikelas`;
@@ -681,6 +733,12 @@ ALTER TABLE `tbl_mapel`
 --
 ALTER TABLE `tbl_nilai`
   ADD PRIMARY KEY (`id_nilai`);
+
+--
+-- Indexes for table `tbl_pembayaran`
+--
+ALTER TABLE `tbl_pembayaran`
+  ADD PRIMARY KEY (`id_pembayaran`);
 
 --
 -- Indexes for table `tbl_riwayat_kelas`
@@ -770,6 +828,11 @@ ALTER TABLE `tbl_level_user`
 ALTER TABLE `tbl_nilai`
   MODIFY `id_nilai` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 --
+-- AUTO_INCREMENT for table `tbl_pembayaran`
+--
+ALTER TABLE `tbl_pembayaran`
+  MODIFY `id_pembayaran` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+--
 -- AUTO_INCREMENT for table `tbl_riwayat_kelas`
 --
 ALTER TABLE `tbl_riwayat_kelas`
@@ -788,7 +851,7 @@ ALTER TABLE `tbl_user`
 -- AUTO_INCREMENT for table `tbl_user_rule`
 --
 ALTER TABLE `tbl_user_rule`
-  MODIFY `id_rule` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
+  MODIFY `id_rule` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
 --
 -- AUTO_INCREMENT for table `tbl_walikelas`
 --

@@ -16,7 +16,7 @@
     <div class="flex flex-wrap gap-2 dt-actions">
       <?php
         echo anchor('siswa/add', '<i class="fa fa-plus"></i> Tambah Data', array('class'=>'inline-flex items-center gap-1.5 rounded-xl bg-sky-600 px-3 py-2 text-xs font-semibold text-white shadow-sm hover:bg-sky-700'));
-        echo anchor('siswa/form', '<i class="fa fa-upload"></i> Import Data', array('class'=>'inline-flex items-center gap-1.5 rounded-xl bg-amber-500 px-3 py-2 text-xs font-semibold text-white shadow-sm hover:bg-amber-600'));
+        echo '<button type="button" onclick="openImportModal()" class="inline-flex items-center gap-1.5 rounded-xl bg-amber-500 px-3 py-2 text-xs font-semibold text-white shadow-sm hover:bg-amber-600"><i class="fa fa-upload"></i> Import Data</button>';
         echo anchor('siswa/naik_kelas', '<i class="fa fa-level-up"></i> Naik Kelas', array('class'=>'inline-flex items-center gap-1.5 rounded-xl bg-emerald-600 px-3 py-2 text-xs font-semibold text-white shadow-sm hover:bg-emerald-700'));
       ?>
     </div>
@@ -35,6 +35,21 @@
         </tr>
       </thead>
     </table>
+  </div>
+</div>
+
+<!-- Modal Import -->
+<div id="modal-import" class="fixed inset-0 z-50 hidden items-center justify-center p-4">
+  <div id="modal-import-backdrop" onclick="closeImportModal()" class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm"></div>
+  <div class="relative w-full max-w-md max-h-[85vh] overflow-hidden rounded-2xl bg-white shadow-2xl">
+    <div class="flex items-center justify-between border-b border-slate-100 px-4 py-3">
+      <div class="flex items-center gap-2.5">
+        <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-amber-50 text-amber-600"><i class="fa fa-upload"></i></span>
+        <h3 class="text-sm font-bold text-slate-800">Form Import</h3>
+      </div>
+      <button type="button" onclick="closeImportModal()" class="flex h-7 w-7 items-center justify-center rounded-lg text-slate-400 hover:bg-slate-100 hover:text-slate-600"><i class="fa fa-times"></i></button>
+    </div>
+    <div id="siswa-import-body" class="max-h-[65vh] overflow-y-auto p-4"></div>
   </div>
 </div>
 
@@ -69,5 +84,69 @@
         cell.innerHTML = i + 1;
       });
     }).draw();
+  });
+
+  window.openImportModal = function () {
+    var $modal = $('#modal-import');
+    $modal.removeClass('hidden').addClass('flex');
+    document.body.classList.add('overflow-hidden');
+    $('#siswa-import-body').html('<p class="py-8 text-center text-sm text-slate-400"><i class="fa fa-spinner fa-spin mr-2"></i>Menyiapkan form...</p>');
+    $.get('<?php echo site_url('siswa/form'); ?>', function (html) {
+      $('#siswa-import-body').html(html);
+    });
+  };
+
+  window.closeImportModal = function () {
+    $('#modal-import').addClass('hidden').removeClass('flex');
+    document.body.classList.remove('overflow-hidden');
+  };
+
+  $('#modal-import').on('click', function (e) {
+    if (e.target === this) { closeImportModal(); }
+  });
+
+  // Preview file: AJAX ke siswa/form, hasil (tabel preview + tombol import) di-inject ke modal
+  $(document).on('submit', '#siswa-import-body form[data-preview="1"]', function (e) {
+    e.preventDefault();
+    var $btn = $(this).find('button[name="preview"]');
+    $btn.prop('disabled', true).html('<i class="fa fa-spinner fa-spin"></i> Memproses...');
+    $.ajax({
+      url: this.action,
+      type: 'POST',
+      data: new FormData(this),
+      processData: false,
+      contentType: false,
+      success: function (html) {
+        $('#siswa-import-body').html(html);
+      },
+      complete: function () {
+        $btn.prop('disabled', false).html('<i class="fa fa-eye"></i> Preview');
+      }
+    });
+    return false;
+  });
+
+  // Eksekusi import: AJAX ke siswa/import, lalu tutup modal + refresh tabel
+  $(document).on('submit', '#siswa-import-body form[data-import="1"]', function (e) {
+    e.preventDefault();
+    var $btn = $(this).find('button[name="import"]');
+    $btn.prop('disabled', true).html('<i class="fa fa-spinner fa-spin"></i> Mengimport...');
+    $.ajax({
+      url: this.action,
+      type: 'POST',
+      data: new FormData(this),
+      processData: false,
+      contentType: false,
+      success: function () {
+        closeImportModal();
+        if ($.fn.DataTable.isDataTable('#mytable')) {
+          $('#mytable').DataTable().ajax.reload(null, false);
+        }
+      },
+      complete: function () {
+        $btn.prop('disabled', false).html('<i class="fa fa-upload"></i> Import');
+      }
+    });
+    return false;
   });
 </script>
