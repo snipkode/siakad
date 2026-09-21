@@ -6,12 +6,13 @@
 		function index()
 		{
 			$walikelas 		= $this->db->get_where('tbl_walikelas', array('id_guru' => $this->session->userdata('id_guru')))->row_array();
+			$kd_kelas 		= $walikelas['kd_kelas'] ?? '';
 			$kelas 			= "SELECT tk.nama_kelas, tju.nama_jurusan, tm.nama_mapel, ttk.nama_tingkatan 
 							  FROM tbl_jadwal AS tj, tbl_jurusan AS tju,  tbl_kelas AS tk, tbl_mapel AS tm, tbl_tingkatan_kelas AS ttk
-							  WHERE tj.kd_jurusan = tju.kd_jurusan AND tj.kd_kelas = tk.kd_kelas AND tj.kd_mapel = tm.kd_mapel AND tj.kd_tingkatan = ttk.kd_tingkatan AND tj.kd_kelas= '".$walikelas['kd_kelas']."'";
+							  WHERE tj.kd_jurusan = tju.kd_jurusan AND tj.kd_kelas = tk.kd_kelas AND tj.kd_mapel = tm.kd_mapel AND tj.kd_tingkatan = ttk.kd_tingkatan AND tj.kd_kelas= '".$kd_kelas."'";
 			$siswa 			= "SELECT ts.nim, ts.nama
 							  FROM tbl_riwayat_kelas AS trk, tbl_siswa AS ts 
-							  WHERE trk.nim = ts.nim AND trk.kd_kelas = '".$walikelas['kd_kelas']."' 
+							  WHERE trk.nim = ts.nim AND trk.kd_kelas = '".$kd_kelas."' 
 							  AND trk.id_tahun_akademik = ".get_tahun_akademik('id_tahun_akademik');
 
 			$data['kelas']  = $this->db->query($kelas)->row_array();

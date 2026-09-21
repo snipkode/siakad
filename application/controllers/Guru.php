@@ -28,8 +28,9 @@
                 'db' => 'gender',
                 'dt' => 'gender',
                 'formatter' => function($d) {
-                  //Apabila $d bernilai P maka akan menampilkan 'Pria' apabila bernilai selain P akan menampilkan 'Wanita'
-                  return $d == 'P' ? 'Pria' : 'Wanita';
+                  return $d == 'P'
+                    ? "<span class='inline-flex items-center gap-1 rounded-full bg-sky-100 px-2.5 py-1 text-[11px] font-semibold text-sky-700'><i class='fa fa-mars text-[10px]'></i> Pria</span>"
+                    : "<span class='inline-flex items-center gap-1 rounded-full bg-fuchsia-100 px-2.5 py-1 text-[11px] font-semibold text-fuchsia-700'><i class='fa fa-venus text-[10px]'></i> Wanita</span>";
                 }
               ),
             //untuk menampilkan aksi(edit/delete dengan parameter id guru)
@@ -37,8 +38,9 @@
                   'db' => 'id_guru',
                   'dt' => 'aksi',
                   'formatter' => function($d) {
-                      return anchor('guru/edit/'.$d, '<i class="fa fa-edit"></i>', 'class="btn btn-xs btn-primary" data-placement="top" title="Edit"').' 
-                      '.anchor('guru/delete/'.$d, '<i class="fa fa-times fa fa-white"></i>', 'class="btn btn-xs btn-danger" data-placement="top" title="Delete"');
+                      return "<div class='inline-flex gap-1.5'>".
+                        anchor('guru/edit/'.$d, '<i class="fa fa-pencil"></i>', 'class="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-sky-50 text-sky-600 hover:bg-sky-100" data-placement="top" title="Edit"').' 
+                        '.anchor('guru/delete/'.$d, '<i class="fa fa-trash"></i>', 'class="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-red-50 text-red-500 hover:bg-red-100" data-placement="top" title="Delete" onclick=\'return confirm("Yakin ingin menghapus guru ini?")\'')."</div>";
                 }
             )
         );

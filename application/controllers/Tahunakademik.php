@@ -36,9 +36,9 @@
 		              'db' => 'id_tahun_akademik',
 		              'dt' => 'aksi',
 		              'formatter' => function($d) {
-		               		return anchor('tahunakademik/aktif/'.$d, 'Aktifkan', 'class="btn btn-xs bg-orange" data-placement="top" title="Aktif"').'
-		               		'.anchor('tahunakademik/edit/'.$d, '<i class="fa fa-edit"></i>', 'class="btn btn-xs btn-primary" data-placement="top" title="Edit"').'
-		               		'.anchor('tahunakademik/delete/'.$d, '<i class="fa fa-times fa fa-white"></i>', 'class="btn btn-xs btn-danger" data-placement="top" title="Delete"');
+		               		return anchor('tahunakademik/aktif/'.$d, '<i class="fa fa-check-circle"></i> Aktifkan', 'class="inline-flex h-8 items-center justify-center gap-1 rounded-lg bg-emerald-50 px-2.5 text-xs font-semibold text-emerald-600 hover:bg-emerald-100" data-placement="top" title="Aktif"').'
+		               		'.anchor('tahunakademik/edit/'.$d, '<i class="fa fa-pencil"></i>', 'class="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-sky-50 text-sky-600 hover:bg-sky-100" data-placement="top" title="Edit"').'
+		               		'.anchor('tahunakademik/delete/'.$d, '<i class="fa fa-trash"></i>', 'class="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-red-50 text-red-500 hover:bg-red-100" data-placement="top" title="Delete" onclick=\'return confirm("Yakin ingin menghapus data ini?")\'');
 		            }
 		        )
 		    );

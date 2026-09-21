@@ -1,111 +1,55 @@
-<section class="content">
-    <div class="row">
+<div class="grid grid-cols-1 gap-4 lg:grid-cols-3">
 
-        <!-- filter -->
-        <div class="col-xs-4">
-
-          <div class="box box-info">
-            <div class="box-header with-border">
-              <h3 class="box-title">Filter Data</h3>
-            </div>
-            <!-- /.box-header -->
-            <div class="box-body">
-                
-                <?php
-                    echo form_open();
-                ?>
-
-                <table class="table table-bordered">
-                    <tr>
-                        <td>Level User</td>
-                        <td>
-                            <?php echo cmb_dinamis('level_user', 'tbl_level_user', 'nama_level', 'id_level_user', null, "id='filter_level' onChange='loadData()'") 
-                            ?>        
-                        </td>
-                    </tr>
-                </table>
-
-                </form>
-
-            </div>
-            <!-- /.box-body -->
-          </div>
-          <!-- /.box -->
-        </div>
-        <!-- /.col -->
-
-        <div class="col-xs-8">
-
-          <div class="box box-primary">
-            <div class="box-header  with-border">
-              <h3 class="box-title">Data Hak Akses Module</h3>
-            </div>
-            <!-- /.box-header -->
-            <div class="box-body">
-
-                <div id="table-module"></div>
-
-            </div>
-            <!-- /.box-body -->
-          </div>
-          <!-- /.box -->
-        </div>
-        <!-- /.col -->
-
+  <!-- Filter -->
+  <div class="h-fit rounded-2xl border border-slate-200 bg-white shadow-sm">
+    <div class="border-b border-slate-100 px-4 py-3">
+      <h3 class="text-sm font-bold text-slate-800"><i class="fa fa-filter mr-1.5 text-sky-500"></i> Filter Data</h3>
     </div>
-    <!-- /.row -->
-</section>
+    <div class="space-y-3 p-4">
+      <?php echo form_open(); ?>
+        <div>
+          <label class="mb-1.5 block text-sm font-medium text-slate-700">Level User</label>
+          <?php echo cmb_dinamis('level_user', 'tbl_level_user', 'nama_level', 'id_level_user', null, "id='filter_level' onChange='loadData()'"); ?>
+        </div>
+      </form>
+    </div>
+  </div>
 
-<!-- punya lama -->
-<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.0/jquery.dataTables.js"></script> -->
-<!-- <script src="https://cdn.datatables.net/1.10.12/js/dataTables.bootstrap.js"></script> -->
+  <!-- Tabel -->
+  <div class="rounded-2xl border border-slate-200 bg-white shadow-sm lg:col-span-2">
+    <div class="border-b border-slate-100 px-4 py-3">
+      <h3 class="text-sm font-bold text-slate-800">Data Hak Akses Modul</h3>
+    </div>
+    <div id="table-module" class="p-4"></div>
+  </div>
+</div>
 
-<!-- baru tapi cdn -->
-<!-- <script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/1.10.16/js/dataTables.bootstrap.min.js"></script>
-<link rel="stylesheet" href="https://cdn.datatables.net/1.10.16/css/dataTables.bootstrap.min.css"> -->
+<script>
+  $(document).ready(function () {
+    loadData();
+  });
 
-<script src="<?php echo base_url(); ?>assets/bower_components/datatables.net/js/jquery.dataTables.min.js"></script>
-<script src="<?php echo base_url(); ?>assets/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
-<link rel="stylesheet" href="<?php echo base_url(); ?>assets/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css">
-
-<!-- siswa_aktif() -> untuk menampilkan view peserta didik ->terletak di controller Siswa -->
-<!-- combobox_kelas() -> untuk menampilkan data kelas sesuai jurusan yang dipilih -> terletak di controller Kelas -->
-<!-- loadDataSiswa() -> untuk menampilkan data siswa nim dan nama sesuai kode_kelas yang dipilih di filter, lalu ditampilkan ke div id = kelas yang bedada di view/siswa_aktif -> terletak di controller Siswa -->
-
-<script type="text/javascript">
-    $(document).ready(function(){
-        loadData();
+  function loadData() {
+    var level = $("#filter_level").val();
+    $.ajax({
+      type: 'GET',
+      url: '<?php echo base_url() ?>user/module',
+      data: 'level_user=' + level,
+      success: function (html) {
+        $("#table-module").html(html);
+      }
     });
-</script>
+  }
 
-<script type="text/javascript">
-    // function loadData digunakan untuk menampilkan table yang ada di function module
-    function loadData()
-    {
-        var level = $("#filter_level").val();
-        $.ajax({
-            type    : 'GET',
-            url     : '<?php echo base_url() ?>user/module',
-            data    : 'level_user='+level,
-            success : function(html) {
-                $("#table-module").html(html);
-            }
-        })
-    }
-
-    function addRule(id_modul)
-    {
-        var level = $("#filter_level").val();
-        $.ajax({
-            type    : 'GET',
-            url     : '<?php echo base_url() ?>user/add_rule',
-            data    : 'level_user='+level+'&id_modul='+id_modul,
-            success : function(html) {
-                //loadData();
-                alert("Sukses Merubah Hak Akses");
-            }
-        })
-        
-    }
+  function addRule(id_modul) {
+    var level = $("#filter_level").val();
+    $.ajax({
+      type: 'GET',
+      url: '<?php echo base_url() ?>user/add_rule',
+      data: 'level_user=' + level + '&id_modul=' + id_modul,
+      success: function (html) {
+        alert("Sukses Merubah Hak Akses");
+      }
+    });
+  }
 </script>

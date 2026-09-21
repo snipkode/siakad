@@ -24,7 +24,10 @@
 				array('db' => 'foto', 
 					  'dt' => 'foto',
 					  'formatter' => function($d) {
-					  		return "<img width='20px' src='".base_url()."/uploads/".$d."'>";
+					  		if (empty($d)) {
+					  			return "<span class='inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-slate-200 text-slate-400'><i class='fa fa-user'></i></span>";
+					  		}
+					  		return "<img class='h-10 w-10 shrink-0 rounded-full border border-slate-200 object-cover shadow-sm' loading='lazy' src='".base_url()."uploads/".$d."'>";
 					  }
 				),
 		        array('db' => 'nama_lengkap', 'dt' => 'nama_lengkap'),
@@ -34,8 +37,8 @@
 		              'db' => 'id_user',
 		              'dt' => 'aksi',
 		              'formatter' => function($d) {
-		               		return anchor('user/edit/'.$d, '<i class="fa fa-edit"></i>', 'class="btn btn-xs btn-primary" data-placement="top" title="Edit"').' 
-		               		'.anchor('user/delete/'.$d, '<i class="fa fa-times fa fa-white"></i>', 'class="btn btn-xs btn-danger" data-placement="top" title="Delete"');
+		               		return anchor('user/edit/'.$d, '<i class="fa fa-pencil"></i>', 'class="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-sky-50 text-sky-600 hover:bg-sky-100" data-placement="top" title="Edit"').' 
+		               		'.anchor('user/delete/'.$d, '<i class="fa fa-trash"></i>', 'class="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-red-50 text-red-500 hover:bg-red-100" data-placement="top" title="Delete" onclick=\'return confirm("Yakin ingin menghapus data ini?")\'');
 		            }
 		        )
 		    );

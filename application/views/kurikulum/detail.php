@@ -1,97 +1,53 @@
-<section class="content">
-    <div class="row">
+<div class="grid grid-cols-1 gap-4 lg:grid-cols-3">
 
-        <!-- filter -->
-        <div class="col-xs-4">
-
-          <div class="box box-info">
-            <div class="box-header with-border">
-              <h3 class="box-title">Filter Data</h3>
-            </div>
-            <!-- /.box-header -->
-            <div class="box-body">
-            
-                <table class="table table-bordered">
-                    <tr>
-                        <td>Jurusan</td>
-                        <td>
-                            <?php echo cmb_dinamis('jurusan', 'tbl_jurusan', 'nama_jurusan', 'kd_jurusan', null, "id='filter_jurusan' onChange='loadData()'") 
-                            ?>        
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>Tingkatan Kelas</td>
-                        <td>
-                            <?php echo cmb_dinamis('tingkatan_kelas', 'tbl_tingkatan_kelas', 'nama_tingkatan', 'kd_tingkatan', null, "id='filter_tingkatan' onChange='loadData()'") 
-                            ?>        
-                        </td>
-                    </tr>
-                    <tr>
-                        <td colspan="2">
-                            <?php
-                                echo anchor('kurikulum/add_detail/'.$this->uri->segment(3), '<button class="btn bg-navy btn-flat margin"> Tambah Data</button>');
-                            ?>
-                            <?php
-                                echo anchor('kurikulum', 'Kembali', array('class'=>'btn btn-danger btn-flat'));
-                            ?>
-                        </td>
-                    </tr>
-                </table>
-
-            </div>
-            <!-- /.box-body -->
-          </div>
-          <!-- /.box -->
-        </div>
-        <!-- /.col -->
-
-        <!-- tabel -->
-        <div class="col-xs-8">
-
-          <div class="box box-primary">
-            <div class="box-header  with-border">
-              <h3 class="box-title">Data Daftar Pelajaran</h3>
-            </div>
-            <!-- /.box-header -->
-            <div class="box-body">
-
-                <!-- disini tampil data -->
-                <div id="table_daftarpelajaran"  class="text-center">
-                    <div class="callout callout-danger text-left">
-                        <h4><i class="icon fa fa-warning"></i> Tingkatan Kelas Tidak terdeteksi</h4>
-                        <p>Pilih Tingkatan Kelas yang ingin Ditampilkan Data Daftar Pelajaranya di Filter Data Terlebih Dahulu</p>
-                    </div>
-                </div>                
-
-            </div>
-            <!-- /.box-body -->
-          </div>
-          <!-- /.box -->
-        </div>
-        <!-- /.col -->
-
+  <!-- Filter -->
+  <div class="h-fit rounded-2xl border border-slate-200 bg-white shadow-sm">
+    <div class="border-b border-slate-100 px-4 py-3">
+      <h3 class="text-sm font-bold text-slate-800"><i class="fa fa-filter mr-1.5 text-sky-500"></i> Filter Data</h3>
     </div>
-    <!-- /.row -->
-</section>
+    <div class="space-y-3 p-4">
+      <div>
+        <label class="mb-1.5 block text-sm font-medium text-slate-700">Jurusan</label>
+        <?php echo cmb_dinamis('jurusan', 'tbl_jurusan', 'nama_jurusan', 'kd_jurusan', null, "id='filter_jurusan' onChange='loadData()'"); ?>
+      </div>
+      <div>
+        <label class="mb-1.5 block text-sm font-medium text-slate-700">Tingkatan Kelas</label>
+        <?php echo cmb_dinamis('tingkatan_kelas', 'tbl_tingkatan_kelas', 'nama_tingkatan', 'kd_tingkatan', null, "id='filter_tingkatan' onChange='loadData()'"); ?>
+      </div>
+      <div class="grid grid-cols-2 gap-2 pt-1">
+        <?php
+          echo anchor('kurikulum/add_detail/'.$this->uri->segment(3), '<i class="fa fa-plus"></i> Tambah', array('class'=>'inline-flex items-center justify-center gap-1.5 rounded-xl bg-sky-600 px-3 py-2 text-xs font-semibold text-white hover:bg-sky-700'));
+          echo anchor('kurikulum', 'Kembali', array('class'=>'inline-flex items-center justify-center rounded-xl bg-slate-100 px-3 py-2 text-xs font-semibold text-slate-600 hover:bg-slate-200'));
+        ?>
+      </div>
+    </div>
+  </div>
 
-<script type="text/javascript">
-    $(document).ready(function(){
-        //loadData();
+  <!-- Tabel -->
+  <div class="rounded-2xl border border-slate-200 bg-white shadow-sm lg:col-span-2">
+    <div class="border-b border-slate-100 px-4 py-3">
+      <h3 class="text-sm font-bold text-slate-800">Data Daftar Pelajaran</h3>
+    </div>
+    <div id="table_daftarpelajaran" class="p-4 text-center">
+      <div class="rounded-xl border border-amber-200 bg-amber-50 p-4 text-left">
+        <p class="text-sm font-semibold text-amber-700"><i class="fa fa-warning"></i> Tingkatan Kelas Tidak Terdeteksi</p>
+        <p class="mt-1 text-xs text-amber-600">Pilih Tingkatan Kelas yang ingin ditampilkan Data Daftar Pelajarannya di Filter Data terlebih dahulu.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function loadData() {
+    var tingkatan_kelas = $("#filter_tingkatan").val();
+    var jurusan = $("#filter_jurusan").val();
+    $.ajax({
+      type: 'GET',
+      url: '<?php echo base_url() ?>kurikulum/dataKurikulumDetail',
+      data: 'kd_jurusan=' + jurusan + '&kd_tingkatan=' + tingkatan_kelas + '&kurikulumnya=<?php echo $this->uri->segment(3) ?>',
+      success: function (html) {
+        $("#table_daftarpelajaran").html(html);
+      }
     });
-</script>
-
-<script type="text/javascript">
-    function loadData()
-    {
-        var tingkatan_kelas = $("#filter_tingkatan").val();
-        var jurusan         = $("#filter_jurusan").val();
-        $.ajax({
-            type    : 'GET',
-            url     : '<?php echo base_url() ?>kurikulum/dataKurikulumDetail',
-            data    : 'kd_jurusan='+jurusan+'&kd_tingkatan='+tingkatan_kelas+'&kurikulumnya=<?php echo $this->uri->segment(3) ?>',
-            success : function(html) {
-                $("#table_daftarpelajaran").html(html);
-            }
-        })
-    }
+  }
 </script>

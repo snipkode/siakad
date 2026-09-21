@@ -1,80 +1,32 @@
-<section class="content">
-    <div class="row">
-        <div class="col-xs-12">
+<div class="mx-auto max-w-2xl rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-8">
+  <h3 class="mb-6 text-lg font-bold text-slate-800">Form Tambah Detail Kurikulum</h3>
 
-          <div class="box box-primary">
-            <div class="box-header with-border">
-                <h3 class="box-title">Form Tambah Detail Kurikulum</h3>
-            </div>
-            <!-- /.box-header -->
-            <!-- form start -->
-            <?php
-                echo form_open('kurikulum/add_detail', 'role="form" class="form-horizontal"');
-            ?>
+  <?php echo form_open('kurikulum/add_detail', 'role="form"'); ?>
 
-                <div class="box-body">
-
-                  <div class="form-group">
-                      <label class="col-sm-2 control-label">Kurikulum</label>
-
-                      <div class="col-sm-5">
-                        <?php
-                          echo cmb_dinamis('kurikulum', 'tbl_kurikulum', 'nama_kurikulum', 'id_kurikulum', $this->uri->segment(3), "readonly='true'");
-                        ?>
-                      </div>
-                  </div>
-
-                  <div class="form-group">
-                      <label class="col-sm-2 control-label">Mata Pelajaran</label>
-
-                      <div class="col-sm-5">
-                        <?php
-                          echo cmb_dinamis('mapel', 'tbl_mapel', 'nama_mapel', 'kd_mapel');
-                        ?>
-                      </div>
-                  </div>
-
-                  <div class="form-group">
-                      <label class="col-sm-2 control-label">Jurusan</label>
-
-                      <div class="col-sm-5">
-                        <?php
-                          echo cmb_dinamis('jurusan', 'tbl_jurusan', 'nama_jurusan', 'kd_jurusan');
-                        ?>
-                      </div>
-                  </div>
-
-                  <div class="form-group">
-                      <label class="col-sm-2 control-label">Tingkatan Kelas</label>
-
-                      <div class="col-sm-5">
-                        <?php
-                          echo cmb_dinamis('tingkatan', 'tbl_tingkatan_kelas', 'nama_tingkatan', 'kd_tingkatan');
-                        ?>
-                      </div>
-                  </div>
-
-                  <div class="form-group">
-                      <label class="col-sm-2 control-label"></label>
-
-                      <div class="col-sm-1">
-                        <button type="submit" name="submit" class="btn btn-primary btn-flat">Simpan</button>
-                      </div>
-
-                      <div class="col-sm-1">
-                        <?php
-                          echo anchor('kurikulum/detail/'.$this->uri->segment(3), 'Kembali', array('class'=>'btn btn-danger btn-flat'));
-                        ?>
-                      </div>
-                  </div>
-
-                </div>
-                <!-- /.box-body -->
-            </form>
-          </div>
-          <!-- /.box -->
-        </div>
-        <!-- /.col -->
+    <div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
+      <div>
+        <label class="mb-1.5 block text-sm font-medium text-slate-700">Kurikulum</label>
+        <?php echo cmb_dinamis('kurikulum', 'tbl_kurikulum', 'nama_kurikulum', 'id_kurikulum', $this->uri->segment(3), "readonly='true'"); ?>
+      </div>
+      <div>
+        <label class="mb-1.5 block text-sm font-medium text-slate-700">Mata Pelajaran</label>
+        <?php echo cmb_dinamis('mapel', 'tbl_mapel', 'nama_mapel', 'kd_mapel'); ?>
+      </div>
+      <div>
+        <label class="mb-1.5 block text-sm font-medium text-slate-700">Jurusan</label>
+        <?php echo cmb_dinamis('jurusan', 'tbl_jurusan', 'nama_jurusan', 'kd_jurusan'); ?>
+      </div>
+      <div>
+        <label class="mb-1.5 block text-sm font-medium text-slate-700">Tingkatan Kelas</label>
+        <?php echo cmb_dinamis('tingkatan', 'tbl_tingkatan_kelas', 'nama_tingkatan', 'kd_tingkatan'); ?>
+      </div>
     </div>
-    <!-- /.row -->
-</section>
+
+    <div class="mt-7 flex flex-wrap items-center gap-3">
+      <button type="submit" name="submit"
+              class="rounded-xl bg-sky-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-sky-700">Simpan</button>
+      <?php echo anchor('kurikulum/detail/'.$this->uri->segment(3), 'Kembali', array('class'=>'rounded-xl bg-slate-100 px-5 py-2.5 text-sm font-semibold text-slate-600 hover:bg-slate-200')); ?>
+    </div>
+
+  </form>
+</div>

@@ -1,58 +1,25 @@
-<section class="content">
-    <div class="row">
-        <div class="col-xs-12">
+<div class="mx-auto max-w-2xl rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-8">
+  <h3 class="mb-6 text-lg font-bold text-slate-800">Form Tambah Kurikulum</h3>
 
-          <div class="box box-primary">
-            <div class="box-header with-border">
-                <h3 class="box-title">Form Tambah Kurikulum</h3>
-            </div>
-            <!-- /.box-header -->
-            <!-- form start -->
-            <?php
-                echo form_open('kurikulum/add', 'role="form" class="form-horizontal"');
-            ?>
+  <?php echo form_open('kurikulum/add', 'role="form"'); ?>
 
-                <div class="box-body">
-
-                  <div class="form-group">
-                      <label class="col-sm-2 control-label">Nama Kurikulum</label>
-
-                      <div class="col-sm-9">
-                        <input type="text" name="nama_kurikulum" class="form-control" placeholder="Masukkan Nama Kurikulum">
-                      </div>
-                  </div>
-
-                  <div class="form-group">
-                      <label class="col-sm-2 control-label">Is Aktif</label>
-
-                      <div class="col-sm-5">
-                        <?php
-                          echo form_dropdown('is_aktif', array('Pilih Status', 'N'=>'Tidak Aktif', 'Y'=>'Aktif'), null, "class='form-control'");
-                        ?>
-                      </div>
-                  </div>
-
-                  <div class="form-group">
-                      <label class="col-sm-2 control-label"></label>
-
-                      <div class="col-sm-1">
-                        <button type="submit" name="submit" class="btn btn-primary btn-flat">Simpan</button>
-                      </div>
-
-                      <div class="col-sm-1">
-                        <?php
-                          echo anchor('kurikulum', 'Kembali', array('class'=>'btn btn-danger btn-flat'));
-                        ?>
-                      </div>
-                  </div>
-
-                </div>
-                <!-- /.box-body -->
-            </form>
-          </div>
-          <!-- /.box -->
-        </div>
-        <!-- /.col -->
+    <div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
+      <div>
+        <label class="mb-1.5 block text-sm font-medium text-slate-700">Nama Kurikulum</label>
+        <input type="text" name="nama_kurikulum" placeholder="Masukkan Nama Kurikulum"
+               class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-sm focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-500/30">
+      </div>
+      <div>
+        <label class="mb-1.5 block text-sm font-medium text-slate-700">Is Aktif</label>
+        <?php echo form_dropdown('is_aktif', array('Pilih Status', 'N'=>'Tidak Aktif', 'Y'=>'Aktif'), null, "class='w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-sm focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-500/30'"); ?>
+      </div>
     </div>
-    <!-- /.row -->
-</section>
+
+    <div class="mt-7 flex flex-wrap items-center gap-3">
+      <button type="submit" name="submit"
+              class="rounded-xl bg-sky-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-sky-700">Simpan</button>
+      <?php echo anchor('kurikulum', 'Kembali', array('class'=>'rounded-xl bg-slate-100 px-5 py-2.5 text-sm font-semibold text-slate-600 hover:bg-slate-200')); ?>
+    </div>
+
+  </form>
+</div>

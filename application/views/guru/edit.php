@@ -1,83 +1,49 @@
-<section class="content">
-    <div class="row">
-        <div class="col-xs-12">
+<div class="mx-auto max-w-3xl rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-8">
+  <h3 class="mb-6 text-lg font-bold text-slate-800">Form Edit Guru</h3>
 
-          <div class="box box-primary">
-            <div class="box-header with-border">
-                <h3 class="box-title">Form Edit Guru</h3>
-            </div>
-            <!-- /.box-header -->
-            <!-- form start -->
-            <?php
-                echo form_open('guru/edit', 'role="form" class="form-horizontal"');
-                echo form_hidden('id_guru', $guru['id_guru']);
-            ?>
+  <?php echo form_open('guru/edit', 'role="form"'); ?>
+  <?php echo form_hidden('id_guru', $guru['id_guru']); ?>
 
-                <div class="box-body">
+    <div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
+      <div>
+        <label class="mb-1.5 block text-sm font-medium text-slate-700">NUPTK</label>
+        <input type="text" name="nuptk" value="<?php echo $guru['nuptk']; ?>" placeholder="Masukkan NUPTK"
+               class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-sm focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-500/30">
+      </div>
 
-                  <div class="form-group">
-                      <label class="col-sm-2 control-label">NUPTK</label>
+      <div>
+        <label class="mb-1.5 block text-sm font-medium text-slate-700">Nama Guru</label>
+        <input type="text" name="nama_guru" value="<?php echo $guru['nama_guru']; ?>" placeholder="Masukkan Nama Lengkap Guru"
+               class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-sm focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-500/30">
+      </div>
 
-                      <div class="col-sm-9">
-                        <input type="text" value="<?php echo $guru['nuptk']; ?>" name="nuptk" class="form-control" placeholder="Masukkan NUPTK">
-                      </div>
-                  </div>
+      <div>
+        <label class="mb-1.5 block text-sm font-medium text-slate-700">Gender</label>
+        <?php echo form_dropdown('gender', array('Pilih Gender', 'P'=>'Pria', 'W'=>'Wanita'), $guru['gender'], "class='w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-sm focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-500/30'"); ?>
+      </div>
 
-                  <div class="form-group">
-                      <label class="col-sm-2 control-label">Nama Guru</label>
+      <div></div>
 
-                      <div class="col-sm-9">
-                        <input type="text" value="<?php echo $guru['nama_guru']; ?>" name="nama_guru" class="form-control" placeholder="Masukkan Nama Lengkap Guru">
-                      </div>
-                  </div>
+      <div>
+        <label class="mb-1.5 block text-sm font-medium text-slate-700">Username</label>
+        <input type="text" name="username" value="<?php echo $guru['username']; ?>" placeholder="Masukkan Username"
+               class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-sm focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-500/30">
+      </div>
 
-                  <div class="form-group">
-                      <label class="col-sm-2 control-label">Gender</label>
-
-                      <div class="col-sm-5">
-                        <?php
-                          echo form_dropdown('gender', array('Pilih Gender', 'P'=>'Pria', 'W'=>'Wanita'), $guru['gender'], "class='form-control'");
-                        ?>
-                      </div>
-                  </div>
-
-                  <div class="form-group">
-                      <label class="col-sm-2 control-label">Username</label>
-
-                      <div class="col-sm-9">
-                        <input type="text" value="<?php echo $guru['username']; ?>" name="username" class="form-control" placeholder="Masukan Username">
-                      </div>
-                  </div>
-
-                  <div class="form-group">
-                      <label class="col-sm-2 control-label">Password</label>
-
-                      <div class="col-sm-9">
-                        <input type="password" value="<?php echo $guru['password']; ?>" name="password" class="form-control" placeholder="Masukan Password">
-                      </div>
-                  </div>
-
-                  <div class="form-group">
-                      <label class="col-sm-2 control-label"></label>
-
-                      <div class="col-sm-1">
-                        <button type="submit" name="submit" class="btn btn-primary btn-flat">Simpan</button>
-                      </div>
-
-                      <div class="col-sm-1">
-                        <?php
-                          echo anchor('guru', 'Kembali', array('class'=>'btn btn-danger btn-flat'));
-                        ?>
-                      </div>
-                  </div>
-
-                </div>
-                <!-- /.box-body -->
-            </form>
-          </div>
-          <!-- /.box -->
-        </div>
-        <!-- /.col -->
+      <div>
+        <label class="mb-1.5 block text-sm font-medium text-slate-700">Password</label>
+        <input type="password" name="password" value="<?php echo $guru['password']; ?>" placeholder="Masukkan Password"
+               class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-sm focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-500/30">
+      </div>
     </div>
-    <!-- /.row -->
-</section>
+
+    <div class="mt-7 flex flex-wrap items-center gap-3">
+      <button type="submit" name="submit"
+              class="rounded-xl bg-sky-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-sky-700">
+        Simpan
+      </button>
+      <?php echo anchor('guru', 'Kembali', array('class'=>'rounded-xl bg-slate-100 px-5 py-2.5 text-sm font-semibold text-slate-600 hover:bg-slate-200')); ?>
+    </div>
+
+  </form>
+</div>

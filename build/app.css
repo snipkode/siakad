@@ -1,0 +1,224 @@
+@import "tailwindcss";
+
+@source "../application";
+@source "../assets/custom";
+
+/* ============================================================
+   Kompatibilitas: konten yang di-echo controller (bawaan app)
+   Table/DataTables legacy + tombol .btn-* + warna teks
+   ============================================================ */
+.table { width: 100%; border-collapse: collapse; }
+.table th, .table td { padding: .5rem .75rem; border-bottom: 1px solid #e2e8f0; text-align: left; font-size: .875rem; }
+.table-bordered th, .table-bordered td { border: 1px solid #e2e8f0; }
+.table-striped tbody tr:nth-child(odd) { background-color: #f8fafc; }
+.table-hover tbody tr:hover { background-color: #eef2ff; }
+
+/* Kolom tabel tidak boleh wrap / pindah baris */
+th, td { white-space: nowrap; }
+
+/* ---------- DataTables (1.10.x) ---------- */
+.dataTable thead th { background-color: #f1f5f9; font-size: .75rem; text-transform: uppercase; letter-spacing: .05em; color: #475569; }
+.dataTables_wrapper { font-size: .875rem; }
+
+/* Select/input legacy (.form-control) — dipakai cmb_dinamis & form_dropdown di semua halaman */
+select.form-control, input.form-control {
+  width: 100%;
+  padding: .5rem .75rem;
+  border: 1px solid #cbd5e1;
+  border-radius: .625rem;
+  font-size: .875rem;
+  color: #1e293b;
+  background-color: #fff;
+  cursor: pointer;
+  transition: border-color .2s, box-shadow .2s;
+}
+select.form-control:focus, input.form-control:focus { outline: none; border-color: #0ea5e9; box-shadow: 0 0 0 3px rgba(14, 165, 233, .15); }
+select.form-control:hover:not(:focus), input.form-control:hover:not(:focus) { border-color: #94a3b8; }
+
+/* select kompak di dalam tabel jadwal (guru/ruangan/hari/jam) */
+.jadwal-cell .form-control, .jadwal-inline {
+  width: auto;
+  min-width: 110px;
+  max-width: 170px;
+  padding: .35rem .55rem;
+  font-size: .8rem;
+  border-radius: .5rem;
+}
+
+/* Bar pencarian DataTables dipindah ke header kartu (tidak ikut scroll tabel) */
+.dataTables_wrapper .dataTables_filter > label { font-size: 0; }
+.dataTables_wrapper .dataTables_filter { float: right; }
+.dt-searchbar { display: flex; align-items: center; margin-left: auto; order: 9; }
+.dt-searchbar .dataTables_filter { float: none; margin: 0; width: 100%; }
+.dt-searchbar .dataTables_filter label { position: relative; display: block; margin: 0; width: 100%; font-size: 0; }
+.dt-searchbar .dataTables_filter input {
+  width: 100%;
+  min-width: 200px;
+  padding: .5rem .75rem .5rem 2rem;
+  border: 1px solid #cbd5e1;
+  border-radius: .625rem;
+  font-size: .875rem;
+  background-color: #fff;
+  color: #1e293b;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='none' stroke='%2394a3b8' stroke-width='2' stroke-linecap='round'%3E%3Ccircle cx='7' cy='7' r='5'/%3E%3Cpath d='M11 11l3 3'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: .6rem center;
+  outline: none;
+  transition: border-color .2s, box-shadow .2s;
+}
+.dt-searchbar .dataTables_filter input:focus { border-color: #0ea5e9; box-shadow: 0 0 0 3px rgba(14, 165, 233, .15); }
+
+/* Empty state DataTables (tabel tanpa data / hasil filter kosong) */
+.dataTables_empty {
+  padding: 5.75rem 1rem 3rem !important;
+  text-align: center !important;
+  color: #94a3b8 !important;
+  font-size: .8rem !important;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+  font-weight: 600;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23cbd5e1' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M22 12h-6l-2 3h-4l-2-3H2'/%3E%3Cpath d='M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: center 2rem;
+  background-size: 2.6rem;
+}
+
+/* Taste (search) kiri & length (show entries) kanan — dalam satu baris */
+.dataTables_wrapper .dataTables_filter { float: right; }
+.dataTables_wrapper .dataTables_length { float: left; }
+.dataTables_wrapper .dataTables_filter,
+.dataTables_wrapper .dataTables_length { margin-bottom: .75rem; font-size: .8rem; color: #64748b; display: flex; align-items: center; gap: .4rem; }
+
+/* Lingkungan label teks bawaan DataTables ("Show ... entries", "Search:") */
+.dataTables_wrapper .dataTables_length label { display: flex; align-items: center; gap: .35rem; font-size: 0; white-space: nowrap; }
+.dataTables_wrapper .dataTables_length label::before { content: "Tampil"; font-size: .75rem; font-weight: 600; color: #475569; text-transform: uppercase; letter-spacing: .04em; }
+.dataTables_wrapper .dataTables_length label::after { content: "baris"; font-size: .75rem; color: #94a3b8; }
+.dataTables_wrapper .dataTables_length label select, .dataTables_wrapper .dataTables_length select { margin: 0 .25rem; padding: .25rem .75rem; border: 1px solid #cbd5e1; border-radius: .625rem; font-size: .8rem; background-color: #fff; color: #1e293b; cursor: pointer; }
+.dataTables_wrapper .dataTables_length label select:focus, .dataTables_wrapper .dataTables_length select:focus { outline: none; border-color: #0ea5e9; box-shadow: 0 0 0 3px rgba(14, 165, 233, .15); }
+
+.dataTables_wrapper .dataTables_filter label { position: relative; font-size: 0; }
+.dataTables_wrapper .dataTables_filter input { padding: .5rem .75rem .5rem 2rem; border: 1px solid #cbd5e1; border-radius: .625rem; font-size: .875rem; background-color: #fff;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='none' stroke='%2394a3b8' stroke-width='2' stroke-linecap='round'%3E%3Ccircle cx='7' cy='7' r='5'/%3E%3Cpath d='M11 11l3 3'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: .6rem center; }
+.dataTables_wrapper .dataTables_filter input:focus { outline: none; border-color: #0ea5e9; box-shadow: 0 0 0 3px rgba(14, 165, 233, .15); }
+.dataTables_wrapper .dataTables_filter input::placeholder { color: #94a3b8; }
+
+.dataTables_info { float: left; margin-top: .75rem; color: #94a3b8; font-size: .78rem; }
+
+/* ---- Pagination: pill compact, rata kanan di desktop, tengah & lebar di mobile ---- */
+.dataTables_paginate.paging_simple_numbers { float: right; margin-top: .75rem; display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: .3rem; }
+.dataTables_paginate .paginate_button { min-width: 2.25rem; height: 2.25rem; padding: .15rem .65rem; display: inline-flex; align-items: center; justify-content: center; border-radius: .625rem; font-size: .8rem; font-weight: 600; color: #475569; border: 1px solid #e2e8f0; background-color: #fff; cursor: pointer; text-decoration: none; transition: background-color .15s, color .15s, box-shadow .15s; }
+.dataTables_paginate .paginate_button:hover:not(.current):not(.disabled) { background-color: #f1f5f9; color: #1e293b; }
+.dataTables_paginate .paginate_button.current { background-color: #0284c7; border-color: #0284c7; color: #fff; box-shadow: 0 2px 6px rgba(2, 132, 199, .35); }
+.dataTables_paginate .paginate_button.disabled { opacity: .4; cursor: default; pointer-events: none; }
+
+/* Bersihkan float agar bungkusannya tetap rapi */
+.dataTables_wrapper::after { content: ""; display: table; clear: both; }
+
+/* ---------- Warna teks & ringkasan ---------- */
+.text-center { text-align: center; }
+.text-green { color: #16a34a; }
+.text-yellow { color: #ca8a04; }
+.text-red { color: #dc2626; }
+
+/* ---------- Tombol legacy .btn-* ---------- */
+.btn { display: inline-flex; align-items: center; gap: .3rem; padding: .375rem .9rem; border-radius: .625rem; font-size: .85rem; font-weight: 600; line-height: 1.25rem; cursor: pointer; text-align: center; text-decoration: none; }
+.btn-primary { background-color: #0284c7; color: #fff; }
+.btn-primary:hover { background-color: #0369a1; color: #fff; }
+.btn-success { background-color: #16a34a; color: #fff; }
+.btn-success:hover { background-color: #15803d; color: #fff; }
+.btn-danger { background-color: #dc2626; color: #fff; }
+.btn-danger:hover { background-color: #b91c1c; color: #fff; }
+.btn-info { background-color: #0891b2; color: #fff; }
+.btn-info:hover { background-color: #0e7490; color: #fff; }
+.btn-warning { background-color: #d97706; color: #fff; }
+.btn-warning:hover { background-color: #b45309; color: #fff; }
+.btn-lg { padding: .625rem 1.25rem; font-size: 1rem; }
+.btn-sm { padding: .25rem .6rem; font-size: .75rem; }
+.btn-xs { padding: .125rem .45rem; font-size: .7rem; }
+.btn-flat { border-radius: 0; }
+
+/* Safe-area untuk device dengan home indicator (iOS) */
+.pb-safe { padding-bottom: env(safe-area-inset-bottom); }
+
+/* Select dropdown dari helper cmb_dinamis() / form_dropdown bawaan */
+.form-control { width: 100%; padding: .625rem .875rem; font-size: .875rem; color: #1e293b; background-color: #fff; border: 1px solid #cbd5e1; border-radius: .75rem; }
+.form-control:focus { outline: none; border-color: #0ea5e9; box-shadow: 0 0 0 3px rgba(14, 165, 233, .15); }
+
+/* ============================================================
+   MOBILE FIRST: kompak di layar kecil, desktop tetap normal
+   ============================================================ */
+@media (max-width: 640px) {
+  .dataTables_wrapper { font-size: .8rem; display: flex; flex-direction: column; }
+
+  /* search di atas, length di bawah, tabel lalu info/pagination (order eksplisit) */
+  .dataTables_wrapper .dataTables_filter { order: 1; float: none; width: 100%; display: flex; margin-bottom: .5rem; }
+  .dataTables_wrapper .dataTables_filter label { display: block; width: 100%; }
+  .dataTables_wrapper .dataTables_filter input { width: 100%; padding: .6rem .75rem .6rem 2.1rem; border-radius: .8rem; }
+
+  .dataTables_wrapper .dataTables_length { order: 2; float: none; width: 100%; display: flex; margin-bottom: .75rem; }
+  .dataTables_wrapper .dataTables_length label { display: flex; justify-content: space-between; flex: 1; }
+  .dataTables_wrapper .dataTables_length select { flex: 1; max-width: 4.5rem; padding: .4rem .75rem; border-radius: .8rem; }
+
+  .dataTables_wrapper table.dataTable { order: 3; width: 100% !important; }
+  .dataTables_info { order: 4; float: none; width: 100%; margin: .7rem 0 .5rem; text-align: center; }
+  .dataTables_paginate.paging_simple_numbers { order: 5; float: none; width: 100%; justify-content: center; }
+  .dataTables_paginate .paginate_button { min-width: 2rem; height: 2rem; padding: .1rem .55rem; font-size: .78rem; }
+
+  /* tombol aksi header tabel: grid 2 kolom kompak di mobile */
+  .dt-actions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .5rem; width: 100%; }
+  .dt-actions > a { justify-content: center; width: 100%; }
+  .dt-actions > a:nth-child(3):nth-last-child(1) { grid-column: 1 / -1; }
+  .dt-actions > a:only-child { grid-column: 1 / -1; }
+
+  /* bar cari: satu baris penuh di bawah aksi, tetap di luar scroll tabel */
+  .dt-searchbar { width: 100%; margin-left: 0; }
+  .dt-searchbar .dataTables_filter input { min-width: 0; width: 100%; }
+
+  /* select jadwal lebih ramping di mobile */
+  .jadwal-cell .form-control, .jadwal-inline { min-width: 96px; max-width: 150px; }
+
+  /* jadwal: baris tabel TETAP sebagai tabel (bukan kartu), scroll horizontal saat layar kecil */
+  #table_daftarpelajaran .overflow-x-auto { overflow-x: auto; overflow-y: hidden; }
+  #table_daftarpelajaran table { display: table; width: 100%; min-width: 680px; }
+  #table_daftarpelajaran thead { display: table-header-group; }
+  #table_daftarpelajaran tbody { display: table-row-group; }
+  #table_daftarpelajaran tbody tr {
+    display: table-row;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    border-bottom: 1px solid #f1f5f9;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+  }
+  #table_daftarpelajaran tbody tr:hover { background: #f8fafc; }
+  #table_daftarpelajaran tbody tr:last-child { margin-bottom: 0; }
+  #table_daftarpelajaran tbody tr[colspan] td { display: table-cell; padding: 2rem 1rem !important; }
+  #table_daftarpelajaran td {
+    display: table-cell;
+    padding: .5rem .6rem !important;
+    border-bottom: 1px solid #f1f5f9 !important;
+  }
+  #table_daftarpelajaran td:last-child {
+    display: table-cell;
+    justify-content: normal;
+    margin: 0;
+    padding-top: .5rem !important;
+    border-top: 0 !important;
+  }
+  #table_daftarpelajaran td[data-label]::before { content: none; }
+  #table_daftarpelajaran .jadwal-cell .form-control,
+  #table_daftarpelajaran .jadwal-inline { width: auto; min-width: 110px; max-width: 195px; }
+
+  /* sel tabel lebih padat di mobile (semua halaman, termasuk tabel manual) */
+  th, td { padding: .4rem .5rem !important; font-size: .8rem !important; }
+
+  /* kolom yang disembunyikan di layar kecil (DataTables) */
+  .dt-hide-xs { display: none !important; }
+
+  /* scrollbar container tabel disembunyikan tapi tetap bisa di-scroll */
+  .overflow-x-auto, .dataTables_scrollBody { scrollbar-width: none; -ms-overflow-style: none; }
+  .overflow-x-auto::-webkit-scrollbar, .dataTables_scrollBody::-webkit-scrollbar { display: none; height: 0; }
+}

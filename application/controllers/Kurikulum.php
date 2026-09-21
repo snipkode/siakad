@@ -35,9 +35,9 @@
 		              'db' => 'id_kurikulum',
 		              'dt' => 'aksi',
 		              'formatter' => function($d) {
-		               		return anchor('kurikulum/detail/'.$d, '<i class="fa fa-eye"></i>', 'class="btn btn-xs bg-orange" data-placement="top" title="View Detail"').'
-                      '.anchor('kurikulum/edit/'.$d, '<i class="fa fa-edit"></i>', 'class="btn btn-xs btn-primary" data-placement="top" title="Edit"').'
-		               		'.anchor('kurikulum/delete/'.$d, '<i class="fa fa-times fa fa-white"></i>', 'class="btn btn-xs btn-danger" data-placement="top" title="Delete"');
+		               		return anchor('kurikulum/detail/'.$d, '<i class="fa fa-eye"></i>', 'class="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-amber-50 text-amber-600 hover:bg-amber-100" data-placement="top" title="View Detail"').'
+                      '.anchor('kurikulum/edit/'.$d, '<i class="fa fa-pencil"></i>', 'class="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-sky-50 text-sky-600 hover:bg-sky-100" data-placement="top" title="Edit"').'
+		               		'.anchor('kurikulum/delete/'.$d, '<i class="fa fa-trash"></i>', 'class="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-red-50 text-red-500 hover:bg-red-100" data-placement="top" title="Delete" onclick=\'return confirm("Yakin ingin menghapus data ini?")\'');
 		            }
 		        )
 		    );
@@ -124,7 +124,7 @@
 			    		<td>$no</td>
 			    		<td>$row->kd_mapel</td>
 			    		<td>$row->nama_mapel</td>
-			    		<td>".anchor('kurikulum/delete_detail/'.$row->id_kurikulum_detail.'/'.$row->id_kurikulum, '<i class="fa fa-times fa fa-white"></i>', 'class="btn btn-xs btn-danger" data-placement="top" title="Delete"')."</td>
+			    		<td>".anchor('kurikulum/delete_detail/'.$row->id_kurikulum_detail.'/'.$row->id_kurikulum, '<i class="fa fa-trash"></i>', 'class="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-red-50 text-red-500 hover:bg-red-100" data-placement="top" title="Delete" onclick=\'return confirm("Yakin ingin menghapus data ini?")\'')."</td>
 			    		
 			    	 </tr>";
 			    $no++;

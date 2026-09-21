@@ -1,89 +1,66 @@
 <!DOCTYPE html>
-<html>
+<html lang="id">
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>AdminLTE 2 | Log in</title>
-  <!-- Tell the browser to be responsive to screen width -->
-  <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
-  <!-- Bootstrap 3.3.7 -->
-  <link rel="stylesheet" href="<?php echo base_url(); ?>assets/bower_components/bootstrap/dist/css/bootstrap.min.css">
-  <!-- Font Awesome -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Login | SIAKAD</title>
+
+  <link rel="stylesheet" href="<?php echo base_url(); ?>assets/custom/css/app.css">
   <link rel="stylesheet" href="<?php echo base_url(); ?>assets/bower_components/font-awesome/css/font-awesome.min.css">
-  <!-- Ionicons -->
-  <link rel="stylesheet" href="<?php echo base_url(); ?>assets/bower_components/Ionicons/css/ionicons.min.css">
-  <!-- Theme style -->
-  <link rel="stylesheet" href="<?php echo base_url(); ?>assets/dist/css/AdminLTE.min.css">
-  <!-- iCheck -->
-  <link rel="stylesheet" href="<?php echo base_url(); ?>assets/plugins/iCheck/square/blue.css">
-
-  <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-  <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-  <!--[if lt IE 9]>
-  <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
-  <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-  <![endif]-->
-
-  <!-- Google Font -->
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
 </head>
-<body class="hold-transition login-page">
+<body class="flex min-h-screen items-center justify-center bg-gradient-to-br from-sky-800 via-slate-900 to-slate-900 p-4 font-sans">
 
-  <div class="login-box">
-      <div class="login-logo">
-        <a href="../../index2.html"><b>Admin</b>LTE</a>
-      </div>
-      <!-- /.login-logo -->
-      <div class="login-box-body">
-        <p class="login-box-msg">Sign in to start your session</p>
+  <div class="w-full max-w-md">
+    <!-- Brand -->
+    <div class="mb-8 text-center">
+      <div class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-sky-500 text-3xl font-bold text-white shadow-lg shadow-sky-500/30">S</div>
+      <h1 class="text-2xl font-bold text-white">Sistem Informasi Akademik</h1>
+      <p class="mt-1 text-sm text-slate-400">Silakan masuk untuk memulai sesi Anda</p>
+    </div>
 
-        <?php echo form_open('auth/check_login'); ?>
+    <!-- Card -->
+    <div class="rounded-2xl bg-white p-8 shadow-2xl">
 
-            <div class="form-group has-feedback">
-              <input type="text" name="username" class="form-control" placeholder="Username">
-              <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
-            </div>
+      <?php
+        if ($this->session->flashdata('gagal')) {
+          echo '<div class="mb-4 rounded-lg bg-red-50 px-4 py-3 text-sm text-red-700 border border-red-200">';
+          echo '<i class="fa fa-exclamation-circle"></i> '.$this->session->flashdata('gagal');
+          echo '</div>';
+        }
+      ?>
 
-            <div class="form-group has-feedback">
-              <input type="password" name="password" class="form-control" placeholder="Password">
-              <span class="glyphicon glyphicon-lock form-control-feedback"></span>
-            </div>
+      <?php echo form_open('auth/check_login'); ?>
 
-            <div class="row">
-              <div class="col-xs-8">
-                <div class="checkbox icheck">
-                  <label>
-                    <input type="checkbox"> Remember Me
-                  </label>
-                </div>
-              </div>
-              <!-- /.col -->
-              <div class="col-xs-4">
-                <button type="submit" name="submit" class="btn btn-primary btn-block btn-flat">Sign In</button>
-              </div>
-              <!-- /.col -->
-            </div>
-        </form>
+        <div class="mb-4">
+          <label for="username" class="mb-1.5 block text-sm font-medium text-slate-700">Username</label>
+          <div class="relative">
+            <i class="fa fa-user absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
+            <input type="text" name="username" id="username" placeholder="Masukkan username"
+                   class="w-full rounded-lg border border-slate-300 py-2.5 pl-9 pr-3 text-sm text-slate-800 placeholder:text-slate-400 focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-500/30">
+          </div>
+        </div>
 
-      </div>
-      <!-- /.login-box-body -->
+        <div class="mb-6">
+          <label for="password" class="mb-1.5 block text-sm font-medium text-slate-700">Password</label>
+          <div class="relative">
+            <i class="fa fa-lock absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
+            <input type="password" name="password" id="password" placeholder="Masukkan password"
+                   class="w-full rounded-lg border border-slate-300 py-2.5 pl-9 pr-3 text-sm text-slate-800 placeholder:text-slate-400 focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-500/30">
+          </div>
+        </div>
+
+        <button type="submit" name="submit" class="w-full rounded-lg bg-sky-600 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-sky-700 focus:outline-none focus:ring-2 focus:ring-sky-500/50">
+          Masuk
+        </button>
+
+      </form>
+    </div>
+
+    <p class="mt-6 text-center text-xs text-slate-500">
+      SIAKAD &copy; <?php echo date('Y'); ?> - Sistem Informasi Akademik
+    </p>
   </div>
-  <!-- /.login-box -->
 
-<!-- jQuery 3 -->
-<script src="<?php echo base_url(); ?>assets/bower_components/jquery/dist/jquery.min.js"></script>
-<!-- Bootstrap 3.3.7 -->
-<script src="<?php echo base_url(); ?>assets/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
-<!-- iCheck -->
-<script src="<?php echo base_url(); ?>assets/plugins/iCheck/icheck.min.js"></script>
-<script>
-  $(function () {
-    $('input').iCheck({
-      checkboxClass: 'icheckbox_square-blue',
-      radioClass: 'iradio_square-blue',
-      increaseArea: '20%' // optional
-    });
-  });
-</script>
 </body>
 </html>

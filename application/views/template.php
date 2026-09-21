@@ -1,463 +1,353 @@
-
 <!DOCTYPE html>
-<html>
+<html lang="id">
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>AdminLTE 2 | Dashboard</title>
-  <!-- Tell the browser to be responsive to screen width -->
-  <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
-  <!-- Bootstrap 3.3.7 -->
-  <link rel="stylesheet" href="<?php echo base_url(); ?>assets/bower_components/bootstrap/dist/css/bootstrap.min.css">
-  <!-- Font Awesome -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title><?php echo isset($page_title) ? $page_title : 'Dashboard'; ?> | SIAKAD</title>
+
+  <link rel="stylesheet" href="<?php echo base_url(); ?>assets/custom/css/app.css">
   <link rel="stylesheet" href="<?php echo base_url(); ?>assets/bower_components/font-awesome/css/font-awesome.min.css">
-  <!-- Ionicons -->
-  <link rel="stylesheet" href="<?php echo base_url(); ?>assets/bower_components/Ionicons/css/ionicons.min.css">
-  <!-- jvectormap -->
-  <link rel="stylesheet" href="<?php echo base_url(); ?>assets/bower_components/jvectormap/jquery-jvectormap.css">
-  <!-- Theme style -->
-  <link rel="stylesheet" href="<?php echo base_url(); ?>assets/dist/css/AdminLTE.min.css">
-  <!-- AdminLTE Skins. Choose a skin from the css/skins
-       folder instead of downloading all of them to reduce the load. -->
-  <link rel="stylesheet" href="<?php echo base_url(); ?>assets/dist/css/skins/_all-skins.min.css">
 
   <script src="<?php echo base_url(); ?>assets/bower_components/jquery/dist/jquery.min.js"></script>
-
-  <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-  <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-  <!--[if lt IE 9]>
-  <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
-  <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-  <![endif]-->
-
-  <!-- Google Font -->
-  <link rel="stylesheet"
-        href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
 </head>
-<body class="hold-transition skin-blue sidebar-mini">
-<div class="wrapper">
+<body class="min-h-screen bg-slate-100 text-slate-800 antialiased">
 
-  <header class="main-header">
+<?php
+  $nama_lengkap = (string) $this->session->userdata('nama_lengkap');
+  $id_level_user = (int) $this->session->userdata('id_level_user');
+  $active_segment = strtolower((string)$this->uri->segment(1));
+  if ($active_segment === '' || $active_segment === 'dashboard' || $active_segment === 'index' || $active_segment === 'auth') {
+      $active_segment = 'tampilan_utama';
+  }
+
+  function _short_label($n) {
+      $n = preg_replace('/^(Data|Form) /', '', (string)$n);
+      $map = array('Mata Pelajaran' => 'Mapel', 'Peserta Didik' => 'Peserta', 'Pengguna Sistem' => 'Pengguna',
+                   'Tahun Akademik' => 'Tahun', 'Laporan Nilai' => 'Laporan', 'Tingkatan Kelas' => 'Tingkatan',
+                   'Ruangan Kelas' => 'Ruangan', 'Jadwal Pelajaran' => 'Jadwal');
+      return isset($map[$n]) ? $map[$n] : $n;
+  }
+  function _seg($link) { return strtolower(trim(explode('/', (string)$link)[0])); }
+
+  $menus = array();
+  if ($id_level_user > 0) {
+      $sql_menu = "SELECT * FROM `tabel_menu` WHERE id IN(SELECT id_menu FROM tbl_user_rule WHERE id_level_user = $id_level_user) AND is_main_menu = 0";
+      $main_menu = $this->db->query($sql_menu)->result();
+      foreach ($main_menu as $main) {
+          $m = array('id' => $main->id, 'nama' => $main->nama_menu, 'link' => $main->link, 'icon' => $main->icon, 'subs' => array());
+          if ($main->link === '#') {
+              $subs = $this->db->get_where('tabel_menu', array('is_main_menu' => $main->id));
+              foreach ($subs->result() as $s) { $m['subs'][] = array('nama' => $s->nama_menu, 'link' => $s->link, 'icon' => $s->icon); }
+          } elseif ($main->link !== '') {
+              $m['subs'] = $m['subs']; /* tidak punya submenu */
+          }
+          $menus[] = $m;
+      }
+  }
+
+  $page_title = 'Dashboard';
+  foreach ($menus as $m) {
+      if (_seg($m['link']) === $active_segment) { $page_title = $m['nama']; break; }
+      foreach ($m['subs'] as $s) {
+          if (_seg($s['link']) === $active_segment) { $page_title = $s['nama']; break 2; }
+      }
+  }
+
+  $tab_home = array('id' => 0, 'nama' => 'Beranda', 'link' => 'tampilan_utama', 'icon' => 'fa fa-home', 'subs' => array());
+  $tab_main = array_slice($menus, 0, 3);
+  $tab_more = array_slice($menus, 3);
+  $tabs = array_merge(array($tab_home), $tab_main);
+  $need_more_tab = count($tab_more) > 0;
+  if ($need_more_tab || count($tabs) >= 5) {
+      $tab_cols = 'grid-cols-5';
+  } elseif (count($tabs) === 4) {
+      $tab_cols = 'grid-cols-4';
+  } elseif (count($tabs) === 3) {
+      $tab_cols = 'grid-cols-3';
+  } else {
+      $tab_cols = 'grid-cols-2';
+  }
+?>
+
+<div class="lg:flex lg:h-screen lg:overflow-hidden">
+
+  <!-- ================================================================
+       DESKTOP SIDEBAR
+  ================================================================= -->
+  <aside class="hidden w-72 shrink-0 flex-col border-r border-slate-200 bg-white lg:flex">
 
     <!-- Logo -->
-    <a href="#" class="logo">
-      <!-- mini logo for sidebar mini 50x50 pixels -->
-      <span class="logo-mini"><b>A</b>LT</span>
-      <!-- logo for regular state and mobile devices -->
-      <span class="logo-lg"><b>Admin</b>LTE</span>
+    <a href="<?php echo site_url('tampilan_utama'); ?>" class="flex h-16 shrink-0 items-center gap-2.5 border-b border-slate-100 px-5">
+      <div class="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-sky-500 to-indigo-600 font-bold text-white shadow-md shadow-sky-500/30">S</div>
+      <div>
+        <p class="text-sm font-bold leading-4 text-slate-800">SIAKAD</p>
+        <p class="text-[11px] text-slate-400">Sistem Informasi Akademik</p>
+      </div>
     </a>
 
-    <!-- Header Navbar: style can be found in header.less -->
-    <nav class="navbar navbar-static-top">
-      <!-- Sidebar toggle button-->
-      <a href="#" class="sidebar-toggle" data-toggle="push-menu" role="button">
-        <span class="sr-only">Toggle navigation</span>
-      </a>
-      <!-- Navbar Right Menu -->
-      <div class="navbar-custom-menu">
-        <ul class="nav navbar-nav">
-
-          <li class="dropdown user user-menu">
-            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-              <img src="<?php echo base_url(); ?>assets/dist/img/user2-160x160.jpg" class="user-image" alt="User Image">
-              <span class="hidden-xs"><?php echo $this->session->userdata('nama_lengkap'); ?></span>
-            </a>
-            <ul class="dropdown-menu">
-              <!-- User image -->
-              <li class="user-header">
-                <img src="<?php echo base_url(); ?>assets/dist/img/user2-160x160.jpg" class="img-circle" alt="User Image">
-
-                <p>
-                  <?php echo $this->session->userdata('nama_lengkap'); ?>
-                  <small>Member since Nov. 2012</small>
-                </p>
-              </li>
-              <!-- Menu Body -->
-              <!-- <li class="user-body">
-                <div class="row">
-                  <div class="col-xs-4 text-center">
-                    <a href="#">Followers</a>
-                  </div>
-                  <div class="col-xs-4 text-center">
-                    <a href="#">Sales</a>
-                  </div>
-                  <div class="col-xs-4 text-center">
-                    <a href="#">Friends</a>
-                  </div>
-                </div>
-              </li> -->
-              <!-- Menu Footer-->
-              <li class="user-footer">
-                <!--<div class="pull-left">
-                  <a href="#" class="btn btn-default btn-flat">Profile</a>
-                </div> -->
-                <div class="text-center">
-
-                  <?php
-                    echo anchor('auth/logout', '<button class="btn btn-danger btn-flat">Sign Out</button>');
-                  ?>
- 
-                </div>
-              </li>
-            </ul>
-          </li>
-          <!-- Control Sidebar Toggle Button -->
-          <li>
-            <a href="#" data-toggle="control-sidebar"><i class="fa fa-gears"></i></a>
-          </li>
-
-        </ul>
+    <!-- User panel -->
+    <div class="flex items-center gap-3 border-b border-slate-100 px-5 py-4">
+      <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-sky-500 to-indigo-600 font-bold text-white">
+        <?php echo strtoupper(substr($nama_lengkap, 0, 1)); ?>
       </div>
-
-    </nav>
-  </header>
-  <!-- Left side column. contains the logo and sidebar -->
-  <aside class="main-sidebar">
-    <!-- sidebar: style can be found in sidebar.less -->
-    <section class="sidebar">
-      <!-- Sidebar user panel -->
-      <div class="user-panel">
-        <div class="pull-left image">
-          <img src="<?php echo base_url(); ?>assets/dist/img/user2-160x160.jpg" class="img-circle" alt="User Image">
-        </div>
-        <div class="pull-left info">
-          <p><?php echo $this->session->userdata('nama_lengkap'); ?></p>
-          <a href="#"><i class="fa fa-circle text-success"></i> Online</a>
-        </div>
+      <div class="min-w-0">
+        <p class="truncate text-sm font-semibold text-slate-800"><?php echo $nama_lengkap; ?></p>
+        <p class="flex items-center gap-1.5 text-[11px] text-emerald-600"><span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span> Online</p>
       </div>
-      <!-- search form -->
-      <form action="#" method="get" class="sidebar-form">
-        <div class="input-group">
-          <input type="text" name="q" class="form-control" placeholder="Search...">
-          <span class="input-group-btn">
-                <button type="submit" name="search" id="search-btn" class="btn btn-flat">
-                  <i class="fa fa-search"></i>
-                </button>
-              </span>
-        </div>
-      </form>
-      <!-- /.search form -->
-      <!-- sidebar menu: : style can be found in sidebar.less -->
-      <ul class="sidebar-menu" data-widget="tree">
-        <li class="header">MAIN NAVIGATION</li>
+    </div>
 
-        <!-- menu dinamis -->
-
-        <?php
-        $id_level_user = $this->session->userdata('id_level_user');
-
-        $sql_menu = "SELECT * FROM `tabel_menu` WHERE id IN(SELECT id_menu FROM tbl_user_rule WHERE id_level_user = $id_level_user) AND is_main_menu = 0";
-
-        $main_menu  = $this->db->query($sql_menu)->result();
-
-        foreach ($main_menu as $main) {
-            // check apakah memiliki submenu?
-            $submenu  = $this->db->get_where('tabel_menu', array('is_main_menu' => $main->id));
-
-            if ($submenu->num_rows()>0) {
-              //submenu true
-              echo "<li class='treeview'>".anchor($main->link,"<i class='".$main->icon."'></i>".
-                   "<span>".$main->nama_menu."</span>".
-                   '<span class="pull-right-container">
-                      <i class="fa fa-angle-left pull-right"></i>
-                   </span>');
-
-              //submenunya disini
-              echo "<ul class='treeview-menu'>";
-
-              foreach ($submenu->result() as $sub) {
-                echo "<li>" .anchor($sub->link,"<i class='".$sub->icon."'></i>"."<span>".$sub->nama_menu."</span>"). "</li>";
-              }
-
-              echo "</ul></li>";
-            } else {
-              //submenu false dan main menu true
-              echo "<li>" .anchor($main->link,"<i class='".$main->icon."'></i>"."<span>".$main->nama_menu."</span>"). "</li>";
-            }  
-        }
-
-        // tanpa pembatasan hak akses menu
-        // $main_menu  = $this->db->get_where('tabel_menu', array('is_main_menu' => 0))->result();
-
-        // foreach ($main_menu as $main) {
-        //     // check apakah memiliki submenu?
-        //     $submenu  = $this->db->get_where('tabel_menu', array('is_main_menu' => $main->id));
-
-        //     if ($submenu->num_rows()>0) {
-        //       //submenu true
-        //       echo "<li class='treeview'>".anchor($main->link,"<i class='".$main->icon."'></i>".
-        //            "<span>".$main->nama_menu."</span>".
-        //            '<span class="pull-right-container">
-        //               <i class="fa fa-angle-left pull-right"></i>
-        //            </span>');
-
-        //       //submenunya disini
-        //       echo "<ul class='treeview-menu'>";
-
-        //       foreach ($submenu->result() as $sub) {
-        //         echo "<li>" .anchor($sub->link,"<i class='".$sub->icon."'></i>"."<span>".$sub->nama_menu."</span>"). "</li>";
-        //       }
-
-        //       echo "</ul></li>";
-        //     } else {
-        //       //submenu false dan main menu true
-        //       echo "<li>" .anchor($main->link,"<i class='".$main->icon."'></i>"."<span>".$main->nama_menu."</span>"). "</li>";
-        //     }  
-        // }
-
+    <!-- Nav -->
+    <nav class="flex-1 overflow-y-auto px-3 py-4">
+      <p class="px-3 pb-2 text-[11px] font-semibold uppercase tracking-wider text-slate-400">Menu Utama</p>
+      <ul class="space-y-1">
+        <?php foreach ($menus as $m):
+            $active_main = (count($m['subs']) > 0) ? false : (_seg($m['link']) === $active_segment);
         ?>
-        <!-- end menu dinamis -->
-
+          <?php if (count($m['subs']) > 0): ?>
+            <?php
+              $parent_open = false;
+              foreach ($m['subs'] as $s) { if (_seg($s['link']) === $active_segment) $parent_open = true; }
+            ?>
+            <li>
+              <button type="button" data-sub="#desk-sub-<?php echo $m['id']; ?>" class="nav-sub-toggle flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-100 hover:text-slate-900">
+                <i class="<?php echo $m['icon']; ?> w-5 text-center text-slate-400"></i>
+                <span class="flex-1 text-left"><?php echo $m['nama']; ?></span>
+                <i class="fa fa-angle-down text-xs text-slate-400 transition-transform duration-200 <?php echo $parent_open ? 'rotate-180' : ''; ?>"></i>
+              </button>
+              <ul id="desk-sub-<?php echo $m['id']; ?>" class="ml-4 mt-1 space-y-1 border-l border-slate-200 pl-3 <?php echo $parent_open ? '' : 'hidden'; ?>">
+                <?php foreach ($m['subs'] as $s): ?>
+                  <li>
+                    <a href="<?php echo site_url($s['link']); ?>" class="flex items-center gap-3 rounded-xl px-3 py-2 text-sm text-slate-500 hover:bg-slate-100 hover:text-slate-900 <?php echo _seg($s['link']) === $active_segment ? 'bg-sky-50 text-sky-700 font-semibold' : ''; ?>">
+                      <i class="<?php echo $s['icon']; ?> w-4 text-center text-[12px] text-slate-400"></i>
+                      <span><?php echo $s['nama']; ?></span>
+                    </a>
+                  </li>
+                <?php endforeach; ?>
+              </ul>
+            </li>
+          <?php else: ?>
+            <li>
+              <a href="<?php echo site_url($m['link']); ?>" class="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-100 hover:text-slate-900 <?php echo $active_main ? 'bg-sky-50 text-sky-700 font-semibold' : ''; ?>">
+                <i class="<?php echo $m['icon']; ?> w-5 text-center text-slate-400"></i>
+                <span><?php echo $m['nama']; ?></span>
+              </a>
+            </li>
+          <?php endif; ?>
+        <?php endforeach; ?>
       </ul>
-    </section>
-    <!-- /.sidebar -->
+    </nav>
+
+    <div class="border-t border-slate-100 p-3">
+      <?php echo anchor('auth/logout', '<i class="fa fa-sign-out"></i>  Keluar', array('class'=>'flex w-full items-center gap-2 rounded-xl bg-slate-100 px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-red-50 hover:text-red-600')); ?>
+    </div>
   </aside>
 
-  <!-- Content Wrapper. Contains page content -->
-  <div class="content-wrapper">
-    <!-- Content Header (Page header) -->
-    <section class="content-header">
-      <h1>
-        Dashboard
-        <small>Version 2.0</small>
-      </h1>
-      <ol class="breadcrumb">
-        <li><a href="#"><i class="fa fa-home"></i> Home</a></li>
-        <li class="active">Dashboard</li>
-      </ol>
-    </section>
+  <!-- ================================================================
+       CONTENT COLUMN
+  ================================================================= -->
+  <div class="flex min-h-screen flex-1 flex-col lg:min-h-0">
+
+    <!-- Topbar -->
+    <header class="flex h-12 shrink-0 items-center justify-between border-b border-slate-200 bg-white/90 px-3.5 backdrop-blur lg:h-16 lg:px-6">
+      <div class="flex items-center gap-2 lg:gap-3">
+        <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-sky-500 to-indigo-600 text-sm font-bold text-white lg:hidden">S</div>
+        <div>
+          <h1 class="text-sm font-bold leading-5 text-slate-800 lg:text-lg"><?php echo $page_title; ?></h1>
+          <p class="hidden text-[11px] text-slate-500 sm:block">Sistem Informasi Akademik</p>
+        </div>
+      </div>
+
+      <div class="relative">
+        <button id="user-menu-btn" class="flex items-center gap-2 rounded-full py-1 pl-1 pr-2 hover:bg-slate-100">
+          <div class="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-sky-500 to-indigo-600 text-sm font-bold text-white">
+            <?php echo strtoupper(substr($nama_lengkap, 0, 1)); ?>
+          </div>
+          <span class="hidden text-sm font-medium text-slate-700 md:block"><?php echo $nama_lengkap; ?></span>
+          <i class="fa fa-angle-down text-xs text-slate-400"></i>
+        </button>
+        <div id="user-menu" class="absolute right-0 top-full z-40 mt-1 hidden w-52 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-xl shadow-slate-900/10">
+          <div class="flex items-center gap-3 border-b border-slate-100 bg-slate-50 px-4 py-3">
+            <div class="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-sky-500 to-indigo-600 text-sm font-bold text-white">
+              <?php echo strtoupper(substr($nama_lengkap, 0, 1)); ?>
+            </div>
+            <div class="min-w-0">
+              <p class="truncate text-sm font-semibold text-slate-800"><?php echo $nama_lengkap; ?></p>
+              <p class="text-[11px] text-slate-500">Level: <?php echo $id_level_user; ?></p>
+            </div>
+          </div>
+          <div class="p-2">
+            <?php echo anchor('auth/logout', '<i class="fa fa-sign-out"></i>  Keluar', array('class'=>'flex w-full items-center gap-2 rounded-xl px-3 py-2 text-sm text-slate-700 hover:bg-red-50 hover:text-red-600')); ?>
+          </div>
+        </div>
+      </div>
+    </header>
 
     <!-- Main content -->
-    <?php echo $contents; ?>
-    <!-- /.content -->
+    <main class="flex-1 overflow-y-auto p-2.5 pb-[5.5rem] lg:p-6 lg:pb-6">
+      <?php echo $contents; ?>
+    </main>
 
+    <footer class="hidden shrink-0 border-t border-slate-200 bg-white px-4 py-3 text-center text-[11px] text-slate-400 lg:block">
+      SIAKAD - Sistem Informasi Akademik &copy; <?php echo date('Y'); ?>
+    </footer>
   </div>
-  <!-- /.content-wrapper -->
-
-  <footer class="main-footer">
-    <div class="pull-right hidden-xs">
-      <b>Version</b> 2.4.0
-    </div>
-    <strong>Copyright &copy; 2014-2016 <a href="https://adminlte.io">Almsaeed Studio</a>.</strong> All rights
-    reserved.
-  </footer>
-
-  <!-- Control Sidebar -->
-  <aside class="control-sidebar control-sidebar-dark">
-    <!-- Create the tabs -->
-    <ul class="nav nav-tabs nav-justified control-sidebar-tabs">
-      <li><a href="#control-sidebar-home-tab" data-toggle="tab"><i class="fa fa-home"></i></a></li>
-      <li><a href="#control-sidebar-settings-tab" data-toggle="tab"><i class="fa fa-gears"></i></a></li>
-    </ul>
-    <!-- Tab panes -->
-    <div class="tab-content">
-      <!-- Home tab content -->
-      <div class="tab-pane" id="control-sidebar-home-tab">
-        <h3 class="control-sidebar-heading">Recent Activity</h3>
-        <ul class="control-sidebar-menu">
-          <li>
-            <a href="javascript:void(0)">
-              <i class="menu-icon fa fa-birthday-cake bg-red"></i>
-
-              <div class="menu-info">
-                <h4 class="control-sidebar-subheading">Langdon's Birthday</h4>
-
-                <p>Will be 23 on April 24th</p>
-              </div>
-            </a>
-          </li>
-          <li>
-            <a href="javascript:void(0)">
-              <i class="menu-icon fa fa-user bg-yellow"></i>
-
-              <div class="menu-info">
-                <h4 class="control-sidebar-subheading">Frodo Updated His Profile</h4>
-
-                <p>New phone +1(800)555-1234</p>
-              </div>
-            </a>
-          </li>
-          <li>
-            <a href="javascript:void(0)">
-              <i class="menu-icon fa fa-envelope-o bg-light-blue"></i>
-
-              <div class="menu-info">
-                <h4 class="control-sidebar-subheading">Nora Joined Mailing List</h4>
-
-                <p>nora@example.com</p>
-              </div>
-            </a>
-          </li>
-          <li>
-            <a href="javascript:void(0)">
-              <i class="menu-icon fa fa-file-code-o bg-green"></i>
-
-              <div class="menu-info">
-                <h4 class="control-sidebar-subheading">Cron Job 254 Executed</h4>
-
-                <p>Execution time 5 seconds</p>
-              </div>
-            </a>
-          </li>
-        </ul>
-        <!-- /.control-sidebar-menu -->
-
-        <h3 class="control-sidebar-heading">Tasks Progress</h3>
-        <ul class="control-sidebar-menu">
-          <li>
-            <a href="javascript:void(0)">
-              <h4 class="control-sidebar-subheading">
-                Custom Template Design
-                <span class="label label-danger pull-right">70%</span>
-              </h4>
-
-              <div class="progress progress-xxs">
-                <div class="progress-bar progress-bar-danger" style="width: 70%"></div>
-              </div>
-            </a>
-          </li>
-          <li>
-            <a href="javascript:void(0)">
-              <h4 class="control-sidebar-subheading">
-                Update Resume
-                <span class="label label-success pull-right">95%</span>
-              </h4>
-
-              <div class="progress progress-xxs">
-                <div class="progress-bar progress-bar-success" style="width: 95%"></div>
-              </div>
-            </a>
-          </li>
-          <li>
-            <a href="javascript:void(0)">
-              <h4 class="control-sidebar-subheading">
-                Laravel Integration
-                <span class="label label-warning pull-right">50%</span>
-              </h4>
-
-              <div class="progress progress-xxs">
-                <div class="progress-bar progress-bar-warning" style="width: 50%"></div>
-              </div>
-            </a>
-          </li>
-          <li>
-            <a href="javascript:void(0)">
-              <h4 class="control-sidebar-subheading">
-                Back End Framework
-                <span class="label label-primary pull-right">68%</span>
-              </h4>
-
-              <div class="progress progress-xxs">
-                <div class="progress-bar progress-bar-primary" style="width: 68%"></div>
-              </div>
-            </a>
-          </li>
-        </ul>
-        <!-- /.control-sidebar-menu -->
-
-      </div>
-      <!-- /.tab-pane -->
-
-      <!-- Settings tab content -->
-      <div class="tab-pane" id="control-sidebar-settings-tab">
-        <form method="post">
-          <h3 class="control-sidebar-heading">General Settings</h3>
-
-          <div class="form-group">
-            <label class="control-sidebar-subheading">
-              Report panel usage
-              <input type="checkbox" class="pull-right" checked>
-            </label>
-
-            <p>
-              Some information about this general settings option
-            </p>
-          </div>
-          <!-- /.form-group -->
-
-          <div class="form-group">
-            <label class="control-sidebar-subheading">
-              Allow mail redirect
-              <input type="checkbox" class="pull-right" checked>
-            </label>
-
-            <p>
-              Other sets of options are available
-            </p>
-          </div>
-          <!-- /.form-group -->
-
-          <div class="form-group">
-            <label class="control-sidebar-subheading">
-              Expose author name in posts
-              <input type="checkbox" class="pull-right" checked>
-            </label>
-
-            <p>
-              Allow the user to show his name in blog posts
-            </p>
-          </div>
-          <!-- /.form-group -->
-
-          <h3 class="control-sidebar-heading">Chat Settings</h3>
-
-          <div class="form-group">
-            <label class="control-sidebar-subheading">
-              Show me as online
-              <input type="checkbox" class="pull-right" checked>
-            </label>
-          </div>
-          <!-- /.form-group -->
-
-          <div class="form-group">
-            <label class="control-sidebar-subheading">
-              Turn off notifications
-              <input type="checkbox" class="pull-right">
-            </label>
-          </div>
-          <!-- /.form-group -->
-
-          <div class="form-group">
-            <label class="control-sidebar-subheading">
-              Delete chat history
-              <a href="javascript:void(0)" class="text-red pull-right"><i class="fa fa-trash-o"></i></a>
-            </label>
-          </div>
-          <!-- /.form-group -->
-        </form>
-      </div>
-      <!-- /.tab-pane -->
-    </div>
-  </aside>
-  <!-- /.control-sidebar -->
-  <!-- Add the sidebar's background. This div must be placed
-       immediately after the control sidebar -->
-  <div class="control-sidebar-bg"></div>
-
 </div>
-<!-- ./wrapper -->
 
-<!-- jQuery 3 -->
-<!-- <script src="<?php echo base_url(); ?>assets/bower_components/jquery/dist/jquery.min.js"></script> -->
-<!-- Bootstrap 3.3.7 -->
-<script src="<?php echo base_url(); ?>assets/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
-<!-- FastClick -->
-<script src="<?php echo base_url(); ?>assets/bower_components/fastclick/lib/fastclick.js"></script>
-<!-- AdminLTE App -->
-<script src="<?php echo base_url(); ?>assets/dist/js/adminlte.min.js"></script>
-<!-- Sparkline -->
-<script src="<?php echo base_url(); ?>assets/bower_components/jquery-sparkline/dist/jquery.sparkline.min.js"></script>
-<!-- jvectormap  -->
-<script src="<?php echo base_url(); ?>assets/plugins/jvectormap/jquery-jvectormap-1.2.2.min.js"></script>
-<script src="<?php echo base_url(); ?>assets/plugins/jvectormap/jquery-jvectormap-world-mill-en.js"></script>
-<!-- SlimScroll -->
-<script src="<?php echo base_url(); ?>assets/bower_components/jquery-slimscroll/jquery.slimscroll.min.js"></script>
-<!-- ChartJS -->
-<script src="<?php echo base_url(); ?>assets/bower_components/Chart.js/Chart.js"></script>
-<!-- AdminLTE dashboard demo (This is only for demo purposes) -->
-<script src="<?php echo base_url(); ?>assets/dist/js/pages/dashboard2.js"></script>
-<!-- AdminLTE for demo purposes -->
-<script src="<?php echo base_url(); ?>assets/dist/js/demo.js"></script>
+<!-- ================================================================
+     MOBILE BOTTOM TAB BAR  (iOS style)
+================================================================= -->
+<nav class="fixed inset-x-0 bottom-0 z-40 border-t border-slate-200 bg-white/90 backdrop-blur-xl pb-safe lg:hidden">
+  <div class="grid <?php echo $tab_cols; ?>">
+    <?php foreach ($tabs as $t):
+        $t_active = _seg($t['link']) === $active_segment;
+        $has_subs = count($t['subs']) > 0;
+        $label = ($t['id'] === 0) ? 'Beranda' : _short_label($t['nama']);
+        if ($has_subs):
+    ?>
+      <button type="button" onclick="openSheet('sheet-tab-<?php echo $t['id']; ?>')"
+              class="flex flex-col items-center gap-0 py-1.5 text-slate-500">
+        <i class="<?php echo $t['icon']; ?> text-[17px]"></i>
+        <span class="text-[9px] font-medium"><?php echo $label; ?></span>
+      </button>
+    <?php else: ?>
+      <a href="<?php echo site_url($t['link']); ?>"
+         class="flex flex-col items-center gap-0 py-1.5 <?php echo $t_active ? 'text-sky-600' : 'text-slate-500'; ?>">
+        <i class="<?php echo $t['icon']; ?> text-[17px]"></i>
+        <span class="text-[9px] font-medium"><?php echo $label; ?></span>
+        <?php echo $t_active ? '<span class="h-1 w-1 rounded-full bg-sky-600"></span>' : '<span class="h-1"></span>'; ?>
+      </a>
+    <?php endif; ?>
+    <?php endforeach; ?>
+
+    <?php if ($need_more_tab): ?>
+      <button type="button" onclick="openSheet('sheet-more')"
+              class="flex flex-col items-center gap-0 py-1.5 text-slate-500">
+        <i class="fa fa-ellipsis-h text-[17px]"></i>
+        <span class="text-[9px] font-medium">Lainnya</span>
+      </button>
+    <?php endif; ?>
+  </div>
+</nav>
+
+<!-- ================================================================
+     MOBILE SHEETS (bottom drawer)
+================================================================= -->
+<div id="sheet-backdrop" onclick="closeSheet()" class="fixed inset-0 z-50 hidden bg-black/40">
+</div>
+
+<?php foreach ($tabs as $t): if (count($t['subs']) > 0): ?>
+  <div id="sheet-tab-<?php echo $t['id']; ?>" class="mobile-sheet fixed inset-x-0 bottom-0 z-50 translate-y-full transition-transform duration-300 lg:hidden">
+    <div class="mx-auto mb-0.5 mt-1.5 h-1 w-10 rounded-full bg-slate-300"></div>
+    <div class="max-h-[78vh] overflow-y-auto rounded-t-3xl bg-white px-2 pb-3 shadow-2xl">
+      <p class="px-4 pb-1.5 pt-2 text-sm font-bold text-slate-700"><?php echo $t['nama']; ?></p>
+      <?php if (isset($t['link']) && $t['link'] !== '#'): ?>
+        <a href="<?php echo site_url($t['link']); ?>" onclick="closeSheet()" class="flex items-center gap-3.5 rounded-xl px-4 py-2.5 text-slate-700 active:bg-slate-100">
+          <i class="<?php echo $t['icon']; ?> w-6 text-center text-sky-500"></i>
+          <span class="text-sm font-medium"><?php echo $t['nama']; ?></span>
+          <i class="fa fa-chevron-right ml-auto text-xs text-slate-300"></i>
+        </a>
+        <div class="mx-4 my-1 h-px bg-slate-100"></div>
+      <?php endif; ?>
+      <?php foreach ($t['subs'] as $s): ?>
+        <a href="<?php echo site_url($s['link']); ?>" onclick="closeSheet()" class="flex items-center gap-3.5 rounded-xl px-4 py-2.5 text-slate-700 active:bg-slate-100">
+          <i class="<?php echo $s['icon']; ?> w-6 text-center text-sky-500"></i>
+          <span class="text-sm font-medium"><?php echo $s['nama']; ?></span>
+          <i class="fa fa-chevron-right ml-auto text-xs text-slate-300"></i>
+        </a>
+      <?php endforeach; ?>
+    </div>
+  </div>
+<?php endif; endforeach; ?>
+
+<?php if ($need_more_tab): ?>
+  <div id="sheet-more" class="mobile-sheet fixed inset-x-0 bottom-0 z-50 translate-y-full transition-transform duration-300 lg:hidden">
+    <div class="mx-auto mb-0.5 mt-1.5 h-1 w-10 rounded-full bg-slate-300"></div>
+    <div class="max-h-[78vh] overflow-y-auto rounded-t-3xl bg-white px-2 pb-3 shadow-2xl">
+      <p class="px-4 pb-1.5 pt-2 text-sm font-bold text-slate-700">Menu Lainnya</p>
+      <?php foreach ($tab_more as $t): ?>
+        <?php if (count($t['subs']) > 0): ?>
+          <p class="px-4 pb-0.5 pt-1.5 text-[10px] font-semibold uppercase tracking-wider text-slate-400">
+            <i class="<?php echo $t['icon']; ?> mr-1.5"></i><?php echo $t['nama']; ?>
+          </p>
+          <?php foreach ($t['subs'] as $s): ?>
+            <a href="<?php echo site_url($s['link']); ?>" onclick="closeSheet()" class="flex items-center gap-3.5 rounded-xl px-4 py-2.5 text-slate-700 active:bg-slate-100">
+              <i class="<?php echo $s['icon']; ?> w-6 text-center text-slate-400"></i>
+              <span class="text-sm font-medium"><?php echo $s['nama']; ?></span>
+              <i class="fa fa-chevron-right ml-auto text-xs text-slate-300"></i>
+            </a>
+          <?php endforeach; ?>
+        <?php else: ?>
+          <a href="<?php echo site_url($t['link']); ?>" onclick="closeSheet()" class="flex items-center gap-3.5 rounded-xl px-4 py-2.5 text-slate-700 active:bg-slate-100">
+            <i class="<?php echo $t['icon']; ?> w-6 text-center text-slate-400"></i>
+            <span class="text-sm font-medium"><?php echo $t['nama']; ?></span>
+            <i class="fa fa-chevron-right ml-auto text-xs text-slate-300"></i>
+          </a>
+        <?php endif; ?>
+      <?php endforeach; ?>
+    </div>
+  </div>
+<?php endif; ?>
+
+<script>
+(function () {
+  var menuBtn = document.getElementById('user-menu-btn');
+  var menuEl  = document.getElementById('user-menu');
+  menuBtn.addEventListener('click', function (e) {
+    e.stopPropagation();
+    menuEl.classList.toggle('hidden');
+  });
+  document.addEventListener('click', function () { menuEl.classList.add('hidden'); });
+
+  document.querySelectorAll('.nav-sub-toggle').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var ul = document.querySelector(btn.getAttribute('data-sub'));
+      ul.classList.toggle('hidden');
+      btn.querySelector('.fa-angle-down').classList.toggle('rotate-180');
+    });
+  });
+
+  window.openSheet = function (id) {
+    var s = document.getElementById(id);
+    s.classList.remove('hidden');
+    requestAnimationFrame(function () { s.classList.remove('translate-y-full'); });
+    document.getElementById('sheet-backdrop').classList.remove('hidden');
+    document.body.classList.add('overflow-hidden');
+  };
+  window.closeSheet = function () {
+    document.querySelectorAll('.mobile-sheet').forEach(function (s) {
+      s.classList.add('translate-y-full');
+      setTimeout(function () { s.classList.add('hidden'); }, 300);
+    });
+    document.getElementById('sheet-backdrop').classList.add('hidden');
+    document.body.classList.remove('overflow-hidden');
+  };
+})();
+
+/* Default DataTables: teks Indonesia + kosongkan label "Search:" */
+$.extend($.fn.dataTable.defaults, {
+  "language": {
+    "search": "",
+    "info": "_START_ sampai _END_ dari _TOTAL_ entri",
+    "infoEmpty": "0 entri",
+    "infoFiltered": "(difilter dari _MAX_ entri)",
+    "zeroRecords": "Tidak ada data yang cocok dengan pencarian",
+    "emptyTable": "Belum ada data",
+    "paginate": { "first": "&laquo;", "last": "&raquo;", "next": "&rsaquo;", "previous": "&lsaquo;" }
+  }
+});
+
+/* Geser input cari keluar dari area scroll tabel ke header kartu */
+$(document).on('init.dt', function (e, settings) {
+  var $t = $(settings.nTable);
+  var $card = $t.closest('.rounded-2xl');
+  if (!$card.length) return;
+  var $wrap = $t.closest('.dataTables_wrapper');
+  var $flt = $wrap.find('> div.dataTables_filter').first();
+  if (!$flt.length || $card.find('.dt-searchbar').length) return;
+  $('<' + 'div class="dt-searchbar"></' + 'div>').append($flt).appendTo($card.children().first());
+});
+</script>
 
 </body>
 </html>
