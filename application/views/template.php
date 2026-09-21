@@ -86,56 +86,58 @@
       </div>
     </a>
 
-    <!-- User panel -->
-    <div class="flex items-center gap-3 border-b border-slate-100 px-5 py-4">
-      <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-sky-500 to-indigo-600 font-bold text-white">
-        <?php echo strtoupper(substr($nama_lengkap, 0, 1)); ?>
-      </div>
-      <div class="min-w-0">
-        <p class="truncate text-sm font-semibold text-slate-800"><?php echo $nama_lengkap; ?></p>
-        <p class="flex items-center gap-1.5 text-[11px] text-emerald-600"><span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span> Online</p>
-      </div>
-    </div>
-
     <!-- Nav -->
     <nav class="flex-1 overflow-y-auto px-3 py-4">
-      <p class="px-3 pb-2 text-[11px] font-semibold uppercase tracking-wider text-slate-400">Menu Utama</p>
+      <?php
+        $sidebar_group = array(
+          'Data Induk'  => array('siswa', 'guru', 'siswa/siswa_aktif', 'walikelas'),
+          'Akademik'    => array('jadwal', 'nilai', 'laporan_nilai'),
+          'Data Master' => array('mapel', 'ruangan', 'tingkatan', 'jurusan', 'tahunakademik', 'kelas', 'kurikulum'),
+          'Pengaturan'  => array('user', 'menu', 'pembayaran'),
+        );
+
+        // kelompokkan menu utama berdasarkan link
+        $nav_groups = array();
+        $master = null;
+        foreach ($menus as $m) {
+          if ($m['link'] === '#') { $master = $m; continue; }
+          $grp = 'Lainnya';
+          foreach ($sidebar_group as $label => $links) {
+            if (in_array($m['link'], $links, true)) { $grp = $label; break; }
+          }
+          $nav_groups[$grp][] = $m;
+        }
+        // submenu induk (mis. Data Master) dirender flat pada kelompoknya
+        if ($master !== null && count($master['subs']) > 0) {
+          $nav_groups['Data Master'] = $master['subs'];
+        }
+        $nav_order = array_merge(array('Utama'), array_keys($sidebar_group), array('Lainnya'));
+      ?>
+
+      <p class="px-3 pb-2 text-[11px] font-semibold uppercase tracking-wider text-slate-400">Utama</p>
       <ul class="space-y-1">
-        <?php foreach ($menus as $m):
-            $active_main = (count($m['subs']) > 0) ? false : (_seg($m['link']) === $active_segment);
-        ?>
-          <?php if (count($m['subs']) > 0): ?>
-            <?php
-              $parent_open = false;
-              foreach ($m['subs'] as $s) { if (_seg($s['link']) === $active_segment) $parent_open = true; }
-            ?>
+        <li>
+          <a href="<?php echo site_url('tampilan_utama'); ?>" class="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-100 hover:text-slate-900 <?php echo $active_segment === 'tampilan_utama' ? 'bg-sky-50 text-sky-700 font-semibold' : ''; ?>">
+            <i class="fa fa-home w-5 text-center text-slate-400"></i>
+            <span>Beranda</span>
+          </a>
+        </li>
+      </ul>
+
+      <?php foreach ($nav_order as $grp):
+            if (empty($nav_groups[$grp])) continue; ?>
+        <p class="mt-4 px-3 pb-2 text-[11px] font-semibold uppercase tracking-wider text-slate-400"><?php echo $grp; ?></p>
+        <ul class="space-y-1">
+          <?php foreach ($nav_groups[$grp] as $item): ?>
             <li>
-              <button type="button" data-sub="#desk-sub-<?php echo $m['id']; ?>" class="nav-sub-toggle flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-100 hover:text-slate-900">
-                <i class="<?php echo $m['icon']; ?> w-5 text-center text-slate-400"></i>
-                <span class="flex-1 text-left"><?php echo $m['nama']; ?></span>
-                <i class="fa fa-angle-down text-xs text-slate-400 transition-transform duration-200 <?php echo $parent_open ? 'rotate-180' : ''; ?>"></i>
-              </button>
-              <ul id="desk-sub-<?php echo $m['id']; ?>" class="ml-4 mt-1 space-y-1 border-l border-slate-200 pl-3 <?php echo $parent_open ? '' : 'hidden'; ?>">
-                <?php foreach ($m['subs'] as $s): ?>
-                  <li>
-                    <a href="<?php echo site_url($s['link']); ?>" class="flex items-center gap-3 rounded-xl px-3 py-2 text-sm text-slate-500 hover:bg-slate-100 hover:text-slate-900 <?php echo _seg($s['link']) === $active_segment ? 'bg-sky-50 text-sky-700 font-semibold' : ''; ?>">
-                      <i class="<?php echo $s['icon']; ?> w-4 text-center text-[12px] text-slate-400"></i>
-                      <span><?php echo $s['nama']; ?></span>
-                    </a>
-                  </li>
-                <?php endforeach; ?>
-              </ul>
-            </li>
-          <?php else: ?>
-            <li>
-              <a href="<?php echo site_url($m['link']); ?>" class="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-100 hover:text-slate-900 <?php echo $active_main ? 'bg-sky-50 text-sky-700 font-semibold' : ''; ?>">
-                <i class="<?php echo $m['icon']; ?> w-5 text-center text-slate-400"></i>
-                <span><?php echo $m['nama']; ?></span>
+              <a href="<?php echo site_url($item['link']); ?>" class="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-100 hover:text-slate-900 <?php echo _seg($item['link']) === $active_segment ? 'bg-sky-50 text-sky-700 font-semibold' : ''; ?>">
+                <i class="<?php echo $item['icon']; ?> w-5 text-center text-slate-400"></i>
+                <span><?php echo $item['nama']; ?></span>
               </a>
             </li>
-          <?php endif; ?>
-        <?php endforeach; ?>
-      </ul>
+          <?php endforeach; ?>
+        </ul>
+      <?php endforeach; ?>
     </nav>
 
     <div class="border-t border-slate-100 p-3">

@@ -23,8 +23,8 @@
 		$ci    = get_instance();
 		$ci->db->where('is_aktif', 'Y');
 		$tahun = $ci->db->get('tbl_tahun_akademik')->row_array();
-		//$tahun = $ci->db->get_where('tbl_tahun_akademik', array('is_aktif' => 'Y'))->row_array(); >> menggunaka get_where
-		return $tahun[$field];
+		// apabila belum ada tahun akademik aktif, kembalikan string kosong
+		return (is_array($tahun) && isset($tahun[$field])) ? $tahun[$field] : '';
 	}
 
 	function checkAksesModule()

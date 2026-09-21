@@ -610,7 +610,7 @@ CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW 
 --
 DROP TABLE IF EXISTS `view_walikelas`;
 
-CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `view_walikelas`  AS  select `tg`.`nama_guru` AS `nama_guru`,`tk`.`nama_kelas` AS `nama_kelas`,`tw`.`id_walikelas` AS `id_walikelas`,`tw`.`id_tahun_akademik` AS `id_tahun_akademik`,`tj`.`nama_jurusan` AS `nama_jurusan`,`ttk`.`nama_tingkatan` AS `nama_tingkatan`,`tta`.`tahun_akademik` AS `tahun_akademik` from (((((`tbl_walikelas` `tw` join `tbl_kelas` `tk`) join `tbl_guru` `tg`) join `tbl_jurusan` `tj`) join `tbl_tingkatan_kelas` `ttk`) join `tbl_tahun_akademik` `tta`) where ((`tw`.`kd_kelas` = `tk`.`kd_kelas`) and (`tw`.`id_guru` = `tg`.`id_guru`) and (`tk`.`kd_jurusan` = `tj`.`kd_jurusan`) and (`tk`.`kd_tingkatan` = `ttk`.`kd_tingkatan`) and (`tw`.`id_tahun_akademik` = `tta`.`id_tahun_akademik`)) ;
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `view_walikelas`  AS  select ifnull(`tg`.`nama_guru`, 'Default') AS `nama_guru`,`tk`.`nama_kelas` AS `nama_kelas`,`tw`.`id_walikelas` AS `id_walikelas`,`tw`.`id_tahun_akademik` AS `id_tahun_akademik`,`tj`.`nama_jurusan` AS `nama_jurusan`,`ttk`.`nama_tingkatan` AS `nama_tingkatan`,`tta`.`tahun_akademik` AS `tahun_akademik` from (((((`tbl_walikelas` `tw` join `tbl_kelas` `tk`) left join `tbl_guru` `tg` on ((`tw`.`id_guru` = `tg`.`id_guru`))) join `tbl_jurusan` `tj`) join `tbl_tingkatan_kelas` `ttk`) join `tbl_tahun_akademik` `tta`) where ((`tw`.`kd_kelas` = `tk`.`kd_kelas`) and (`tk`.`kd_jurusan` = `tj`.`kd_jurusan`) and (`tk`.`kd_tingkatan` = `ttk`.`kd_tingkatan`) and (`tw`.`id_tahun_akademik` = `tta`.`id_tahun_akademik`)) ;
 
 --
 -- Indexes for dumped tables

@@ -50,8 +50,9 @@
 				'host' => $this->db->hostname
 		    );
 
-			// mengambil nilai tahun akdemik berdasarakn tahun akademik aktif menggunkan helper get_tahun_akademik()
-		    $where = "tahun_akademik='".get_tahun_akademik('tahun_akademik')."'";
+			// mengambil nilai tahun akademik berdasarkan tahun akademik aktif menggunakan helper get_tahun_akademik()
+		    $tahunAK = get_tahun_akademik('tahun_akademik');
+		    $where = $tahunAK !== '' ? "tahun_akademik='".$tahunAK."'" : '';
 
 		    // karena memasukan parameter $where maka meggunakan ssp::complex bukan yang simple lagi
 		    echo json_encode(

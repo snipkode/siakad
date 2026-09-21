@@ -57,7 +57,16 @@
 
 		function logout()
 		{
+			// @since CodeIgniter 3 menggunakan session native PHP,
+			// sess_destroy() tidak menghapus cookie sesi dari browser.
 			$this->session->sess_destroy();
+			delete_cookie(config_item('sess_cookie_name'));
+
+			// Cegah halaman yang sudah login muncul lagi lewat tombol Back/Refresh
+			$this->output->set_header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
+			$this->output->set_header('Cache-Control: post-check=0, pre-check=0', FALSE);
+			$this->output->set_header('Pragma: no-cache');
+
 			redirect('auth');
 		}
 
