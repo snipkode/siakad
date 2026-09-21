@@ -21,29 +21,56 @@
 				$kelas = null;
 			}
 
-			$siswa 		= "SELECT ts.nim, ts.nama
-							  FROM tbl_riwayat_kelas AS trk, tbl_siswa AS ts 
-							  WHERE trk.nim = ts.nim";
+			$siswa 		= "SELECT ts.nim, ts.nama, ts.gender, trk.kd_kelas, tk.nama_kelas,
+							  (SELECT COUNT(DISTINCT tj2.kd_mapel) FROM tbl_nilai tn2 JOIN tbl_jadwal tj2 ON tj2.id_jadwal = tn2.id_jadwal WHERE tn2.nim = ts.nim) AS jml_mapel,
+							  (SELECT ROUND(AVG(tn3.nilai), 1) FROM tbl_nilai tn3 WHERE tn3.nim = ts.nim) AS rata_nilai
+							  FROM tbl_siswa AS ts
+							  JOIN tbl_riwayat_kelas AS trk ON trk.nim = ts.nim
+							  LEFT JOIN tbl_kelas AS tk ON tk.kd_kelas = trk.kd_kelas
+							  WHERE 1=1";
 			if ($is_guru) {
 				$siswa .= " AND trk.kd_kelas = ".$this->db->escape($kd_kelas);
 			}
-			$siswa .= " AND trk.id_tahun_akademik = ".$tahun;
+			$siswa .= " AND trk.id_tahun_akademik = ".$tahun." ORDER BY tk.nama_kelas, ts.nama";
 
-			$data['kelas'] 	= ($kelas) ? $this->db->query($kelas)->row_array() : null;
-			$data['siswa'] 	= $this->db->query($siswa);
-			$data['is_guru'] 	= $is_guru;
+			// jumlah mata pelajaran (distinct) yang harus dinilai per kelas pada tahun akademik aktif
+			$jml_mapel_kelas = array();
+			$qc = $this->db->query("SELECT tj.kd_kelas, COUNT(DISTINCT tj.kd_mapel) AS c
+									FROM tbl_jadwal tj
+									WHERE tj.id_tahun_akademik = ".$tahun." AND TRIM(tj.semester) <> ''
+									GROUP BY tj.kd_kelas");
+			foreach ($qc->result() as $r) {
+				$jml_mapel_kelas[$r->kd_kelas] = (int) $r->c;
+			}
+
+			$data['kelas'] 			= ($kelas) ? $this->db->query($kelas)->row_array() : null;
+			$data['siswa'] 			= $this->db->query($siswa);
+			$data['jml_mapel_kelas'] 	= $jml_mapel_kelas;
+			$data['is_guru'] 		= $is_guru;
 			$this->template->load('template', 'laporan_nilai/list_siswa', $data);
 		}
 
 
 		function nilai_semester(){
-       		// blok query info siswa
-	       $nim = $this->uri->segment(3);
-	       $sqlSiswa = "SELECT ts.nama as nama_siswa, ts.nim, tj.nama_jurusan, tk.nama_kelas, tk.kd_tingkatan
-	                    FROM tbl_riwayat_kelas as trk, tbl_siswa as ts, tbl_kelas as tk, tbl_jurusan as tj
-	                    WHERE ts.nim=trk.nim and tk.kd_kelas = ts.kd_kelas and tk.kd_jurusan = tj.kd_jurusan 
-	                    and trk.nim='$nim' and trk.id_tahun_akademik=".get_tahun_akademik('id_tahun_akademik');
+       		// blok query info siswa (kelas = riwayat pada tahun akademik aktif)
+	       $nim 		= $this->uri->segment(3);
+	       $tahun 		= (int) get_tahun_akademik('id_tahun_akademik');
+	       $semester 	= (string) get_tahun_akademik('semester');
+
+	       $rk 			= $this->db->query("SELECT kd_kelas FROM tbl_riwayat_kelas
+										WHERE nim = ".$this->db->escape($nim)." AND id_tahun_akademik = ".$tahun)->row_array();
+	       $kd_kelas 	= !empty($rk['kd_kelas']) ? $rk['kd_kelas'] : null;
+
+	       $sqlSiswa = "SELECT ts.nama AS nama_siswa, ts.nim, tju.nama_jurusan, tk.nama_kelas, tk.kd_tingkatan
+	                    FROM tbl_riwayat_kelas AS trk
+	                    JOIN tbl_siswa AS ts ON ts.nim = trk.nim
+	                    JOIN tbl_kelas AS tk ON tk.kd_kelas = trk.kd_kelas
+	                    LEFT JOIN tbl_jurusan AS tju ON tju.kd_jurusan = tk.kd_jurusan
+	                    WHERE trk.nim = ".$this->db->escape($nim)." AND trk.id_tahun_akademik = ".$tahun;
 	       $siswa = $this->db->query($sqlSiswa)->row_array();
+	       if (empty($siswa)) {
+	       	$siswa = array('nim' => $nim, 'nama_siswa' => '-', 'nama_kelas' => '-', 'nama_jurusan' => '-', 'kd_tingkatan' => null);
+	       }
 	       
 	        $this->load->library('CFPDF');
 	        $pdf = new FPDF('P','mm','A4');
@@ -78,6 +105,7 @@
 	        
 	        
 	        // BLOCK NILAI SISWA ------------------------
+	        $pdf->SetAutoPageBreak(true, 15);
 	        $pdf->Cell(1,10,'',0,1);
 	        $pdf->Cell(8,5,'NO',1,0,'L');
 	        $pdf->Cell(50,5,'Mata Pelajaran',1,0,'L');
@@ -88,20 +116,26 @@
 	        $pdf->Cell(20,5,'Rata Kelas',1,0,'L');
 	        $pdf->Cell(37,5,'Deskripsi Kemampuan',1,1,'L');
 	        $pdf->SetFont('Arial','',9);
-	        $sqlMapel = "SELECT tj.id_jadwal,tm.nama_mapel 
-	                    FROM tbl_jadwal as tj,tbl_mapel as tm
-	                    WHERE tj.kd_mapel=tm.kd_mapel and tj.kd_tingkatan=7";
-	        $mapel = $this->db->query($sqlMapel)->result();
+
+	        // daftar mapel UNIK milik kelas siswa pada semester aktif (bukan semua sesi jadwal)
+	        $sqlMapel = "SELECT tm.nama_mapel, MIN(tj.id_jadwal) AS id_jadwal
+	                    FROM tbl_jadwal AS tj
+	                    JOIN tbl_mapel AS tm ON tm.kd_mapel = tj.kd_mapel
+	                    WHERE tj.kd_kelas = ".$this->db->escape($kd_kelas)." AND tj.semester = ".$this->db->escape($semester)."
+	                    GROUP BY tj.kd_mapel, tm.nama_mapel
+	                    ORDER BY tm.nama_mapel";
+	        $mapel = ($kd_kelas !== null) ? $this->db->query($sqlMapel)->result() : array();
 	        $no=1;
 	        foreach ($mapel as $m){
 	            $pdf->Cell(8,5,$no,1,0,'L');
 	            $pdf->Cell(50,5,$m->nama_mapel,1,0,'L');
 	            $pdf->Cell(10,5,75,1,0,'L');
 	            $nilai = check_nilai($siswa['nim'], $m->id_jadwal);
-	            $pdf->Cell(12,5,  $nilai,1,0,'L');
-	            $pdf->Cell(30,5,  Terbilang($nilai),1,0,'L');
-	            $pdf->Cell(23,5,  $this->ketercapaian_kopetensi($nilai),1,0,'L');
-	            $pdf->Cell(20,5,  ceil((float)$this->rata_rata_nilai($m->id_jadwal)),1,0,'L');
+	            $rata  = $this->rata_rata_nilai($m->id_jadwal);
+	            $pdf->Cell(12,5,  ($nilai === 0 || $nilai === '') ? '-' : $nilai,1,0,'L');
+	            $pdf->Cell(30,5,  $this->huruf_mutu($nilai),1,0,'L');
+	            $pdf->Cell(23,5,  ($nilai === 0 || $nilai === '') ? '-' : $this->ketercapaian_kopetensi($nilai),1,0,'L');
+	            $pdf->Cell(20,5,  ($rata === null || (float)$rata == 0) ? '-' : ceil((float)$rata),1,0,'L');
 	            $pdf->Cell(37,5,'Deskripsi Kemampuan',1,1,'L');
 	            $no++;
 	    }
@@ -130,11 +164,21 @@
 	        $pdf->Output();
 	    }
     
-	    function rata_rata_nilai($id_jadwal){
-	        $sql   =  "SELECT sum(nilai)/count(nim) as nilai_rata_rata FROM tbl_nilai WHERE id_jadwal=$id_jadwal";
-	        $nilai = $this->db->query($sql)->row_array();
-	        return $nilai['nilai_rata_rata'];
-	    }
+function rata_rata_nilai($id_jadwal){
+        $sql   =  "SELECT sum(nilai)/count(nim) as nilai_rata_rata FROM tbl_nilai WHERE id_jadwal=".(int)$id_jadwal;
+        $nilai = $this->db->query($sql)->row_array();
+        return ($nilai && $nilai['nilai_rata_rata'] !== null) ? $nilai['nilai_rata_rata'] : null;
+    }
+    
+    function huruf_mutu($nilai){
+        if ($nilai === 0 || $nilai === '' || $nilai === null) return '-';
+        $n = (int) $nilai;
+        if ($n >= 90) return 'A';
+        if ($n >= 80) return 'B';
+        if ($n >= 70) return 'C';
+        if ($n >= 60) return 'D';
+        return 'E';
+    }
 	    
 	    
 	    function ketercapaian_kopetensi($nilai){
