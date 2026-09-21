@@ -12,12 +12,15 @@
 		
 		function index()
 		{
+			$this->output->set_header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
+			$this->output->set_header('Cache-Control: post-check=0, pre-check=0', FALSE);
+			$this->output->set_header('Pragma: no-cache');
 			$this->load->view('auth/login');
 		}
 
 		function check_login()
 		{
-			if (isset($_POST['submit'])) {
+			if ($this->input->server('REQUEST_METHOD') === 'POST') {
 				
 				$username	= $this->input->post('username');
 				$password 	= $this->input->post('password');
@@ -48,6 +51,7 @@
 					redirect('tampilan_utama');
 
 				} else {
+					$this->session->set_flashdata('gagal', 'Username atau password salah.');
 					redirect('auth');
 				}
 			} else {
