@@ -1,64 +1,56 @@
 <!-- Kartu statistik desktop -->
 <div class="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
 
-  <div class="group flex flex-col overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-slate-200 transition hover:-translate-y-0.5 hover:shadow-lg hover:ring-sky-200">
-    <div class="flex flex-1 items-center justify-between gap-2 px-4 pb-3 pt-4 sm:px-5">
+  <div class="group flex flex-col overflow-hidden rounded-2xl shadow-sm ring-1 ring-slate-200 transition hover:-translate-y-0.5 hover:shadow-lg hover:ring-sky-200">
+    <?php echo anchor('user', '<div class="flex flex-1 items-center justify-between gap-2 bg-gradient-to-br from-sky-500 to-indigo-600 px-4 pb-3 pt-4 sm:px-5">
       <div>
-        <p class="text-xs font-semibold text-slate-500">Pengguna Sistem</p>
-        <p class="mt-1 text-3xl font-extrabold leading-8 text-slate-900"><?php echo $user['hasil']; ?></p>
+        <p class="text-xs font-semibold text-sky-100">Pengguna Sistem</p>
+        <p class="mt-1 text-3xl font-extrabold leading-8 text-white">'.$user['hasil'].'</p>
       </div>
-      <span class="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-sky-50 text-sky-600 transition group-hover:bg-sky-100">
-        <i class="fa fa-id-badge text-lg"></i>
-      </span>
+      <span class="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-white/15 text-white"><i class="fa fa-id-badge text-lg"></i></span>
     </div>
-    <a href="<?php echo site_url('user') ?>" class="flex items-center justify-center gap-1.5 bg-sky-600 px-4 py-2.5 text-xs font-semibold text-white transition hover:bg-sky-700">
+    <div class="flex items-center justify-center gap-1.5 bg-white px-4 py-2.5 text-xs font-semibold text-sky-700 transition group-hover:bg-sky-50">
       Kelola Pengguna <i class="fa fa-arrow-right text-[10px]"></i>
-    </a>
+    </div>', array('class' => 'block')); ?>
   </div>
 
-  <div class="group flex flex-col overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-slate-200 transition hover:-translate-y-0.5 hover:shadow-lg hover:ring-red-200">
-    <div class="flex flex-1 items-center justify-between gap-2 px-4 pb-3 pt-4 sm:px-5">
+  <div class="group flex flex-col overflow-hidden rounded-2xl shadow-sm ring-1 ring-slate-200 transition hover:-translate-y-0.5 hover:shadow-lg hover:ring-red-200">
+    <?php echo anchor('siswa', '<div class="flex flex-1 items-center justify-between gap-2 bg-gradient-to-br from-red-500 to-rose-600 px-4 pb-3 pt-4 sm:px-5">
       <div>
-        <p class="text-xs font-semibold text-slate-500">Siswa</p>
-        <p class="mt-1 text-3xl font-extrabold leading-8 text-slate-900"><?php echo $siswa['hasil']; ?></p>
+        <p class="text-xs font-semibold text-red-100">Siswa</p>
+        <p class="mt-1 text-3xl font-extrabold leading-8 text-white">'.$siswa['hasil'].'</p>
       </div>
-      <span class="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-red-50 text-red-600 transition group-hover:bg-red-100">
-        <i class="fa fa-users text-lg"></i>
-      </span>
+      <span class="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-white/15 text-white"><i class="fa fa-users text-lg"></i></span>
     </div>
-    <a href="<?php echo site_url('siswa') ?>" class="flex items-center justify-center gap-1.5 bg-red-600 px-4 py-2.5 text-xs font-semibold text-white transition hover:bg-red-700">
+    <div class="flex items-center justify-center gap-1.5 bg-white px-4 py-2.5 text-xs font-semibold text-red-600 transition group-hover:bg-red-50">
       Kelola Siswa <i class="fa fa-arrow-right text-[10px]"></i>
-    </a>
+    </div>', array('class' => 'block')); ?>
   </div>
 
-  <div class="group flex flex-col overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-slate-200 transition hover:-translate-y-0.5 hover:shadow-lg hover:ring-emerald-200">
-    <div class="flex flex-1 items-center justify-between gap-2 px-4 pb-3 pt-4 sm:px-5">
+  <div class="group flex flex-col overflow-hidden rounded-2xl shadow-sm ring-1 ring-slate-200 transition hover:-translate-y-0.5 hover:shadow-lg hover:ring-emerald-200">
+    <?php echo anchor('guru', '<div class="flex flex-1 items-center justify-between gap-2 bg-gradient-to-br from-emerald-500 to-teal-600 px-4 pb-3 pt-4 sm:px-5">
       <div>
-        <p class="text-xs font-semibold text-slate-500">Guru</p>
-        <p class="mt-1 text-3xl font-extrabold leading-8 text-slate-900"><?php echo $guru['hasil']; ?></p>
+        <p class="text-xs font-semibold text-emerald-100">Guru</p>
+        <p class="mt-1 text-3xl font-extrabold leading-8 text-white">'.$guru['hasil'].'</p>
       </div>
-      <span class="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-emerald-50 text-emerald-600 transition group-hover:bg-emerald-100">
-        <i class="fa fa-user-circle text-lg"></i>
-      </span>
+      <span class="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-white/15 text-white"><i class="fa fa-user-circle text-lg"></i></span>
     </div>
-    <a href="<?php echo site_url('guru') ?>" class="flex items-center justify-center gap-1.5 bg-emerald-600 px-4 py-2.5 text-xs font-semibold text-white transition hover:bg-emerald-700">
+    <div class="flex items-center justify-center gap-1.5 bg-white px-4 py-2.5 text-xs font-semibold text-emerald-600 transition group-hover:bg-emerald-50">
       Kelola Guru <i class="fa fa-arrow-right text-[10px]"></i>
-    </a>
+    </div>', array('class' => 'block')); ?>
   </div>
 
-  <div class="group flex flex-col overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-slate-200 transition hover:-translate-y-0.5 hover:shadow-lg hover:ring-amber-200">
-    <div class="flex flex-1 items-center justify-between gap-2 px-4 pb-3 pt-4 sm:px-5">
+  <div class="group flex flex-col overflow-hidden rounded-2xl shadow-sm ring-1 ring-slate-200 transition hover:-translate-y-0.5 hover:shadow-lg hover:ring-amber-200">
+    <?php echo anchor('ruangan', '<div class="flex flex-1 items-center justify-between gap-2 bg-gradient-to-br from-amber-400 to-orange-500 px-4 pb-3 pt-4 sm:px-5">
       <div>
-        <p class="text-xs font-semibold text-slate-500">Ruangan Kelas</p>
-        <p class="mt-1 text-3xl font-extrabold leading-8 text-slate-900"><?php echo $ruangan['hasil']; ?></p>
+        <p class="text-xs font-semibold text-amber-100">Ruangan Kelas</p>
+        <p class="mt-1 text-3xl font-extrabold leading-8 text-white">'.$ruangan['hasil'].'</p>
       </div>
-      <span class="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-amber-50 text-amber-600 transition group-hover:bg-amber-100">
-        <i class="fa fa-building text-lg"></i>
-      </span>
+      <span class="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-white/15 text-white"><i class="fa fa-building text-lg"></i></span>
     </div>
-    <a href="<?php echo site_url('ruangan') ?>" class="flex items-center justify-center gap-1.5 bg-amber-600 px-4 py-2.5 text-xs font-semibold text-white transition hover:bg-amber-700">
+    <div class="flex items-center justify-center gap-1.5 bg-white px-4 py-2.5 text-xs font-semibold text-amber-600 transition group-hover:bg-amber-50">
       Kelola Ruangan <i class="fa fa-arrow-right text-[10px]"></i>
-    </a>
+    </div>', array('class' => 'block')); ?>
   </div>
 
 </div>

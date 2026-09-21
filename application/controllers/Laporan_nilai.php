@@ -51,9 +51,9 @@
 	        $pdf->SetFont('Arial','B',12);
 	        $pdf->Cell(190,5,'NAMA SEKOLAH',1,1,'C');
 	        $pdf->SetFont('Arial','B',14);
-	        $pdf->Cell(190,7,'PASANTREN IMAM SYAFiI',1,1,'C');
+	        $pdf->Cell(190,7,$this->config->item('sekolah_nama'),1,1,'C');
 	        $pdf->SetFont('Arial','',8);
-	        $pdf->Cell(190,5,'Jl Pesantren Km 2, Sibreh, Aceh Besar, Telpon : 0651-23462',1,1,'C');
+	        $pdf->Cell(190,5,$this->config->item('sekolah_alamat'),1,1,'C');
 	         
 	        $pdf->Cell(190,5,'',0,1);
 	        

@@ -98,13 +98,16 @@
 		// loadDataSiswa() -> untuk menampilkan data siswa nim dan nama sesuai kode_kelas yang dipilih di filter, lalu ditampilkan ke div id = kelas yang bedada di view/siswa_aktif -> terletak di controller Siswa
 		function combobox_kelas()
 		{
-			$jurusan = $_GET['kd_jurusan'];
-			echo "<select id='cbkelas' name='kelas' class='form-control' onChange='loadSiswa()'>";
+			$jurusan = $this->input->get('kd_jurusan');
+			echo "<select id='cbkelas' name='kelas' onChange='loadSiswa()' class='block w-full rounded-lg border border-slate-300 bg-white px-2.5 py-2 text-sm text-slate-700 shadow-sm focus:border-sky-400 focus:outline-none focus:ring-2 focus:ring-sky-100'>";
 
 			$this->db->where('kd_jurusan', $jurusan);
 			$kelas = $this->db->get('tbl_kelas');
+			if ($kelas->num_rows() == 0) {
+				echo "<option value=''>-- Pilih kelas --</option>";
+			}
 			foreach ($kelas->result() as $row) {
-				echo "<option value='$row->kd_kelas' onChange='loadSiswa()'>$row->nama_kelas</option>";
+				echo "<option value='$row->kd_kelas'>$row->nama_kelas</option>";
 			}
 
 			echo "</select>";

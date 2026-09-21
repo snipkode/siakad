@@ -25,8 +25,8 @@
 				array('db' => 'foto', 
 					  'dt' => 'foto',
 					  'formatter' => function($d) {
-					  		if (empty($d)) {
-					  			return "<span class='inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-slate-200 text-slate-400'><i class='fa fa-user'></i></span>";
+					  		if (empty($d) || preg_match('/^user-siluet/i', $d)) {
+					  			return "<img class='h-10 w-10 shrink-0 rounded-full border border-slate-200 object-cover shadow-sm' loading='lazy' src='".base_url()."uploads/default-avatar.svg'>";
 					  		}
 					  		return "<img class='h-10 w-10 shrink-0 rounded-full border border-slate-200 object-cover shadow-sm' loading='lazy' src='".base_url()."uploads/".$d."'>";
 					  }
@@ -69,6 +69,11 @@
 		{
 			if (isset($_POST['submit'])) {
 				$uploadFoto = $this->upload_foto_siswa();
+				if ($uploadFoto === false) {
+					$data['upload_error'] = $this->upload->display_errors();
+					$this->template->load('template', 'siswa/add', $data);
+					return;
+				}
 				$this->model_siswa->save($uploadFoto);
 				redirect('siswa');
 			} else {
@@ -80,6 +85,13 @@
 		{
 			if (isset($_POST['submit'])) {
 				$uploadFoto = $this->upload_foto_siswa();
+				if ($uploadFoto === false) {
+					$nim           = $this->uri->segment(3);
+					$data['siswa'] = $this->db->get_where('tbl_siswa', array('nim' => $nim))->row_array();
+					$data['upload_error'] = $this->upload->display_errors();
+					$this->template->load('template', 'siswa/edit', $data);
+					return;
+				}
 				$this->model_siswa->update($uploadFoto);
 				redirect('siswa');
 			} else {
@@ -101,16 +113,22 @@
 
 		function upload_foto_siswa()
 		{
-			//validasi foto yang di upload
+			// Jika tidak ada file yang dipilih -> foto kosong (untuk edit: tidak mengubah foto)
+			if (!isset($_FILES['userfile']) || empty($_FILES['userfile']['name'])) {
+				return '';
+			}
+
 			$config['upload_path']          = './uploads/';
-            $config['allowed_types']        = 'gif|jpg|png';
-            $config['max_size']             = 1024;
+            $config['allowed_types']        = 'gif|jpg|jpeg|png';
+            $config['max_size']             = 2048;
             $this->load->library('upload', $config);
 
-            //proses upload
-            $this->upload->do_upload('userfile');
-            $upload = $this->upload->data();
-            return $upload['file_name'];
+            // Jika proses upload sukses, kembalikan nama file; jika gagal kembalikan false
+            if ($this->upload->do_upload('userfile')) {
+            	return $this->upload->data('file_name');
+            }
+
+            return false;
 		}
 
 		// siswa_aktif() -> untuk menampilkan view peserta didik ->terletak di controller Siswa
@@ -125,20 +143,26 @@
 		{
 			$kelas 	= $_GET['kd_kelas'];
 
-			echo "<table class='table table-striped table-bordered table-hover table-full-width dataTable'>
-					<tr>
-						<th width=100 class='text-center'>NIM</th>
-						<th>NAMA</th>
-						<th class='text-center'>NILAI</th>
-					</tr>";
-
 			$this->db->where('kd_kelas', $kelas);
 			$siswa = $this->db->get('tbl_siswa');
+
+			if ($siswa->num_rows() == 0) {
+				echo "<p class='py-10 text-center text-sm text-slate-400'><i class='fa fa-folder-open-o mr-2' aria-hidden='true'></i>Belum ada siswa di kelas ini</p>";
+				return;
+			}
+
+			echo "<table class='w-full min-w-[420px] text-sm'>
+					<tr class='border-b border-slate-200'>
+						<th class='px-3 py-2.5 text-center text-[11px] font-semibold uppercase tracking-wide text-slate-500'>NIM</th>
+						<th class='px-3 py-2.5 text-left text-[11px] font-semibold uppercase tracking-wide text-slate-500'>NAMA</th>
+						<th class='px-3 py-2.5 text-center text-[11px] font-semibold uppercase tracking-wide text-slate-500'>NILAI</th>
+					</tr>";
+
 			foreach ($siswa->result() as $row) {
-				echo "<tr>
-						<td class='text-center'>$row->nim</td>
-						<td>$row->nama</td>
-						<td class='text-center'>".anchor('siswa/nilai_siswa/'.$row->nim, '<i class="fa fa-eye" aria-hidden="true"></i>')."</td>
+				echo "<tr class='border-b border-slate-100 last:border-0'>
+						<td class='px-3 py-2.5 text-center font-mono'>$row->nim</td>
+						<td class='px-3 py-2.5'>$row->nama</td>
+						<td class='px-3 py-2.5 text-center'>".anchor('siswa/nilai_siswa/'.$row->nim, '<i class="fa fa-eye" aria-hidden="true"></i>', array('class'=>'inline-flex h-8 w-8 items-center justify-center rounded-lg bg-sky-50 text-sky-600 hover:bg-sky-100', 'title'=>'Lihat nilai'))."</td>
 					 </tr>";
 			}
 			echo "</table>";

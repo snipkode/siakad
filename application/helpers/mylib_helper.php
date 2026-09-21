@@ -71,6 +71,7 @@
 	}
 
 	function Terbilang($x) {
+        $x = (int) $x; // hindari deprecation konversi float->int pada operasi pembagian
         $abil = array("", "satu", "dua", "tiga", "empat", "lima", "enam", "tujuh", "delapan", "sembilan", "sepuluh", "sebelas");
         if ($x < 12)
             return " " . $abil[$x];

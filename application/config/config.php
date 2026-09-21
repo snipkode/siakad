@@ -521,3 +521,13 @@ $config['rewrite_short_tags'] = FALSE;
 | Array:		array('10.0.1.200', '192.168.5.0/24')
 */
 $config['proxy_ips'] = '';
+
+/*
+|--------------------------------------------------------------------------
+| Identitas Sekolah
+|--------------------------------------------------------------------------
+| Digunakan di kop laporan (mis. rapor PDF), bisa diubah sesuai sekolah.
+|--------------------------------------------------------------------------
+*/
+$config['sekolah_nama']   = 'PASANTREN IMAM SYAFI\'I';
+$config['sekolah_alamat'] = 'Jl Pesantren Km 2, Sibreh, Aceh Besar, Telpon : 0651-23462';
