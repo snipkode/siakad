@@ -8,6 +8,7 @@
 			// Guru (id_level_user 3) hanya melihat siswa di kelas walikelasnya; admin melihat semua siswa.
 			$is_guru 	= ($this->session->userdata('id_level_user') == 3);
 			$tahun 		= (int) get_tahun_akademik('id_tahun_akademik');
+			$semester 	= (string) get_tahun_akademik('semester');
 
 			if ($is_guru) {
 				$id_guru 	= (int) $this->session->userdata('id_guru');
@@ -22,8 +23,14 @@
 			}
 
 			$siswa 		= "SELECT ts.nim, ts.nama, ts.gender, trk.kd_kelas, tk.nama_kelas,
-							  (SELECT COUNT(DISTINCT tj2.kd_mapel) FROM tbl_nilai tn2 JOIN tbl_jadwal tj2 ON tj2.id_jadwal = tn2.id_jadwal WHERE tn2.nim = ts.nim) AS jml_mapel,
-							  (SELECT ROUND(AVG(tn3.nilai), 1) FROM tbl_nilai tn3 WHERE tn3.nim = ts.nim) AS rata_nilai
+							  (SELECT COUNT(DISTINCT tj2.kd_mapel)
+							   FROM tbl_nilai AS tn2 JOIN tbl_jadwal AS tj2 ON tj2.id_jadwal = tn2.id_jadwal
+							   WHERE tn2.nim = ts.nim AND tj2.kd_kelas = trk.kd_kelas
+							   	 AND tj2.id_tahun_akademik = ".$tahun." AND tj2.semester = ".$this->db->escape($semester).") AS jml_mapel,
+							  (SELECT ROUND(AVG(tn3.nilai), 1)
+							   FROM tbl_nilai AS tn3 JOIN tbl_jadwal AS tj3 ON tj3.id_jadwal = tn3.id_jadwal
+							   WHERE tn3.nim = ts.nim AND tj3.kd_kelas = trk.kd_kelas
+							   	 AND tj3.id_tahun_akademik = ".$tahun." AND tj3.semester = ".$this->db->escape($semester).") AS rata_nilai
 							  FROM tbl_siswa AS ts
 							  JOIN tbl_riwayat_kelas AS trk ON trk.nim = ts.nim
 							  LEFT JOIN tbl_kelas AS tk ON tk.kd_kelas = trk.kd_kelas
@@ -37,7 +44,7 @@
 			$jml_mapel_kelas = array();
 			$qc = $this->db->query("SELECT tj.kd_kelas, COUNT(DISTINCT tj.kd_mapel) AS c
 									FROM tbl_jadwal tj
-									WHERE tj.id_tahun_akademik = ".$tahun." AND TRIM(tj.semester) <> ''
+									WHERE tj.id_tahun_akademik = ".$tahun." AND tj.semester = ".$this->db->escape($semester)."
 									GROUP BY tj.kd_kelas");
 			foreach ($qc->result() as $r) {
 				$jml_mapel_kelas[$r->kd_kelas] = (int) $r->c;
