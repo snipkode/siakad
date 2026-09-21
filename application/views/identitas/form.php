@@ -31,6 +31,25 @@
                    class="w-full rounded-xl border border-slate-300 py-2.5 pl-10 pr-3.5 text-sm focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-500/30">
           </div>
         </div>
+
+        <div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
+          <div>
+            <label for="kepala_sekolah" class="mb-1.5 block text-sm font-medium text-slate-700">Kepala Sekolah</label>
+            <div class="relative">
+              <span class="pointer-events-none absolute inset-y-0 left-0 flex w-10 items-center justify-center text-slate-400"><i class="fa fa-user-circle-o" aria-hidden="true"></i></span>
+              <input type="text" id="kepala_sekolah" name="kepala_sekolah" value="<?php echo htmlspecialchars((string) @$identitas['kepala_sekolah']); ?>" placeholder="Nama Kepala Sekolah"
+                     class="w-full rounded-xl border border-slate-300 py-2.5 pl-10 pr-3.5 text-sm focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-500/30">
+            </div>
+          </div>
+          <div>
+            <label for="nip_kepala" class="mb-1.5 block text-sm font-medium text-slate-700">NIP Kepala Sekolah</label>
+            <div class="relative">
+              <span class="pointer-events-none absolute inset-y-0 left-0 flex w-10 items-center justify-center text-slate-400"><i class="fa fa-id-badge" aria-hidden="true"></i></span>
+              <input type="text" id="nip_kepala" name="nip_kepala" value="<?php echo htmlspecialchars((string) @$identitas['nip_kepala']); ?>" placeholder="NIP Kepala Sekolah"
+                     class="w-full rounded-xl border border-slate-300 py-2.5 pl-10 pr-3.5 text-sm focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-500/30">
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 

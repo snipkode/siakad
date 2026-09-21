@@ -124,97 +124,176 @@
 	       if (empty($siswa)) {
 	       	$siswa = array('nim' => $nim, 'nama_siswa' => '-', 'nama_kelas' => '-', 'nama_jurusan' => '-', 'kd_tingkatan' => null);
 	       }
-	       
+
+	       // wali kelas & kepala sekolah untuk blok tanda tangan
+	       $wali = $this->db->query("SELECT tg.nama_guru, tg.nuptk
+	       							FROM tbl_walikelas AS tw
+	       							JOIN tbl_guru AS tg ON tg.id_guru = tw.id_guru
+	       							WHERE tw.kd_kelas = ".$this->db->escape($kd_kelas)." AND tw.id_tahun_akademik = ".$tahun)
+	       							->row_array();
+	       $wali = (!empty($wali)) ? $wali : array('nama_guru' => null, 'nuptk' => null);
+
 	        $this->load->library('CFPDF');
 	        $pdf = new FPDF('P','mm','A4');
-	        $pdf->AddPage();
-	        $pdf->SetFont('Arial','B',12);
-	        $pdf->Cell(190,5,'NAMA SEKOLAH',1,1,'C');
-	        $pdf->SetFont('Arial','B',14);
-	        $pdf->Cell(190,7,identitas('nama_sekolah'),1,1,'C');
-	        $pdf->SetFont('Arial','',8);
-	        $pdf->Cell(190,5,identitas('alamat'),1,1,'C');
-	         
-	        $pdf->Cell(190,5,'',0,1);
-	        
-	        $pdf->SetFont('Arial','B',9);
-	        // BLOCK INFO SISWA
-	        $pdf->Cell(30,5,'NIS',0,0,'L');
-	        $pdf->Cell(88,5,': '.$siswa['nim'],0,0,'L');
-	        $pdf->Cell(30,5,'KELAS',0,0,'L');
-	        $pdf->Cell(40,5,': '.$siswa['nama_kelas'],0,1,'L');
-	        
-	        $pdf->Cell(30,5,'NAMA',0,0,'L');
-	        $pdf->Cell(88,5,': '.$siswa['nama_siswa'],0,0,'L');
-	        $pdf->Cell(30,5,'TAHUN AJARAN',0,0,'L');
-	        $pdf->Cell(40,5,': '.  get_tahun_akademik('tahun_akademik'),0,1,'L');
-	        
-	        $pdf->Cell(30,5,'JURUSAN',0,0,'L');
-	        $pdf->Cell(88,5,': '.$siswa['nama_jurusan'],0,0,'L');
-	        $pdf->Cell(30,5,'SEMESTER',0,0,'L');
-	        $pdf->Cell(40,5,': '.  get_tahun_akademik('semester'),0,1,'L');
-	        
-	        // END BLOCK INFO SISWA
-	        
-	        
-	        // BLOCK NILAI SISWA ------------------------
+	        $pdf->AliasNbPages();
+	        $pdf->SetTitle('Rapor '.$siswa['nama_siswa'].' - '.$siswa['nim'], true);
+	        $pdf->SetTopMargin(12);
+	        $pdf->SetLeftMargin(15);
+	        $pdf->SetRightMargin(15);
 	        $pdf->SetAutoPageBreak(true, 15);
-	        $pdf->Cell(1,10,'',0,1);
-	        $pdf->Cell(8,5,'NO',1,0,'L');
-	        $pdf->Cell(50,5,'Mata Pelajaran',1,0,'L');
-	        $pdf->Cell(10,5,'KKM',1,0,'L');
-	        $pdf->Cell(12,5,'Angka',1,0,'L');
-	        $pdf->Cell(30,5,'Huruf',1,0,'L');
-	        $pdf->Cell(23,5,'Ketercapaian',1,0,'L');
-	        $pdf->Cell(20,5,'Rata Kelas',1,0,'L');
-	        $pdf->Cell(37,5,'Deskripsi Kemampuan',1,1,'L');
+	        $pdf->AddPage();
+
+	        // ---------- KOP SEKOLAH ----------
+	        $pdf->SetFont('Arial','B',14);
+	        $pdf->Cell(0,7,strtoupper(identitas('nama_sekolah')),0,1,'C');
 	        $pdf->SetFont('Arial','',9);
+	        $alamat 	= trim(identitas('alamat'));
+	        $kontak 	= array();
+	        if (trim(identitas('no_telp')) !== '' && stripos($alamat, identitas('no_telp')) === false) {
+	        	$kontak[] = 'Telp. '.identitas('no_telp');
+	        }
+	        if (trim(identitas('email')) !== '') 	$kontak[] = 'Email: '.identitas('email');
+	        if (trim(identitas('website')) !== '') 	$kontak[] = trim(identitas('website'));
+	        if (trim(identitas('npsn')) !== '') 	$kontak[] = 'NPSN '.identitas('npsn');
+	        $kop = trim($alamat.(count($kontak) ? ' - '.implode(' - ', $kontak) : ''));
+	        $pdf->Cell(0,5,$kop,0,1,'C');
+	        $y = $pdf->GetY() + 2;
+	        $pdf->SetDrawColor(0,0,0);
+	        $pdf->SetLineWidth(0.8);
+	        $pdf->Line(15,$y,195,$y);
+	        $pdf->SetLineWidth(0.2);
+	        $pdf->Line(15,$y+1,195,$y+1);
+	        $pdf->SetY($y+4);
+
+	        // ---------- JUDUL ----------
+	        $pdf->SetFont('Arial','B',12);
+	        $pdf->Cell(0,7,'LAPORAN HASIL BELAJAR SISWA',0,1,'C');
+	        $pdf->SetFont('Arial','B',9);
+	        $pdf->Cell(0,5,'SEMESTER '.strtoupper($semester).'  TAHUN PELAJARAN '.get_tahun_akademik('tahun_akademik'),0,1,'C');
+	        $pdf->Ln(4);
+
+	        // ---------- DATA SISWA (grid 2 kolom, lebar konsisten 180) ----------
+	        $pdf->SetDrawColor(203,213,225);
+	        $pdf->SetFillColor(226,232,240);
+	        $lw = 33; $vw = 57; // (33+57) x 2 = 180
+	        $kelas_tampil = preg_replace('/^Kelas\s+/i', '', $siswa['nama_kelas']);
+	        $pdf->SetFont('Arial','B',9);
+	        $this->_identitas_baris($pdf, $lw, $vw, 'Nama Siswa', $siswa['nama_siswa'], 'NIS', $siswa['nim']);
+	        $this->_identitas_baris($pdf, $lw, $vw, 'Kelas', $kelas_tampil, 'Jurusan', $siswa['nama_jurusan']);
+	        $this->_identitas_baris($pdf, $lw, $vw, 'Semester', ucfirst($semester), 'Tahun Pelajaran', get_tahun_akademik('tahun_akademik'));
+	        $pdf->Ln(4);
+
+	        // ---------- TABEL NILAI MAPEL ----------
+	        $pdf->SetFont('Arial','B',8.5);
+	        $pdf->SetFillColor(226,232,240);
+	        $pdf->Cell(8,7,'NO',1,0,'C',1);
+	        $pdf->Cell(50,7,'MATA PELAJARAN',1,0,'L',1);
+	        $pdf->Cell(10,7,'KKM',1,0,'C',1);
+	        $pdf->Cell(13,7,'ANGKA',1,0,'C',1);
+	        $pdf->Cell(11,7,'HURUF',1,0,'C',1);
+	        $pdf->Cell(27,7,'KETERCAPAIAN',1,0,'C',1);
+	        $pdf->Cell(15,7,'RATA',1,0,'C',1);
+	        $pdf->Cell(46,7,'DESKRIPSI KEMAMPUAN',1,1,'C',1);
 
 	        // daftar mapel UNIK milik kelas siswa pada semester aktif (bukan semua sesi jadwal)
 	        $sqlMapel = "SELECT tm.nama_mapel, MIN(tj.id_jadwal) AS id_jadwal
 	                    FROM tbl_jadwal AS tj
 	                    JOIN tbl_mapel AS tm ON tm.kd_mapel = tj.kd_mapel
-	                    WHERE tj.kd_kelas = ".$this->db->escape($kd_kelas)." AND tj.semester = ".$this->db->escape($semester)."
+	                    WHERE tj.kd_kelas = ".$this->db->escape($kd_kelas)."
+	                      AND tj.id_tahun_akademik = ".$tahun."
+	                      AND tj.semester = ".$this->db->escape($semester)."
 	                    GROUP BY tj.kd_mapel, tm.nama_mapel
 	                    ORDER BY tm.nama_mapel";
 	        $mapel = ($kd_kelas !== null) ? $this->db->query($sqlMapel)->result() : array();
-	        $no=1;
+
+	        $kkm = 75;
+	        $total = 0; $cnt = 0; $fill = false;
+	        $no = 1;
+	        $pdf->SetFont('Arial','',8.5);
 	        foreach ($mapel as $m){
-	            $pdf->Cell(8,5,$no,1,0,'L');
-	            $pdf->Cell(50,5,$m->nama_mapel,1,0,'L');
-	            $pdf->Cell(10,5,75,1,0,'L');
+	            $fill = !$fill;
+	            $pdf->SetFillColor(245,247,250);
 	            $nilai = check_nilai($siswa['nim'], $m->id_jadwal);
 	            $rata  = $this->rata_rata_nilai($m->id_jadwal);
-	            $pdf->Cell(12,5,  ($nilai === 0 || $nilai === '') ? '-' : $nilai,1,0,'L');
-	            $pdf->Cell(30,5,  $this->huruf_mutu($nilai),1,0,'L');
-	            $pdf->Cell(23,5,  ($nilai === 0 || $nilai === '') ? '-' : $this->ketercapaian_kopetensi($nilai),1,0,'L');
-	            $pdf->Cell(20,5,  ($rata === null || (float)$rata == 0) ? '-' : ceil((float)$rata),1,0,'L');
-	            $pdf->Cell(37,5,'Deskripsi Kemampuan',1,1,'L');
+	            $ada   = ($nilai !== 0 && $nilai !== '' && $nilai !== null);
+	            if ($ada) { $total += (int) $nilai; $cnt++; }
+
+	            $pdf->Cell(8,6,$no,1,0,'C',$fill);
+	            $pdf->Cell(50,6,$m->nama_mapel,1,0,'L',$fill);
+	            $pdf->Cell(10,6,$kkm,1,0,'C',$fill);
+	            $pdf->Cell(13,6,$ada ? $nilai : '-',1,0,'C',$fill);
+	            $pdf->Cell(11,6,$this->huruf_mutu($nilai),1,0,'C',$fill);
+	            $pdf->Cell(27,6,$ada ? $this->ketercapaian_kopetensi($nilai) : '-',1,0,'L',$fill);
+	            $pdf->Cell(15,6,($rata === null || (float)$rata == 0) ? '-' : ceil((float)$rata),1,0,'C',$fill);
+	            $pdf->Cell(46,6,'-',1,1,'L',$fill);
 	            $no++;
+	        }
+
+	        // baris rata-rata siswa
+	        $fill = !$fill;
+	        $avg = ($cnt > 0) ? $total / $cnt : 0;
+	        $pdf->SetFillColor(226,232,240);
+	        $pdf->SetFont('Arial','B',8.5);
+	        $pdf->Cell(8,6,'',1,0,'C',$fill);
+	        $pdf->Cell(50,6,'RATA-RATA',1,0,'L',$fill);
+	        $pdf->Cell(10,6,'',1,0,'C',$fill);
+	        $pdf->Cell(13,6,$avg > 0 ? round($avg,1) : '-',1,0,'C',$fill);
+	        $pdf->Cell(11,6,$avg > 0 ? $this->huruf_mutu(round($avg)) : '-',1,0,'C',$fill);
+	        $pdf->Cell(27,6,$avg > 0 ? $this->ketercapaian_kopetensi(round($avg)) : '-',1,0,'L',$fill);
+	        $pdf->Cell(15,6,'',1,0,'C',$fill);
+	        $pdf->Cell(46,6,'',1,1,'C',$fill);
+
+	        // ---------- CATATAN WALI KELAS ----------
+	        $pdf->Ln(3);
+	        $pdf->SetFont('Arial','B',9);
+	        $pdf->Cell(0,6,'Catatan Wali Kelas :',0,1,'L');
+	        $pdf->SetFillColor(245,247,250);
+	        $pdf->Cell(180,20,'',1,0,'L',1);
+	        $pdf->Ln(5);
+
+	        // ---------- TANDA TANGAN ----------
+	        $pdf->SetFont('Arial','',9);
+	        $pdf->Cell(0,6,'Diberikan di : .....................................................',0,1,'R');
+	        $pdf->Cell(0,6,'Pada Tanggal : ......................................................',0,1,'R');
+	        $pdf->Ln(6);
+
+	        $cw = 60; // tiga kolom x 60 = 180
+	        $pdf->SetFont('Arial','B',9);
+	        $pdf->Cell($cw,6,'Orang Tua / Wali',0,0,'C');
+	        $pdf->Cell($cw,6,'Wali Kelas',0,0,'C');
+	        $pdf->Cell($cw,6,'Kepala Sekolah',0,1,'C');
+	        $pdf->Ln(18);
+
+	        $pdf->SetFont('Arial','',9);
+	        $pdf->Cell($cw,5,'(  .....................................................  )',0,0,'C');
+	        $pdf->Cell($cw,5,$this->_nullable($wali['nama_guru'],'-'),0,0,'C');
+	        $pdf->Cell($cw,5,$this->_nullable(identitas('kepala_sekolah'),'-'),0,1,'C');
+	        $pdf->Ln(2);
+	        $pdf->SetFont('Arial','',8);
+	        $pdf->Cell($cw,5,'',0,0,'C');
+	        $navali = !empty($wali['nuptk']) ? 'NIP/NUPTK. '.$wali['nuptk'] : '';
+	        $nakep  = trim(identitas('nip_kepala')) !== '' ? 'NIP. '.identitas('nip_kepala') : '';
+	        $pdf->Cell($cw,5,$navali,0,0,'C');
+	        $pdf->Cell($cw,5,$nakep,0,1,'C');
+
+	        $pdf->Output('Rapor_'.$siswa['nim'].'.pdf', 'I');
 	    }
-	    // END BLOCK NILAI SISWA --------------------------------
-	        
-	        $pdf->Cell(190,5,'',0,1);
-	        $pdf->Cell(8, 5, 'No', 1,0);
-	        $pdf->Cell(50, 5, 'Pengembangan Diri', 1,0);
-	        $pdf->Cell(10, 5, 'Nilai', 1,0);
-	        $pdf->Cell(66, 5, 'Kepribadian', 1,0);
-	        $pdf->Cell(20, 5, 'Niilai', 1,0);
-	        $pdf->Cell(36, 5, 'Catatan Khusus', 1,1);
-	        
-	        $pdf->Cell(190,5,'',0,1);
-	        $pdf->Cell(45, 15, 'Mengetahui,', 0,0,'C');
-	        $pdf->Cell(87, 5, '', 0,0,'c');
-	        $pdf->Cell(25, 5, 'Diberikan Di', 0,0,'c');
-	        $pdf->Cell(33, 5, ': ', 0,1,'L');
-	        $pdf->Cell(45, 15, 'Orang Tua Wali', 0,0,'C');
-	        $pdf->Cell(87, 5, '', 0,0,'c');
-	        $pdf->Cell(25, 5, 'Pada', 0,0,'c');
-	        $pdf->Cell(33, 5, ': ', 0,1,'L');
-	        $pdf->Cell(132, 5, '', 0,0,'c');
-	        $pdf->Cell(25, 5, 'Wali Kelas', 0,0,'c');
-	        $pdf->Cell(33, 5, ': ', 0,1,'L');
-	        $pdf->Output();
+
+	    private function _nullable($v, $fallback = '-')
+	    {
+	    	return (trim((string) $v) !== '') ? $v : $fallback;
+	    }
+
+	    private function _identitas_baris($pdf, $lw, $vw, $l1, $v1, $l2, $v2)
+	    {
+	    	$pdf->SetFont('Arial','B',9);
+	    	$pdf->Cell($lw,6,$l1,1,0,'L',1);
+	    	$pdf->SetFont('Arial','',9);
+	    	$pdf->Cell($vw,6,'  '.$v1,1,0,'L');
+	    	$pdf->SetFont('Arial','B',9);
+	    	$pdf->Cell($lw,6,$l2,1,0,'L',1);
+	    	$pdf->SetFont('Arial','',9);
+	    	$pdf->Cell($vw,6,'  '.$v2,1,1,'L');
 	    }
     
 function rata_rata_nilai($id_jadwal){
@@ -235,14 +314,14 @@ function rata_rata_nilai($id_jadwal){
 	    
 	    
 	    function ketercapaian_kopetensi($nilai){
-	        if($nilai>90){
+	        if($nilai >= 90){
 	            return 'Sangat baik';
-	        }elseif($nilai>80 and $nilai<=90){
+	        }elseif($nilai >= 80){
 	            return 'Baik';
-	        }elseif($nilai>75 and $nilai<=80){
+	        }elseif($nilai >= 75){
 	            return 'Cukup';
 	        }else{
-	            return "Kurang";
+	            return "Perlu bimbingan";
 	        }
 	    }
 

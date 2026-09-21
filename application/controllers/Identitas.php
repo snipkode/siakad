@@ -18,12 +18,14 @@
 		function save()
 		{
 			$data = array(
-				'nama_sekolah' => trim((string) $this->input->post('nama_sekolah')),
-				'npsn'         => trim((string) $this->input->post('npsn')),
-				'alamat'       => trim((string) $this->input->post('alamat')),
-				'no_telp'      => trim((string) $this->input->post('no_telp')),
-				'email'        => trim((string) $this->input->post('email')),
-				'website'      => trim((string) $this->input->post('website'))
+				'nama_sekolah'  => trim((string) $this->input->post('nama_sekolah')),
+				'npsn'          => trim((string) $this->input->post('npsn')),
+				'alamat'        => trim((string) $this->input->post('alamat')),
+				'no_telp'       => trim((string) $this->input->post('no_telp')),
+				'email'         => trim((string) $this->input->post('email')),
+				'website'       => trim((string) $this->input->post('website')),
+				'kepala_sekolah'=> trim((string) $this->input->post('kepala_sekolah')),
+				'nip_kepala'    => trim((string) $this->input->post('nip_kepala'))
 			);
 
 			if ($data['nama_sekolah'] === '') {
