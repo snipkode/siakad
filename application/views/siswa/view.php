@@ -29,6 +29,7 @@
           <th class="px-3 py-2.5 text-left text-[11px] font-semibold uppercase tracking-wide text-slate-500">FOTO</th>
           <th class="px-3 py-2.5 text-left text-[11px] font-semibold uppercase tracking-wide text-slate-500">NIM</th>
           <th class="px-3 py-2.5 text-left text-[11px] font-semibold uppercase tracking-wide text-slate-500">NAMA</th>
+          <th class="dt-hide-xs px-3 py-2.5 text-left text-[11px] font-semibold uppercase tracking-wide text-slate-500">JURUSAN</th>
           <th class="dt-hide-xs px-3 py-2.5 text-left text-[11px] font-semibold uppercase tracking-wide text-slate-500">TEMPAT LAHIR</th>
           <th class="dt-hide-xs px-3 py-2.5 text-left text-[11px] font-semibold uppercase tracking-wide text-slate-500">TANGGAL LAHIR</th>
           <th class="px-3 py-2.5 text-left text-[11px] font-semibold uppercase tracking-wide text-slate-500">AKSI</th>
@@ -53,6 +54,21 @@
   </div>
 </div>
 
+<!-- Modal Edit -->
+<div id="modal-edit" class="fixed inset-0 z-50 hidden items-center justify-center p-4">
+  <div id="modal-edit-backdrop" onclick="closeEditModal()" class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm"></div>
+  <div class="relative w-full max-w-2xl max-h-[90vh] overflow-hidden rounded-2xl bg-white shadow-2xl">
+    <div class="flex items-center justify-between border-b border-slate-100 px-4 py-3">
+      <div class="flex items-center gap-2.5">
+        <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-sky-50 text-sky-600"><i class="fa fa-pencil"></i></span>
+        <h3 class="text-sm font-bold text-slate-800">Edit Siswa</h3>
+      </div>
+      <button type="button" onclick="closeEditModal()" class="flex h-7 w-7 items-center justify-center rounded-lg text-slate-400 hover:bg-slate-100 hover:text-slate-600"><i class="fa fa-times"></i></button>
+    </div>
+    <div id="siswa-edit-body" class="max-h-[72vh] overflow-y-auto p-4"></div>
+  </div>
+</div>
+
 <script src="<?php echo base_url(); ?>assets/bower_components/datatables.net/js/jquery.dataTables.min.js"></script>
 
 <script>
@@ -72,6 +88,7 @@
         { "data": "foto", "width": "60px", "class": "text-center", "orderable": false, "searchable": false },
         { "data": "nim", "width": "110px", "class": "text-center font-mono" },
         { "data": "nama" },
+        { "data": "jurusan", "width": "130px", "class": "dt-hide-xs" },
         { "data": "tempat_lahir", "width": "150px", "class": "dt-hide-xs" },
         { "data": "tanggal_lahir", "width": "140px", "class": "dt-hide-xs text-center" },
         { "data": "aksi", "width": "110px", "class": "text-center", "orderable": false, "searchable": false }
@@ -103,6 +120,59 @@
 
   $('#modal-import').on('click', function (e) {
     if (e.target === this) { closeImportModal(); }
+  });
+
+  var siswaBase = '<?php echo site_url(); ?>';
+
+  window.openEditModal = function (nim) {
+    var $modal = $('#modal-edit');
+    $modal.removeClass('hidden').addClass('flex');
+    document.body.classList.add('overflow-hidden');
+    $('#siswa-edit-body').html('<p class="py-8 text-center text-sm text-slate-400"><i class="fa fa-spinner fa-spin mr-2"></i>Menyiapkan form...</p>');
+    $.get(siswaBase + 'siswa/form_edit/' + nim, function (html) {
+      $('#siswa-edit-body').html(html);
+    });
+  };
+
+  window.closeEditModal = function () {
+    $('#modal-edit').addClass('hidden').removeClass('flex');
+    document.body.classList.remove('overflow-hidden');
+    $('#siswa-edit-body').empty();
+  };
+
+  $('#modal-edit').on('click', function (e) {
+    if (e.target === this) { closeEditModal(); }
+  });
+
+  // Simpan edit via AJAX ke dalam modal, lalu tutup + refresh tabel
+  $(document).on('submit', '#form-edit-siswa', function (e) {
+    e.preventDefault();
+    var $form = $(this);
+    var $btn = $form.find('button[name="submit"]');
+    $btn.prop('disabled', true).html('<i class="fa fa-spinner fa-spin"></i> Menyimpan...');
+    $.ajax({
+      url: siswaBase + 'siswa/edit',
+      type: 'POST',
+      data: new FormData(this),
+      processData: false,
+      contentType: false,
+      dataType: 'json',
+      success: function (res) {
+        if (res.ok) {
+          closeEditModal();
+          if ($.fn.DataTable.isDataTable('#mytable')) {
+            $('#mytable').DataTable().ajax.reload(null, false);
+          }
+        } else {
+          $('#edit-msg').removeClass('hidden').addClass('flex')
+            .html('<i class="fa fa-exclamation-triangle mr-1" aria-hidden="true"></i>' + res.message);
+        }
+      },
+      complete: function () {
+        $btn.prop('disabled', false).html('Simpan');
+      }
+    });
+    return false;
   });
 
   // Preview file: AJAX ke siswa/form, hasil (tabel preview + tombol import) di-inject ke modal

@@ -15,10 +15,10 @@
 		{
 			// Apabila yang login = guru (id_level_user 3 = guru) maka hanya akan menampilkan jadwal yang hanya diajar oleh guru tersebut
 			if ($this->session->userdata('id_level_user') == 3) {
-				$sql = "SELECT tj.id_jadwal, tju.nama_jurusan, ttk.nama_tingkatan, tm.nama_mapel, tj.jam, 
+				$sql = "SELECT tj.id_jadwal, tk.nama_kelas, tju.nama_jurusan, ttk.nama_tingkatan, tm.nama_mapel, tj.jam, 
 						tr.nama_ruangan, tj.hari, tj.semester 
-						FROM tbl_jadwal AS tj, tbl_jurusan AS tju, tbl_ruangan AS tr, tbl_mapel AS tm, tbl_tingkatan_kelas AS ttk
-						WHERE tj.kd_jurusan = tju.kd_jurusan AND tj.kd_ruangan = tr.kd_ruangan AND tj.kd_mapel = tm.kd_mapel AND tj.kd_tingkatan = ttk.kd_tingkatan AND tj.id_guru =".$this->session->userdata('id_guru');
+						FROM tbl_jadwal AS tj, tbl_kelas AS tk, tbl_jurusan AS tju, tbl_ruangan AS tr, tbl_mapel AS tm, tbl_tingkatan_kelas AS ttk
+						WHERE tj.kd_kelas = tk.kd_kelas AND tj.kd_jurusan = tju.kd_jurusan AND tj.kd_ruangan = tr.kd_ruangan AND tj.kd_mapel = tm.kd_mapel AND tj.kd_tingkatan = ttk.kd_tingkatan AND tj.id_guru =".$this->session->userdata('id_guru')." ORDER BY tj.kd_kelas, tj.kd_mapel";
 				$data['jadwal'] =$this->db->query($sql);
 				// load daftar ngajar guru
 				$this->template->load('template', 'jadwal/jadwal_ajar_guru', $data);

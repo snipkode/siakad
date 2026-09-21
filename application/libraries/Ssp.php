@@ -230,7 +230,7 @@ class SSP {
 	 *  @param  array $columns Column information array
 	 *  @return array          Server-side processing response array
 	 */
-	static function simple ( $request, $conn, $table, $primaryKey, $columns )
+	static function simple ( $request, $conn, $table, $primaryKey, $columns, $join = null )
 	{
 		$bindings = array();
 		$db = self::db( $conn );
@@ -240,10 +240,12 @@ class SSP {
 		$order = self::order( $request, $columns );
 		$where = self::filter( $request, $columns, $bindings );
 
+		$from = "`$table`".( $join ? " $join" : '' );
+
 		// Main query to actually get the data
 		$data = self::sql_exec( $db, $bindings,
 			"SELECT `".implode("`, `", self::pluck($columns, 'db'))."`
-			 FROM `$table`
+			 FROM $from
 			 $where
 			 $order
 			 $limit"
@@ -252,7 +254,7 @@ class SSP {
 		// Data set length after filtering
 		$resFilterLength = self::sql_exec( $db, $bindings,
 			"SELECT COUNT(`{$primaryKey}`)
-			 FROM   `$table`
+			 FROM   $from
 			 $where"
 		);
 		$recordsFiltered = $resFilterLength[0][0];
@@ -260,7 +262,7 @@ class SSP {
 		// Total data set length
 		$resTotalLength = self::sql_exec( $db,
 			"SELECT COUNT(`{$primaryKey}`)
-			 FROM   `$table`"
+			 FROM   $from"
 		);
 		$recordsTotal = $resTotalLength[0][0];
 

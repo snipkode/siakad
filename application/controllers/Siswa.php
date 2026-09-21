@@ -33,6 +33,7 @@
 				),
 				array('db' => 'nim', 'dt' => 'nim'),
 		        array('db' => 'nama', 'dt' => 'nama'),
+		        array('db' => 'nama_jurusan', 'dt' => 'jurusan'),
 		        array('db' => 'tempat_lahir', 'dt' => 'tempat_lahir'),
 		        array('db' => 'tanggal_lahir', 'dt' => 'tanggal_lahir'),
 		        //untuk menampilkan aksi(edit/delete dengan parameter nim siswa)
@@ -41,8 +42,8 @@
 		              'dt' => 'aksi',
 		              'formatter' => function($d) {
 		               		return "<div class='inline-flex gap-1.5'>".
-		               			anchor('siswa/edit/'.$d, '<i class="fa fa-pencil"></i>', 'class="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-sky-50 text-sky-600 hover:bg-sky-100" data-placement="top" title="Edit"').' 
-		               			'.anchor('siswa/delete/'.$d, '<i class="fa fa-trash"></i>', 'class="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-red-50 text-red-500 hover:bg-red-100" data-placement="top" title="Delete" onclick=\'return confirm("Yakin ingin menghapus siswa ini?")\'')."</div>";
+		               			"<button type='button' onclick=\"openEditModal('".$d."')\" class='inline-flex h-8 w-8 items-center justify-center rounded-lg bg-sky-50 text-sky-600 hover:bg-sky-100' data-placement='top' title='Edit'><i class='fa fa-pencil'></i></button>".
+		               			anchor('siswa/delete/'.$d, '<i class="fa fa-trash"></i>', 'class="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-red-50 text-red-500 hover:bg-red-100" data-placement="top" title="Delete" onclick=\'return confirm("Yakin ingin menghapus siswa ini?")\'')."</div>";
 		            }
 		        )
 		    );
@@ -54,8 +55,11 @@
 				'host' => $this->db->hostname
 		    );
 
+		    $join = "LEFT JOIN tbl_kelas ON tbl_siswa.kd_kelas = tbl_kelas.kd_kelas
+		             LEFT JOIN tbl_jurusan ON tbl_kelas.kd_jurusan = tbl_jurusan.kd_jurusan";
+
 		    echo json_encode(
-		     	SSP::simple($_GET, $sql_details, $table, $primaryKey, $columns)
+		     	SSP::simple($_GET, $sql_details, $table, $primaryKey, $columns, $join)
 		     );
 
 		}
@@ -86,6 +90,10 @@
 			if (isset($_POST['submit'])) {
 				$uploadFoto = $this->upload_foto_siswa();
 				if ($uploadFoto === false) {
+					// saluran AJAX (modal popup): balas JSON biar error tampil di dalam modal
+					if ($this->input->is_ajax_request()) {
+						exit(json_encode(array('ok' => false, 'message' => $this->upload->display_errors())));
+					}
 					$nim           = $this->uri->segment(3);
 					$data['siswa'] = $this->db->get_where('tbl_siswa', array('nim' => $nim))->row_array();
 					$data['upload_error'] = $this->upload->display_errors();
@@ -93,12 +101,27 @@
 					return;
 				}
 				$this->model_siswa->update($uploadFoto);
+				if ($this->input->is_ajax_request()) {
+					exit(json_encode(array('ok' => true)));
+				}
 				redirect('siswa');
 			} else {
 				$nim           = $this->uri->segment(3);
 				$data['siswa'] = $this->db->get_where('tbl_siswa', array('nim' => $nim))->row_array();
 				$this->template->load('template', 'siswa/edit', $data);
 			}
+		}
+
+		// Render form edit saja (partial) untuk dimuat ke modal popup via AJAX
+		function form_edit()
+		{
+			$nim           = $this->uri->segment(3);
+			$data['siswa'] = $this->db->get_where('tbl_siswa', array('nim' => $nim))->row_array();
+			if (empty($data['siswa'])) {
+				show_404();
+				return;
+			}
+			$this->load->view('siswa/edit_form', $data);
 		}
 
 		function delete()

@@ -18,6 +18,7 @@
       <thead>
         <tr class="border-b border-slate-200">
           <th class="px-3 py-2.5 text-left text-[11px] font-semibold uppercase tracking-wide text-slate-500">NO</th>
+          <th class="px-3 py-2.5 text-left text-[11px] font-semibold uppercase tracking-wide text-slate-500">KELAS</th>
           <th class="px-3 py-2.5 text-left text-[11px] font-semibold uppercase tracking-wide text-slate-500">Jurusan &amp; Tingkatan</th>
           <th class="px-3 py-2.5 text-left text-[11px] font-semibold uppercase tracking-wide text-slate-500">MATA PELAJARAN</th>
           <th class="px-3 py-2.5 text-left text-[11px] font-semibold uppercase tracking-wide text-slate-500">HARI</th>
@@ -32,6 +33,7 @@
           foreach ($jadwal->result() as $row) {
             echo "<tr class='border-b border-slate-100 last:border-0'>
                     <td class='px-3 py-2.5'>$no</td>
+                    <td class='px-3 py-2.5 font-semibold text-slate-700'>$row->nama_kelas</td>
                     <td class='px-3 py-2.5'>Jurusan $row->nama_jurusan $row->nama_tingkatan</td>
                     <td class='px-3 py-2.5'>$row->nama_mapel</td>
                     <td class='px-3 py-2.5'>$row->hari</td>
