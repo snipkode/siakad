@@ -38,7 +38,9 @@
 		        	 'formatter' => function ($d) {
 		        	 	$walikelas = $this->db->get_where('tbl_walikelas',array('id_walikelas'=>$d))->row_array();
 
-	                  	return cmb_dinamis('guru', 'tbl_guru', 'nama_guru', 'id_guru', $walikelas['id_guru'], "id='guru$d' onchange='updateWalikelas($d)'");
+		        	 	$select_class = "block w-full max-w-[180px] rounded-lg border border-slate-300 bg-white px-2 py-1.5 text-xs font-semibold text-slate-700 shadow-sm focus:border-sky-400 focus:outline-none focus:ring-2 focus:ring-sky-100";
+
+	                  	return cmb_dinamis('guru', 'tbl_guru', 'nama_guru', 'id_guru', $walikelas['id_guru'], "id='guru$d' onchange='updateWalikelas($d)'", $select_class);
 		        	 }
 		        	),
 		    );
@@ -68,10 +70,20 @@
 
 		function update_walikelas()
 		{
-			$id_walikelas = $_GET['id_walikelas'];
-			$id_guru	  = $_GET['id_guru'];
+			$id_walikelas = (int) $this->input->get('id_walikelas');
+			$id_guru	  = (int) $this->input->get('id_guru');
+
+			if (empty($id_walikelas)) {
+				$this->output->set_content_type('application/json')->set_output(json_encode(array('status' => 'error', 'message' => 'ID walikelas tidak valid')));
+				return;
+			}
+
 			$this->db->where('id_walikelas', $id_walikelas);
 			$this->db->update('tbl_walikelas', array('id_guru' => $id_guru));
+
+			$message = $this->db->affected_rows() > 0 ? 'Data wali kelas berhasil diperbarui' : 'Tidak ada perubahan data';
+
+			$this->output->set_content_type('application/json')->set_output(json_encode(array('status' => 'success', 'message' => $message)));
 		}
 
 	}

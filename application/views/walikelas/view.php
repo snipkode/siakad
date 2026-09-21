@@ -44,12 +44,15 @@
         $sf.css("min-width", "200px");
       },
       "columns": [
-{ "data": null, "width": "45px", "class": "text-center", "orderable": false },
-        { "data": "nama_kelas", "width": "150px" },
-        { "data": "nama_jurusan", "class": "text-center" },
-        { "data": "nama_tingkatan", "class": "text-center" },
-        { "data": "nama_guru" }
-      ]
+        { "data": null, "width": "45px", "class": "px-3 py-2.5 text-center", "orderable": false },
+        { "data": "nama_kelas", "width": "150px", "class": "px-3 py-2.5" },
+        { "data": "nama_jurusan", "class": "px-3 py-2.5 text-center" },
+        { "data": "nama_tingkatan", "class": "px-3 py-2.5 text-center" },
+        { "data": "nama_guru", "class": "px-3 py-2.5" }
+      ],
+      "createdRow": function (row) {
+        $(row).addClass('border-b border-slate-100 last:border-0');
+      }
     });
 
     t.on('draw.dt', function () {
@@ -58,5 +61,29 @@
         cell.innerHTML = i + 1;
       });
     }).draw();
+
+    window.updateWalikelas = function (id) {
+      var $select = $('#guru' + id);
+      var id_guru = $select.val();
+      if (!id_guru) { return; }
+
+      $.ajax({
+        type: 'GET',
+        url: '<?php echo site_url('walikelas/update_walikelas'); ?>',
+        data: { id_walikelas: id, id_guru: id_guru },
+        dataType: 'json',
+        success: function (res) {
+          showToast(res.message, res.status === 'error' ? 'error' : 'success');
+        },
+        error: function () {
+          showToast('Gagal memperbarui data wali kelas', 'error');
+        }
+      });
+    };
+
+    window.showToast = function (msg, type) {
+      var $toast = $('<div class="fixed bottom-5 left-1/2 z-[999] -translate-x-1/2 rounded-xl px-4 py-2.5 text-sm font-semibold text-white shadow-lg ' + (type === 'error' ? 'bg-red-500' : 'bg-emerald-600') + '">' + msg + '</div>').appendTo('body');
+      setTimeout(function () { $toast.fadeOut(300, function () { $(this).remove(); }); }, 2500);
+    };
   });
 </script>

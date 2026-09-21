@@ -1,9 +1,9 @@
 <?php
 
-	function cmb_dinamis($name, $table, $field, $pk, $selected=null, $extra=null)
+	function cmb_dinamis($name, $table, $field, $pk, $selected=null, $extra=null, $class='form-control')
 	{
 		$ci   = get_instance();
-		$cmb  = "<select name='$name' class='form-control' $extra>";
+		$cmb  = "<select name='$name' class='$class' $extra>";
 
 		$data = $ci->db->get($table)->result();
 		foreach ($data as $row) {

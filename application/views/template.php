@@ -9,6 +9,12 @@
   <link rel="stylesheet" href="<?php echo base_url(); ?>assets/custom/css/app.css">
   <link rel="stylesheet" href="<?php echo base_url(); ?>assets/bower_components/font-awesome/css/font-awesome.min.css">
 
+  <style>
+    .dataTable tbody td { padding: 0.625rem 0.75rem; }
+    .dataTable tbody tr { border-bottom: 1px solid #f1f5f9; }
+    .dataTable tbody tr:last-child { border-bottom: 0; }
+  </style>
+
   <script src="<?php echo base_url(); ?>assets/bower_components/jquery/dist/jquery.min.js"></script>
 </head>
 <body class="min-h-screen bg-slate-100 text-slate-800 antialiased">
