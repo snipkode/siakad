@@ -5,18 +5,33 @@
 		
 		function index()
 		{
-			$walikelas 		= $this->db->get_where('tbl_walikelas', array('id_guru' => $this->session->userdata('id_guru')))->row_array();
-			$kd_kelas 		= $walikelas['kd_kelas'] ?? '';
-			$kelas 			= "SELECT tk.nama_kelas, tju.nama_jurusan, tm.nama_mapel, ttk.nama_tingkatan 
-							  FROM tbl_jadwal AS tj, tbl_jurusan AS tju,  tbl_kelas AS tk, tbl_mapel AS tm, tbl_tingkatan_kelas AS ttk
-							  WHERE tj.kd_jurusan = tju.kd_jurusan AND tj.kd_kelas = tk.kd_kelas AND tj.kd_mapel = tm.kd_mapel AND tj.kd_tingkatan = ttk.kd_tingkatan AND tj.kd_kelas= '".$kd_kelas."'";
-			$siswa 			= "SELECT ts.nim, ts.nama
-							  FROM tbl_riwayat_kelas AS trk, tbl_siswa AS ts 
-							  WHERE trk.nim = ts.nim AND trk.kd_kelas = '".$kd_kelas."' 
-							  AND trk.id_tahun_akademik = ".get_tahun_akademik('id_tahun_akademik');
+			// Guru (id_level_user 3) hanya melihat siswa di kelas walikelasnya; admin melihat semua siswa.
+			$is_guru 	= ($this->session->userdata('id_level_user') == 3);
+			$tahun 		= (int) get_tahun_akademik('id_tahun_akademik');
 
-			$data['kelas']  = $this->db->query($kelas)->row_array();
+			if ($is_guru) {
+				$id_guru 	= (int) $this->session->userdata('id_guru');
+				$walikelas 	= $this->db->get_where('tbl_walikelas', array('id_guru' => $id_guru))->row_array();
+				$kd_kelas 	= (!empty($walikelas['kd_kelas'])) ? $walikelas['kd_kelas'] : null;
+
+				$kelas 		= "SELECT tk.nama_kelas, tju.nama_jurusan, tm.nama_mapel, ttk.nama_tingkatan 
+								  FROM tbl_jadwal AS tj, tbl_jurusan AS tju,  tbl_kelas AS tk, tbl_mapel AS tm, tbl_tingkatan_kelas AS ttk
+								  WHERE tj.kd_jurusan = tju.kd_jurusan AND tj.kd_kelas = tk.kd_kelas AND tj.kd_mapel = tm.kd_mapel AND tj.kd_tingkatan = ttk.kd_tingkatan AND tj.kd_kelas = ".$this->db->escape($kd_kelas);
+			} else {
+				$kelas = null;
+			}
+
+			$siswa 		= "SELECT ts.nim, ts.nama
+							  FROM tbl_riwayat_kelas AS trk, tbl_siswa AS ts 
+							  WHERE trk.nim = ts.nim";
+			if ($is_guru) {
+				$siswa .= " AND trk.kd_kelas = ".$this->db->escape($kd_kelas);
+			}
+			$siswa .= " AND trk.id_tahun_akademik = ".$tahun;
+
+			$data['kelas'] 	= ($kelas) ? $this->db->query($kelas)->row_array() : null;
 			$data['siswa'] 	= $this->db->query($siswa);
+			$data['is_guru'] 	= $is_guru;
 			$this->template->load('template', 'laporan_nilai/list_siswa', $data);
 		}
 

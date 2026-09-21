@@ -11,10 +11,16 @@
 		
 		function index()
 		{
+			// Guru (id_level_user 3) hanya melihat jadwal yang diampunya; admin melihat semua.
+			$where = "tj.kd_jurusan = tju.kd_jurusan AND tj.kd_ruangan = tr.kd_ruangan AND tj.kd_mapel = tm.kd_mapel AND tj.kd_tingkatan = ttk.kd_tingkatan";
+			if ($this->session->userdata('id_level_user') == 3) {
+				$where .= " AND tj.id_guru = ".(int) $this->session->userdata('id_guru');
+			}
+
 			$sql = "SELECT tj.kd_kelas, tj.id_jadwal, tju.nama_jurusan, ttk.nama_tingkatan, tm.nama_mapel, tj.jam, 
 					tr.nama_ruangan, tj.hari, tj.semester 
 					FROM tbl_jadwal AS tj, tbl_jurusan AS tju, tbl_ruangan AS tr, tbl_mapel AS tm, tbl_tingkatan_kelas AS ttk
-					WHERE tj.kd_jurusan = tju.kd_jurusan AND tj.kd_ruangan = tr.kd_ruangan AND tj.kd_mapel = tm.kd_mapel AND tj.kd_tingkatan = ttk.kd_tingkatan AND tj.id_guru =".$this->session->userdata('id_guru');
+					WHERE ".$where;
 			$data['jadwal'] =$this->db->query($sql);
 			$this->template->load('template', 'nilai/list_kelas', $data);
 		}
