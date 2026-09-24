@@ -134,4 +134,8 @@ SQL
   echo "==> MAPEL: atribut sks di-seed."
 fi
 
+# --- 5. View pembayaran: sertakan kd_mode supaya list bisa difilter per mode ---
+q "CREATE OR REPLACE VIEW view_pembayaran AS SELECT tp.id_pembayaran, ts.nama, tp.nim, tp.jenis_bayar, tp.jumlah, tta.tahun_akademik, tta.semester, tp.tanggal_bayar, tp.keterangan, tp.kd_mode FROM tbl_pembayaran tp JOIN tbl_siswa ts ON tp.nim = ts.nim JOIN tbl_tahun_akademik tta ON tp.id_tahun_akademik = tta.id_tahun_akademik;"
+echo "==> view_pembayaran: kolom kd_mode disertakan (CREATE OR REPLACE)."
+
 echo "==> SELESAI: database '$DB_NAME' siap untuk arsitektur metadata-driven."

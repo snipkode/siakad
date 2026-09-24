@@ -653,7 +653,7 @@ CREATE TABLE `view_pembayaran` (
 --
 DROP TABLE IF EXISTS `view_pembayaran`;
 
-CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `view_pembayaran`  AS  select `tp`.`id_pembayaran` AS `id_pembayaran`,`ts`.`nama` AS `nama`,`tp`.`nim` AS `nim`,`tp`.`jenis_bayar` AS `jenis_bayar`,`tp`.`jumlah` AS `jumlah`,`tta`.`tahun_akademik` AS `tahun_akademik`,`tta`.`semester` AS `semester`,`tp`.`tanggal_bayar` AS `tanggal_bayar`,`tp`.`keterangan` AS `keterangan` from ((`tbl_pembayaran` `tp` join `tbl_siswa` `ts`) join `tbl_tahun_akademik` `tta`) where ((`tp`.`nim` = `ts`.`nim`) and (`tp`.`id_tahun_akademik` = `tta`.`id_tahun_akademik`)) ;
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `view_pembayaran`  AS  select `tp`.`id_pembayaran` AS `id_pembayaran`,`ts`.`nama` AS `nama`,`tp`.`nim` AS `nim`,`tp`.`jenis_bayar` AS `jenis_bayar`,`tp`.`jumlah` AS `jumlah`,`tta`.`tahun_akademik` AS `tahun_akademik`,`tta`.`semester` AS `semester`,`tp`.`tanggal_bayar` AS `tanggal_bayar`,`tp`.`keterangan` AS `keterangan`,`tp`.`kd_mode` AS `kd_mode` from ((`tbl_pembayaran` `tp` join `tbl_siswa` `ts`) join `tbl_tahun_akademik` `tta`) where ((`tp`.`nim` = `ts`.`nim`) and (`tp`.`id_tahun_akademik` = `tta`.`id_tahun_akademik`)) ;
 
 -- --------------------------------------------------------
 

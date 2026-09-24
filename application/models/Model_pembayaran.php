@@ -14,7 +14,8 @@
 				'jumlah'		=> $this->input->post('jumlah', TRUE),
 				'id_tahun_akademik'	=> $this->input->post('id_tahun_akademik', TRUE),
 				'tanggal_bayar'		=> $this->input->post('tanggal_bayar', TRUE),
-				'keterangan'		=> $this->input->post('keterangan', TRUE)
+				'keterangan'		=> $this->input->post('keterangan', TRUE),
+				'kd_mode'		=> meta_mode()
 			);
 			$this->db->insert($this->table, $data);
 		}

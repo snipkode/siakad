@@ -53,18 +53,21 @@
 		        )
 		    );
 
-			$sql_details = array(
-				'user' => $this->db->username,
-				'pass' => $this->db->password,
-				'db'   => $this->db->database,
-				'host' => $this->db->hostname
-		    );
+$sql_details = array(
+			'user' => $this->db->username,
+			'pass' => $this->db->password,
+			'db'   => $this->db->database,
+			'host' => $this->db->hostname
+	    );
 
-		    echo json_encode(
-		     	SSP::simple($_GET, $sql_details, $table, $primaryKey, $columns)
-		     );
+	    // Hanya data mode aktif.
+	    $whereAll = "kd_mode = ".$this->db->escape(meta_mode());
 
-		}
+	    echo json_encode(
+	     	SSP::complex($_GET, $sql_details, $table, $primaryKey, $columns, null, $whereAll)
+	     );
+
+	}
 
 		function index()
 		{
@@ -78,8 +81,8 @@
 				$this->model_pembayaran->save();
 				redirect('pembayaran');
 			} else {
-				$data['siswa']  = $this->db->order_by('nama', 'ASC')->get('tbl_siswa')->result();
-				$data['tahun']  = $this->db->order_by('id_tahun_akademik', 'ASC')->get('tbl_tahun_akademik')->result();
+				$data['siswa']  = $this->db->where('kd_mode', meta_mode())->order_by('nama', 'ASC')->get('tbl_siswa')->result();
+				$data['tahun']  = $this->db->where('kd_mode', meta_mode())->order_by('id_tahun_akademik', 'ASC')->get('tbl_tahun_akademik')->result();
 				$data['aktif']  = get_tahun_akademik('id_tahun_akademik');
 				$this->template->load('template', 'pembayaran/add', $data);
 			}
@@ -94,8 +97,8 @@
 			} else {
 				$id_pembayaran	 = $this->uri->segment(3);
 				$data['pembayaran'] = $this->db->get_where('tbl_pembayaran', array('id_pembayaran' => $id_pembayaran))->row_array();
-				$data['siswa']  = $this->db->order_by('nama', 'ASC')->get('tbl_siswa')->result();
-				$data['tahun']  = $this->db->order_by('id_tahun_akademik', 'ASC')->get('tbl_tahun_akademik')->result();
+				$data['siswa']  = $this->db->where('kd_mode', meta_mode())->order_by('nama', 'ASC')->get('tbl_siswa')->result();
+				$data['tahun']  = $this->db->where('kd_mode', meta_mode())->order_by('id_tahun_akademik', 'ASC')->get('tbl_tahun_akademik')->result();
 				$this->template->load('template', 'pembayaran/edit', $data);
 			}
 		}
