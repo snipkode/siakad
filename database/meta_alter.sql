@@ -33,3 +33,5 @@ INSERT INTO `tabel_menu` (`id`, `nama_menu`, `link`, `icon`, `is_main_menu`, `be
 ON DUPLICATE KEY UPDATE `berlaku_mode` = VALUES(`berlaku_mode`);
 INSERT INTO `tbl_user_rule` (`id_menu`, `id_level_user`) VALUES (19, 1), (20, 1), (21, 1)
 ON DUPLICATE KEY UPDATE `id_level_user` = VALUES(`id_level_user`);
+-- Modul khas sekolah disembunyikan di mode KAMPUS (pengisian nilai kampus via KRS)
+UPDATE `tabel_menu` SET `berlaku_mode` = 'SMA,SMP,SD' WHERE `link` IN ('jadwal', 'nilai');

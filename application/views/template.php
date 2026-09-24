@@ -47,6 +47,7 @@
           'walikelas'      => meta_mode_label('label_staf').' / Pembimbing',
           'jadwal'         => 'Jadwal '.meta_mode_label('label_mata_ajar'),
           'laporan_nilai'  => 'Laporan '.meta_mode_label('label_mata_ajar'),
+          'pembayaran'     => 'Pembayaran '.meta_mode_label('label_peserta'),
       );
       $seg = _seg($link);
       return isset($map[$seg]) ? $map[$seg] : null;

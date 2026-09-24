@@ -533,7 +533,8 @@
 	    	}
 	    	if (trim(identitas('email')) !== '') 	$kontak[] = 'Email: '.identitas('email');
 	    	if (trim(identitas('website')) !== '') 	$kontak[] = trim(identitas('website'));
-	    	if (trim(identitas('npsn')) !== '') 	$kontak[] = 'NPSN '.identitas('npsn');
+	    	// NPSN khas sekolah; untuk kampus sembunyikan
+	    	if (meta_mode() !== 'KAMPUS' && trim(identitas('npsn')) !== '') $kontak[] = 'NPSN '.identitas('npsn');
 	    	$kop = trim($alamat.(count($kontak) ? ' - '.implode(' - ', $kontak) : ''));
 	    	$pdf->Cell(0,5,$kop,0,1,'C');
 	    	$y = $pdf->GetY() + 2;
