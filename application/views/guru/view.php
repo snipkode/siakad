@@ -5,7 +5,7 @@
         <i class="fa fa-users"></i>
       </span>
       <div>
-        <h3 class="text-sm font-bold text-slate-800">Data Guru</h3>
+        <h3 class="text-sm font-bold text-slate-800">Data <?php echo meta_mode_label('label_staf'); ?></h3>
         <p class="text-xs text-slate-500">
           Total
           <span id="total-guru" class="inline-flex items-center justify-center rounded-full bg-indigo-100 px-2 py-0.5 text-[11px] font-bold text-indigo-700">0</span>
@@ -24,8 +24,8 @@
       <thead>
         <tr>
           <th class="px-3 py-2.5 text-left text-[11px] font-semibold uppercase tracking-wide text-slate-500">NO</th>
-          <th class="px-3 py-2.5 text-left text-[11px] font-semibold uppercase tracking-wide text-slate-500">NUPTK</th>
-          <th class="px-3 py-2.5 text-left text-[11px] font-semibold uppercase tracking-wide text-slate-500">NAMA GURU</th>
+          <th class="px-3 py-2.5 text-left text-[11px] font-semibold uppercase tracking-wide text-slate-500"><?php echo mb_strtoupper(meta_label('guru', 'nomor_induk', 'NUPTK')); ?></th>
+          <th class="px-3 py-2.5 text-left text-[11px] font-semibold uppercase tracking-wide text-slate-500">NAMA <?php echo mb_strtoupper(meta_mode_label('label_staf')); ?></th>
           <th class="px-3 py-2.5 text-left text-[11px] font-semibold uppercase tracking-wide text-slate-500">GENDER</th>
           <th class="px-3 py-2.5 text-left text-[11px] font-semibold uppercase tracking-wide text-slate-500">AKSI</th>
         </tr>
@@ -45,7 +45,7 @@
       "lengthMenu": [[10, 25, 50, 100, -1], [10, 25, 50, 100, "Semua"]],
       "initComplete": function (settings, json) {
         $('#total-guru').text(json.recordsTotal);
-        $("#mytable_wrapper").parents(".rounded-2xl").first().find(".dataTables_filter input").attr("placeholder", "Cari guru / NUPTK...");
+        $("#mytable_wrapper").parents(".rounded-2xl").first().find(".dataTables_filter input").attr("placeholder", "Cari <?php echo mb_strtolower(meta_mode_label('label_staf')); ?> / NUPTK...");
         $("#mytable_wrapper").parents(".rounded-2xl").first().find(".dataTables_filter input").css("min-width", "200px");
       },
       "columns": [

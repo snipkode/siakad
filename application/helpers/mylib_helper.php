@@ -1,11 +1,15 @@
 <?php
 
-	function cmb_dinamis($name, $table, $field, $pk, $selected=null, $extra=null, $class='form-control')
+	function cmb_dinamis($name, $table, $field, $pk, $selected=null, $extra=null, $class='form-control', $where=null)
 	{
 		$ci   = get_instance();
 		$cmb  = "<select name='$name' class='$class' $extra>";
 
-		$data = $ci->db->get($table)->result();
+		if (is_array($where) && count($where)) {
+			$data = $ci->db->get_where($table, $where)->result();
+		} else {
+			$data = $ci->db->get($table)->result();
+		}
 		foreach ($data as $row) {
 			$cmb .= "<option value='".$row->$pk."'";
 			//Apabila $selected bernilai sama dengan nilai $pk maka akan bernilai selected selain itu akan bernilai null
@@ -120,5 +124,120 @@
         elseif ($x < 1000000000)
             return Terbilang($x / 1000000) . " juta" . Terbilang($x % 1000000);
     }
+
+	// =============================================================
+	// HELPER ARSITEKTUR METADATA-DRIVEN (multi-mode)
+	// Berbasis library Meta yang di-autoload.
+	// =============================================================
+
+	/**
+	 * Kode mode aktif (KAMPUS/SMA/SMP/SD/TK).
+	 */
+	function meta_mode()
+	{
+		return get_instance()->meta->mode();
+	}
+
+	/**
+	 * Label per mode, contoh: meta_label('label_peserta').
+	 */
+	function meta_mode_label($kolom)
+	{
+		return get_instance()->meta->mode_label($kolom);
+	}
+
+	/**
+	 * Cek fitur mode: meta_punya('punya_krs').
+	 */
+	function meta_punya($kolom)
+	{
+		return get_instance()->meta->punya($kolom);
+	}
+
+	/**
+	 * Label sebuah field entitas untuk mode aktif:
+	 * contoh: meta('peserta','nomor_induk') => 'NIM' / 'NIS' / 'NISN'.
+	 */
+	function meta_label($kd_entitas, $kd_field, $fallback = '')
+	{
+		return get_instance()->meta->label($kd_entitas, $kd_field, $fallback);
+	}
+
+	/**
+	 * Definisi field sebuah entitas (array), diurutkan.
+	 */
+	function meta_fields($kd_entitas, $kriteria = null)
+	{
+		return get_instance()->meta->fields($kd_entitas, $kriteria);
+	}
+
+	/**
+	 * Referensi terpadu: meta_ref('PRODI') => [kode => nama].
+	 */
+	function meta_ref($kategori, $full = false)
+	{
+		return get_instance()->meta->ref($kategori, $full);
+	}
+
+	/**
+	 * Nama referensi dari kode: meta_ref_nama('PRODI','SI').
+	 */
+	function meta_ref_nama($kategori, $kode, $fallback = '')
+	{
+		return get_instance()->meta->ref_nama($kategori, $kode, $fallback);
+	}
+
+	/**
+	 * Atribut JSON referensi: meta_ref_attr('MAPEL','BID','sks').
+	 */
+	function meta_ref_attr($kategori, $kode, $kolom = null)
+	{
+		return get_instance()->meta->ref_atribut($kategori, $kode, $kolom);
+	}
+
+	/**
+	 * Membaca atribut EAV entitas: meta_eav('peserta','18SI1000','prodi').
+	 */
+	function meta_eav($kd_entitas, $id_induk, $kd_field = null, $fallback = '')
+	{
+		$ci = get_instance();
+		if ($kd_field !== null) {
+			return $ci->meta->eav_val($kd_entitas, $id_induk, $kd_field, $fallback);
+		}
+		return $ci->meta->eav($kd_entitas, $id_induk);
+	}
+
+	/**
+	 * Ambil nilai "ROMBONGAN" (nama kelas/kelompok/prodi angkatan) sebuah
+	 * peserta dengan format sesuai mode, dari kolom kd_kelas & referensi.
+	 * Dipakai untuk label dinamis di daftar siswa.
+	 */
+	function meta_rombongan_peserta($kd_kelas)
+	{
+		if (empty($kd_kelas)) {
+			return '';
+		}
+		$ci = get_instance();
+		$kelas = $ci->db->where('kd_kelas', $kd_kelas)->get('tbl_kelas')->row_array();
+		if (empty($kelas)) {
+			return $kd_kelas;
+		}
+		$parts = array();
+		if (meta_punya('punya_prodi') && !empty($kelas['kd_prodi'])) {
+			$parts[] = meta_ref_nama('PRODI', $kelas['kd_prodi'], $kelas['kd_prodi']);
+		} elseif (meta_punya('punya_jurusan') && !empty($kelas['kd_jurusan'])) {
+			$parts[] = meta_ref_nama('JURUSAN', $kelas['kd_jurusan'], $kelas['kd_jurusan']);
+		}
+		$ting = !empty($kelas['kd_tingkatan'])
+			? meta_ref_nama('TINGKATAN', $kelas['kd_tingkatan'], $kelas['kd_tingkatan'])
+			: '';
+		if ($ting !== '') {
+			$parts[] = $ting;
+		}
+		if (empty($parts)) {
+			return $kelas['nama_kelas'];
+		}
+		return implode(' ', $parts);
+	}
 
 ?>

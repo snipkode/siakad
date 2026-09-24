@@ -5,7 +5,7 @@
         <i class="fa fa-graduation-cap"></i>
       </span>
       <div>
-        <h3 class="text-sm font-bold text-slate-800">Data Siswa</h3>
+        <h3 class="text-sm font-bold text-slate-800">Data <?php echo meta_mode_label('label_peserta'); ?></h3>
         <p class="text-xs text-slate-500">
           Total
           <span id="total-siswa" class="inline-flex items-center justify-center rounded-full bg-sky-100 px-2 py-0.5 text-[11px] font-bold text-sky-700">0</span>
@@ -27,9 +27,9 @@
         <tr>
           <th class="px-3 py-2.5 text-left text-[11px] font-semibold uppercase tracking-wide text-slate-500">NO</th>
           <th class="px-3 py-2.5 text-left text-[11px] font-semibold uppercase tracking-wide text-slate-500">FOTO</th>
-          <th class="px-3 py-2.5 text-left text-[11px] font-semibold uppercase tracking-wide text-slate-500">NIM</th>
+          <th class="px-3 py-2.5 text-left text-[11px] font-semibold uppercase tracking-wide text-slate-500"><?php echo meta_label('peserta', 'nomor_induk'); ?></th>
           <th class="px-3 py-2.5 text-left text-[11px] font-semibold uppercase tracking-wide text-slate-500">NAMA</th>
-          <th class="dt-hide-xs px-3 py-2.5 text-left text-[11px] font-semibold uppercase tracking-wide text-slate-500">JURUSAN</th>
+          <th class="dt-hide-xs px-3 py-2.5 text-left text-[11px] font-semibold uppercase tracking-wide text-slate-500"><?php echo mb_strtoupper(meta_mode_label('label_rombongan')); ?></th>
           <th class="dt-hide-xs px-3 py-2.5 text-left text-[11px] font-semibold uppercase tracking-wide text-slate-500">TEMPAT LAHIR</th>
           <th class="dt-hide-xs px-3 py-2.5 text-left text-[11px] font-semibold uppercase tracking-wide text-slate-500">TANGGAL LAHIR</th>
           <th class="px-3 py-2.5 text-left text-[11px] font-semibold uppercase tracking-wide text-slate-500">AKSI</th>
@@ -61,7 +61,7 @@
     <div class="flex items-center justify-between border-b border-slate-100 px-4 py-3">
       <div class="flex items-center gap-2.5">
         <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-sky-50 text-sky-600"><i class="fa fa-pencil"></i></span>
-        <h3 class="text-sm font-bold text-slate-800">Edit Siswa</h3>
+        <h3 class="text-sm font-bold text-slate-800">Edit <?php echo meta_mode_label('label_peserta'); ?></h3>
       </div>
       <button type="button" onclick="closeEditModal()" class="flex h-7 w-7 items-center justify-center rounded-lg text-slate-400 hover:bg-slate-100 hover:text-slate-600"><i class="fa fa-times"></i></button>
     </div>
@@ -88,7 +88,7 @@
         { "data": "foto", "width": "60px", "class": "text-center", "orderable": false, "searchable": false },
         { "data": "nim", "width": "110px", "class": "text-center font-mono" },
         { "data": "nama" },
-        { "data": "jurusan", "width": "130px", "class": "dt-hide-xs" },
+        { "data": "rombel", "width": "130px", "class": "dt-hide-xs" },
         { "data": "tempat_lahir", "width": "150px", "class": "dt-hide-xs" },
         { "data": "tanggal_lahir", "width": "140px", "class": "dt-hide-xs text-center" },
         { "data": "aksi", "width": "110px", "class": "text-center", "orderable": false, "searchable": false }

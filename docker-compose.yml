@@ -10,7 +10,9 @@ services:
       - "3306:3306"
     volumes:
       - db_data:/var/lib/mysql
-      - ./pis_akademik.sql:/docker-entrypoint-initdb.d/pis_akademik.sql
+      - ./pis_akademik.sql:/docker-entrypoint-initdb.d/01-pis_akademik.sql
+      - ./database/meta_schema.sql:/docker-entrypoint-initdb.d/02-meta_schema.sql
+      - ./database/meta_alter.sql:/docker-entrypoint-initdb.d/03-meta_alter.sql
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-uroot", "-proot"]
       interval: 10s

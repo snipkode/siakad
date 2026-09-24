@@ -13,25 +13,15 @@
 
 		function data()
 		{
-			// $sql = "SELECT tk.*, ttk.nama_tingkatan, tj.nama_jurusan 
-			// FROM tbl_kelas AS tk, tbl_tingkatan_kelas AS ttk, tbl_jurusan AS tj 
-			// WHERE tk.kd_tingkatan = ttk.kd_tingkatan AND tk.kd_jurusan = tj.kd_jurusan"
-			// Biasanya menggunakan query untuk mengambil nama dari tabel yang berbeda tapi saling berelasi,
-			// karena terlalu panjang, harus menggunakan foreach lagi dan menurut saya sepertinya 
-			//tidak bisa melakukan foreach di datatable, maka saya menggunaka create view kita bisa membuat query tersebut menjadi sebuah table
-
 			// nama table
-			$table      = 'view_kelas';
+			$table      = 'view_kelas_meta';
 			// nama PK
 			$primaryKey = 'kd_kelas';
-			// list field yang mau ditampilkan
-			$columns    = array(
-				//tabel db(kolom di database) => dt(nama datatable di view)
+			$mode       = $this->model_kelas->_mode();
+
+			$columns = array(
 				array('db' => 'kd_kelas', 'dt' => 'kd_kelas'),
 		        array('db' => 'nama_kelas', 'dt' => 'nama_kelas'),
-		        array('db' => 'nama_tingkatan', 'dt' => 'nama_tingkatan'),
-		        array('db' => 'nama_jurusan', 'dt' => 'nama_jurusan'),
-		        //untuk menampilkan aksi(edit/delete dengan parameter kode kelas)
 		        array(
 		              'db' => 'kd_kelas',
 		              'dt' => 'aksi',
@@ -42,6 +32,18 @@
 		        )
 		    );
 
+			if ($mode === 'KAMPUS') {
+				array_splice($columns, 2, 0, array(
+					array('db' => 'nama_prodi', 'dt' => 'nama_prodi'),
+					array('db' => 'angkatan',   'dt' => 'angkatan'),
+				));
+			} else {
+				array_splice($columns, 2, 0, array(
+					array('db' => 'nama_tingkatan', 'dt' => 'nama_tingkatan'),
+					array('db' => 'nama_jurusan',   'dt' => 'nama_jurusan'),
+				));
+			}
+
 			$sql_details = array(
 				'user' => $this->db->username,
 				'pass' => $this->db->password,
@@ -49,8 +51,10 @@
 				'host' => $this->db->hostname
 		    );
 
+		    $whereAll = "kd_mode = ".$this->db->escape($mode);
+
 		    echo json_encode(
-		     	SSP::simple($_GET, $sql_details, $table, $primaryKey, $columns)
+		     	SSP::complex($_GET, $sql_details, $table, $primaryKey, $columns, null, $whereAll)
 		     );
 
 		}

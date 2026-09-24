@@ -19,6 +19,7 @@
 			$table      = 'tbl_siswa';
 			// nama PK
 			$primaryKey = 'nim';
+			$mode       = $this->model_siswa->_mode();
 			// list field yang mau ditampilkan
 			$columns    = array(
 				//tabel db(kolom di database) => dt(nama datatable di view)
@@ -33,7 +34,6 @@
 				),
 				array('db' => 'nim', 'dt' => 'nim'),
 		        array('db' => 'nama', 'dt' => 'nama'),
-		        array('db' => 'nama_jurusan', 'dt' => 'jurusan'),
 		        array('db' => 'tempat_lahir', 'dt' => 'tempat_lahir'),
 		        array('db' => 'tanggal_lahir', 'dt' => 'tanggal_lahir'),
 		        //untuk menampilkan aksi(edit/delete dengan parameter nim siswa)
@@ -48,6 +48,14 @@
 		        )
 		    );
 
+			// kolom rombongan menyesuaikan struktur mode (nama kolom tidak ambigu di tbl_siswa)
+			if ($mode === 'KAMPUS') {
+				// kampus: tampilkan nama kelompok; prodi/angkatan via atribut kelas
+				$columns[] = array('db' => 'nama_kelas', 'dt' => 'rombel');
+			} else {
+				$columns[] = array('db' => 'nama_jurusan', 'dt' => 'rombel');
+			}
+
 			$sql_details = array(
 				'user' => $this->db->username,
 				'pass' => $this->db->password,
@@ -55,11 +63,18 @@
 				'host' => $this->db->hostname
 		    );
 
-		    $join = "LEFT JOIN tbl_kelas ON tbl_siswa.kd_kelas = tbl_kelas.kd_kelas
-		             LEFT JOIN tbl_jurusan ON tbl_kelas.kd_jurusan = tbl_jurusan.kd_jurusan";
+		    if ($mode === 'KAMPUS') {
+		    	$join = "LEFT JOIN tbl_kelas tk ON tbl_siswa.kd_kelas = tk.kd_kelas";
+		    } else {
+		    	$join = "LEFT JOIN tbl_kelas tk ON tbl_siswa.kd_kelas = tk.kd_kelas
+		             LEFT JOIN tbl_jurusan tj ON tk.kd_jurusan = tj.kd_jurusan";
+		    }
+
+		    $mode_esc = $this->db->escape($mode);
+		    $whereAll = "tbl_siswa.kd_mode = {$mode_esc}";
 
 		    echo json_encode(
-		     	SSP::simple($_GET, $sql_details, $table, $primaryKey, $columns, $join)
+		     	SSP::complex($_GET, $sql_details, $table, $primaryKey, $columns, null, $whereAll, $join)
 		     );
 
 		}
@@ -81,7 +96,9 @@
 				$this->model_siswa->save($uploadFoto);
 				redirect('siswa');
 			} else {
-				$this->template->load('template', 'siswa/add');
+				$data['eav_fields'] = $this->model_siswa->eav_fields();
+				$data['eav_values'] = array();
+				$this->template->load('template', 'siswa/add', $data);
 			}
 		}
 
@@ -95,7 +112,9 @@
 						exit(json_encode(array('ok' => false, 'message' => $this->upload->display_errors())));
 					}
 					$nim           = $this->uri->segment(3);
-					$data['siswa'] = $this->db->get_where('tbl_siswa', array('nim' => $nim))->row_array();
+					$data['siswa'] = $this->model_siswa->ambil($nim);
+					$data['eav_fields'] = $this->model_siswa->eav_fields();
+					$data['eav_values'] = $data['siswa'];
 					$data['upload_error'] = $this->upload->display_errors();
 					$this->template->load('template', 'siswa/edit', $data);
 					return;
@@ -107,7 +126,9 @@
 				redirect('siswa');
 			} else {
 				$nim           = $this->uri->segment(3);
-				$data['siswa'] = $this->db->get_where('tbl_siswa', array('nim' => $nim))->row_array();
+				$data['siswa'] = $this->model_siswa->ambil($nim);
+				$data['eav_fields'] = $this->model_siswa->eav_fields();
+				$data['eav_values'] = $data['siswa'];
 				$this->template->load('template', 'siswa/edit', $data);
 			}
 		}
@@ -116,11 +137,13 @@
 		function form_edit()
 		{
 			$nim           = $this->uri->segment(3);
-			$data['siswa'] = $this->db->get_where('tbl_siswa', array('nim' => $nim))->row_array();
+			$data['siswa'] = $this->model_siswa->ambil($nim);
 			if (empty($data['siswa'])) {
 				show_404();
 				return;
 			}
+			$data['eav_fields'] = $this->model_siswa->eav_fields();
+			$data['eav_values'] = $data['siswa'];
 			$this->load->view('siswa/edit_form', $data);
 		}
 
@@ -167,6 +190,7 @@
 			$kelas 	= $_GET['kd_kelas'];
 
 			$this->db->where('kd_kelas', $kelas);
+			$this->db->where('kd_mode', $this->model_siswa->_mode());
 			$siswa = $this->db->get('tbl_siswa');
 
 			if ($siswa->num_rows() == 0) {
@@ -200,6 +224,7 @@
 	        
 	        $kelas = $_POST['kelas'];
 	        $this->db->where('kd_kelas', $kelas);
+	        $this->db->where('kd_mode', $this->model_siswa->_mode());
 	        $siswa = $this->db->get('tbl_siswa');
 	        $no=2;
 	        foreach ($siswa->result() as $row){
@@ -316,6 +341,7 @@
 						</tr>";
 
 				$this->db->where('kd_kelas', $kelas);
+				$this->db->where('kd_mode', $this->model_siswa->_mode());
 				$siswa = $this->db->get('tbl_siswa');
 				foreach ($siswa->result() as $row) {
 					echo "<tr>

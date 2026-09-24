@@ -5,7 +5,7 @@
         <i class="fa fa-university"></i>
       </span>
       <div>
-        <h3 class="text-sm font-bold text-slate-800">Data Kelas</h3>
+        <h3 class="text-sm font-bold text-slate-800">Data <?php echo meta_mode_label('label_rombongan'); ?></h3>
         <p class="text-xs text-slate-500">
           Total
           <span id="total-kelas" class="inline-flex items-center justify-center rounded-full bg-cyan-100 text-cyan-700 px-2 py-0.5 text-[11px] font-bold">0</span>
@@ -23,7 +23,17 @@
     <table id="mytable" class="dataTable w-full text-sm">
       <thead>
         <tr>
-          <th class="px-3 py-2.5 text-left text-[11px] font-semibold uppercase tracking-wide text-slate-500">NO</th>          <th class="px-3 py-2.5 text-left text-[11px] font-semibold uppercase tracking-wide text-slate-500">KODE KELAS</th>          <th class="px-3 py-2.5 text-left text-[11px] font-semibold uppercase tracking-wide text-slate-500">NAMA KELAS</th>          <th class="px-3 py-2.5 text-left text-[11px] font-semibold uppercase tracking-wide text-slate-500">TINGKATAN</th>          <th class="px-3 py-2.5 text-left text-[11px] font-semibold uppercase tracking-wide text-slate-500">JURUSAN</th>          <th class="px-3 py-2.5 text-left text-[11px] font-semibold uppercase tracking-wide text-slate-500">AKSI</th>
+          <th class="px-3 py-2.5 text-left text-[11px] font-semibold uppercase tracking-wide text-slate-500">NO</th>
+          <th class="px-3 py-2.5 text-left text-[11px] font-semibold uppercase tracking-wide text-slate-500">KODE</th>
+          <th class="px-3 py-2.5 text-left text-[11px] font-semibold uppercase tracking-wide text-slate-500">NAMA</th>
+          <?php if (meta_mode() === 'KAMPUS'): ?>
+          <th class="px-3 py-2.5 text-left text-[11px] font-semibold uppercase tracking-wide text-slate-500">PROGRAM STUDI</th>
+          <th class="px-3 py-2.5 text-left text-[11px] font-semibold uppercase tracking-wide text-slate-500">ANGKATAN</th>
+          <?php else: ?>
+          <th class="px-3 py-2.5 text-left text-[11px] font-semibold uppercase tracking-wide text-slate-500">TINGKATAN</th>
+          <th class="px-3 py-2.5 text-left text-[11px] font-semibold uppercase tracking-wide text-slate-500">JURUSAN</th>
+          <?php endif; ?>
+          <th class="px-3 py-2.5 text-left text-[11px] font-semibold uppercase tracking-wide text-slate-500">AKSI</th>
         </tr>
       </thead>
     </table>
@@ -49,8 +59,13 @@
 { "data": null, "width": "45px", "class": "text-center", "orderable": false },
         { "data": "kd_kelas", "width": "140px", "class": "text-center font-mono" },
         { "data": "nama_kelas" },
-        { "data": "nama_tingkatan", "width": "110px", "class": "text-center" },
+        <?php if (meta_mode() === 'KAMPUS'): ?>
+        { "data": "nama_prodi", "width": "150px", "class": "text-center" },
+        { "data": "angkatan", "width": "100px", "class": "text-center" },
+        <?php else: ?>
+        { "data": "nama_tingkatan", "width": "130px", "class": "text-center" },
         { "data": "nama_jurusan", "width": "110px", "class": "text-center" },
+        <?php endif; ?>
         { "data": "aksi", "width": "110px", "class": "text-center", "orderable": false, "searchable": false }
       ]
     });

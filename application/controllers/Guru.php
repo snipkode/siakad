@@ -52,8 +52,10 @@
         'host' => $this->db->hostname
         );
 
+        $whereAll = "kd_mode = ".$this->db->escape($this->model_guru->_mode());
+
         echo json_encode(
-          SSP::simple($_GET, $sql_details, $table, $primaryKey, $columns)
+          SSP::complex($_GET, $sql_details, $table, $primaryKey, $columns, null, $whereAll)
          );
 
     }
@@ -69,7 +71,9 @@
         $this->model_guru->save();
         redirect('guru');
       } else {
-        $this->template->load('template', 'guru/add');
+        $data['eav_fields'] = $this->model_guru->eav_fields();
+        $data['eav_values'] = array();
+        $this->template->load('template', 'guru/add', $data);
       }
     }
 
@@ -79,8 +83,10 @@
         $this->model_guru->update();
         redirect('guru');
       } else {
-        $id_guru     = $this->uri->segment(3);
-        $data['guru']  = $this->db->get_where('tbl_guru', array('id_guru' => $id_guru))->row_array();
+        $id_guru        = $this->uri->segment(3);
+        $data['guru']   = $this->model_guru->ambil($id_guru);
+        $data['eav_fields'] = $this->model_guru->eav_fields();
+        $data['eav_values'] = $data['guru'];
         $this->template->load('template', 'guru/edit', $data);
       }
     }

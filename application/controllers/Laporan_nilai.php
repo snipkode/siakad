@@ -5,6 +5,23 @@
 		
 		function index()
 		{
+			// KAMPUS: daftar mahasiswa + IP/IPK, aksi KHS & Transkrip
+			if (meta_mode() === 'KAMPUS') {
+				$cari = trim((string) $this->input->get('cari'));
+				$this->db->where('kd_mode', 'KAMPUS');
+				if ($cari !== '') {
+					$this->db->group_start();
+					$this->db->like('nama', $cari);
+					$this->db->or_like('nim', $cari);
+					$this->db->group_end();
+				}
+				$this->db->order_by('nama', 'asc');
+				$data['mahasiswa'] = $this->db->get('v_krs_mahasiswa')->result_array();
+				$data['cari']      = $cari;
+				$this->template->load('template', 'laporan_nilai/list_kampus', $data);
+				return;
+			}
+
 			$is_guru 	= ($this->session->userdata('id_level_user') == 3);
 			$tahun 		= (int) get_tahun_akademik('id_tahun_akademik');
 			$semester 	= (string) get_tahun_akademik('semester');
@@ -105,6 +122,12 @@
 		}
 
 		function nilai_semester(){
+			// KAMPUS: cetak KHS semester aktif
+			if (meta_mode() === 'KAMPUS') {
+				$this->cetak_khs($this->uri->segment(3));
+				return;
+			}
+
        		// blok query info siswa (kelas = riwayat pada tahun akademik aktif)
 	       $nim 		= $this->uri->segment(3);
 	       $tahun 		= (int) get_tahun_akademik('id_tahun_akademik');
@@ -279,6 +302,253 @@
 	    private function _nullable($v, $fallback = '-')
 	    {
 	    	return (trim((string) $v) !== '') ? $v : $fallback;
+	    }
+
+	    /** KHS (Kartu Hasil Studi) — mode KAMPUS, semester akademik aktif */
+	    function cetak_khs($nim)
+	    {
+	    	$this->load->library('CFPDF');
+	    	$nim = (string) $nim;
+	    	$this->db->where('is_aktif', 'Y');
+	    	$ta  = $this->db->get('tbl_tahun_akademik')->row_array();
+	    	$mhs = $this->_info_kampus($nim);
+	    	if (empty($mhs)) { redirect('laporan_nilai'); }
+
+	    	$sql = "SELECT tj.kd_mapel, r.nama AS nama_mapel, tn.sks, tn.nilai
+	    	        FROM tbl_nilai AS tn
+	    	        JOIN tbl_jadwal AS tj ON tj.id_jadwal = tn.id_jadwal
+	    	        JOIN tbl_referensi AS r ON r.kategori = 'MAPEL' AND r.kode = tj.kd_mapel
+	    	        WHERE tn.nim = ".$this->db->escape($nim)."
+	    	          AND tj.kd_mode = 'KAMPUS'
+	    	          AND tj.id_tahun_akademik = ".(int) $ta['id_tahun_akademik']."
+	    	          AND tj.semester = ".$this->db->escape($ta['semester'])."
+	    	        ORDER BY r.nama";
+	    	$rows = $this->db->query($sql)->result();
+
+	    	list($total_sks, $bobot, $cnt) = array(0, 0.0, 0);
+	    	foreach ($rows as $r) {
+	    		$total_sks += (int) $r->sks;
+	    		if ($r->nilai > 0) { $bobot += (float) $r->nilai * (int) $r->sks; $cnt += (int) $r->sks; }
+	    	}
+	    	$ip = ($cnt > 0) ? $bobot / $cnt : 0;
+	    	$ipk = $this->_ipk_kampus($nim);
+
+	    	$pdf = new FPDF('P','mm','A4');
+	    	$pdf->AliasNbPages();
+	    	$pdf->SetTitle('KHS '.$mhs['nama'].' - '.$nim, true);
+	    	$pdf->SetMargins(15, 12, 15);
+	    	$pdf->SetAutoPageBreak(true, 15);
+	    	$pdf->AddPage();
+
+	    	$this->_kop_kampus($pdf, 'KARTU HASIL STUDI', 'SEMESTER '.strtoupper($ta['semester']).'  TAHUN AKADEMIK '.get_tahun_akademik('tahun_akademik'));
+
+	    	// identitas mahasiswa
+	    	$pdf->SetDrawColor(203,213,225);
+	    	$pdf->SetFillColor(226,232,240);
+	    	$lw = 33; $vw = 57;
+	    	$this->_identitas_baris($pdf, $lw, $vw, 'NIM', $mhs['nim'], 'Nama', $mhs['nama']);
+	    	$this->_identitas_baris($pdf, $lw, $vw, 'Program Studi', $this->_nullable($mhs['nama_prodi'], '-'), 'Angkatan', $this->_nullable($mhs['angkatan'], '-'));
+	    	$this->_identitas_baris($pdf, $lw, $vw, 'Rombongan', $this->_nullable($mhs['nama_kelas'], '-'), 'Semester', ucfirst($ta['semester']));
+	    	$pdf->Ln(3);
+
+	    	// tabel nilai
+	    	$pdf->SetFont('Arial','B',8.5);
+	    	$pdf->SetFillColor(226,232,240);
+	    	foreach (array('NO'=>8,'KODE'=>20,'MATA KULIAH'=>72,'SKS'=>12,'NILAI'=>15,'MUTU'=>15,'BOBOT'=>28) as $h=>$w) {
+	    		$align = in_array($h, array('NO','SKS','NILAI','MUTU','BOBOT')) ? 'C' : 'L';
+	    		$pdf->Cell($w,7,$h,1,0,$align,1);
+	    	}
+	    	$pdf->Ln(7);
+
+	    	$pdf->SetFont('Arial','',8.5);
+	    	$no = 1;
+	    	$fill = false;
+	    	foreach ($rows as $r) {
+	    		$fill = !$fill;
+	    		$pdf->SetFillColor(245,247,250);
+	    		$mutu = ($r->nilai > 0) ? $this->huruf_mutu($r->nilai) : '-';
+	    		$bobot_v = ($r->nilai > 0) ? round($r->nilai * (int) $r->sks, 1) : '-';
+	    		$pdf->Cell(8,6,$no++,1,0,'C',$fill);
+	    		$pdf->Cell(20,6,$this->_nullable($r->kd_mapel,'-'),1,0,'L',$fill);
+	    		$pdf->Cell(72,6,$r->nama_mapel,1,0,'L',$fill);
+	    		$pdf->Cell(12,6,$r->sks,1,0,'C',$fill);
+	    		$pdf->Cell(15,6,$r->nilai > 0 ? $r->nilai : '-',1,0,'C',$fill);
+	    		$pdf->Cell(15,6,$mutu,1,0,'C',$fill);
+	    		$pdf->Cell(28,6,$bobot_v,1,1,'C',$fill);
+	    	}
+	    	$pdf->SetFillColor(226,232,240);
+	    	$pdf->SetFont('Arial','B',8.5);
+	    	$pdf->Cell(8,6,'',1,0,'C',1);
+	    	$pdf->Cell(92,6,'TOTAL SKS',1,0,'L',1);
+	    	$pdf->Cell(12,6,$total_sks,1,0,'C',1);
+	    	$pdf->Cell(15,6,'',1,0,'C',1);
+	    	$pdf->Cell(43,6,'IP : '.number_format($ip,2),1,1,'L',1);
+
+	    	$pdf->Ln(3);
+	    	$pdf->SetFont('Arial','',9);
+	    	$pdf->Cell(0,6,'IP Kumulatif (IPK) : '.number_format($ipk,2).'   |   Predikat : '.$this->_predikat($ipk),0,1,'L');
+
+	    	$pdf->Ln(6);
+	    	$cw = 60;
+	    	$pdf->SetFont('Arial','B',9);
+	    	$pdf->Cell($cw,6,'Mahasiswa',0,0,'C');
+	    	$pdf->Cell($cw,6,'Dosen Wali / Pejabat',0,0,'C');
+	    	$pdf->Cell($cw,6,'Mengetahui',0,1,'C');
+	    	$pdf->Ln(18);
+	    	$pdf->SetFont('Arial','',9);
+	    	$pdf->Cell($cw,5,'(  '.$mhs['nama'].'  )',0,0,'C');
+	    	$pdf->Cell($cw,5,'(  ............................  )',0,0,'C');
+	    	$pdf->Cell($cw,5,'(  '.$this->_nullable(identitas('kepala_sekolah'), '............................').'  )',0,1,'C');
+
+	    	$pdf->Output('KHS_'.$nim.'.pdf', 'I');
+	    }
+
+	    /** Transkrip nilai kumulatif — mode KAMPUS */
+	    function transkrip($nim)
+	    {
+	    	$this->load->library('CFPDF');
+	    	$nim = (string) $nim;
+	    	$mhs = $this->_info_kampus($nim);
+	    	if (empty($mhs)) { redirect('laporan_nilai'); }
+
+	    	$sql = "SELECT tj.kd_mapel, r.nama AS nama_mapel, tn.sks, tn.nilai,
+	    			        tj.semester, tta.tahun_akademik
+	    	        FROM tbl_nilai AS tn
+	    	        JOIN tbl_jadwal AS tj ON tj.id_jadwal = tn.id_jadwal
+	    	        JOIN tbl_referensi AS r ON r.kategori = 'MAPEL' AND r.kode = tj.kd_mapel
+	    	        JOIN tbl_tahun_akademik AS tta ON tta.id_tahun_akademik = tj.id_tahun_akademik
+	    	        WHERE tn.nim = ".$this->db->escape($nim)." AND tj.kd_mode = 'KAMPUS'
+	    	        ORDER BY tta.tahun_akademik, tj.semester, r.nama";
+	    	$rows = $this->db->query($sql)->result();
+
+	    	$total_sks = 0; $bobot = 0.0; $cnt = 0;
+	    	foreach ($rows as $r) {
+	    		$total_sks += (int) $r->sks;
+	    		if ($r->nilai > 0) { $bobot += (float) $r->nilai * (int) $r->sks; $cnt += (int) $r->sks; }
+	    	}
+	    	$ipk = ($cnt > 0) ? $bobot / $cnt : 0;
+
+	    	$pdf = new FPDF('P','mm','A4');
+	    	$pdf->AliasNbPages();
+	    	$pdf->SetTitle('Transkrip '.$mhs['nama'].' - '.$nim, true);
+	    	$pdf->SetMargins(15, 12, 15);
+	    	$pdf->SetAutoPageBreak(true, 15);
+	    	$pdf->AddPage();
+
+	    	$this->_kop_kampus($pdf, 'TRANSKRIP NILAI', 'SEMUA SEMESTER - TAHUN AKADEMIK '.get_tahun_akademik('tahun_akademik'));
+
+	    	$pdf->SetDrawColor(203,213,225);
+	    	$pdf->SetFillColor(226,232,240);
+	    	$lw = 33; $vw = 57;
+	    	$this->_identitas_baris($pdf, $lw, $vw, 'NIM', $mhs['nim'], 'Nama', $mhs['nama']);
+	    	$this->_identitas_baris($pdf, $lw, $vw, 'Program Studi', $this->_nullable($mhs['nama_prodi'], '-'), 'Angkatan', $this->_nullable($mhs['angkatan'], '-'));
+	    	$pdf->Ln(3);
+
+	    	$pdf->SetFont('Arial','B',8.5);
+	    	$pdf->SetFillColor(226,232,240);
+	    	foreach (array('NO'=>8,'KODE'=>20,'MATA KULIAH'=>62,'SEMESTER'=>22,'TAHUN AKADEMIK'=>30,'SKS'=>12,'NILAI'=>15,'MUTU'=>15) as $h=>$w) {
+	    		$align = in_array($h, array('NO','SEMESTER','TAHUN AKADEMIK','SKS','NILAI','MUTU')) ? 'C' : 'L';
+	    		$pdf->Cell($w,7,$h,1,0,$align,1);
+	    	}
+	    	$pdf->Ln(7);
+
+	    	$pdf->SetFont('Arial','',8.5);
+	    	$no = 1; $fill = false;
+	    	foreach ($rows as $r) {
+	    		$fill = !$fill;
+	    		$pdf->SetFillColor(245,247,250);
+	    		$pdf->Cell(8,6,$no++,1,0,'C',$fill);
+	    		$pdf->Cell(20,6,$this->_nullable($r->kd_mapel,'-'),1,0,'L',$fill);
+	    		$pdf->Cell(62,6,$r->nama_mapel,1,0,'L',$fill);
+	    		$pdf->Cell(22,6,ucfirst($r->semester),1,0,'C',$fill);
+	    		$pdf->Cell(30,6,$r->tahun_akademik,1,0,'C',$fill);
+	    		$pdf->Cell(12,6,$r->sks,1,0,'C',$fill);
+	    		$pdf->Cell(15,6,$r->nilai > 0 ? $r->nilai : '-',1,0,'C',$fill);
+	    		$pdf->Cell(15,6,$r->nilai > 0 ? $this->huruf_mutu($r->nilai) : '-',1,1,'C',$fill);
+	    	}
+	    	$pdf->SetFillColor(226,232,240);
+	    	$pdf->SetFont('Arial','B',8.5);
+	    	$pdf->Cell(8,6,'',1,0,'C',1);
+	    	$pdf->Cell(142,6,'TOTAL',1,0,'L',1);
+	    	$pdf->Cell(12,6,$total_sks,1,0,'C',1);
+	    	$pdf->Cell(30,6,'IPK : '.number_format($ipk,2),1,1,'C',1);
+
+	    	$pdf->Ln(6);
+	    	$cw = 60;
+	    	$pdf->SetFont('Arial','B',9);
+	    	$pdf->Cell($cw,6,'Mahasiswa',0,0,'C');
+	    	$pdf->Cell($cw,6,'Dosen Wali / Pejabat',0,0,'C');
+	    	$pdf->Cell($cw,6,'Mengetahui',0,1,'C');
+	    	$pdf->Ln(18);
+	    	$pdf->SetFont('Arial','',9);
+	    	$pdf->Cell($cw,5,'(  '.$mhs['nama'].'  )',0,0,'C');
+	    	$pdf->Cell($cw,5,'(  ............................  )',0,0,'C');
+	    	$pdf->Cell($cw,5,'(  '.$this->_nullable(identitas('kepala_sekolah'), '............................').'  )',0,1,'C');
+
+	    	$pdf->Output('Transkrip_'.$nim.'.pdf', 'I');
+	    }
+
+	    private function _info_kampus($nim)
+	    {
+	    	$q = $this->db->query("SELECT ts.nim, ts.nama, tk.kd_kelas, tk.nama_kelas,
+	    								  rp.nama AS nama_prodi, tk.angkatan
+	    						   FROM tbl_siswa AS ts
+	    						   JOIN tbl_riwayat_kelas AS trk ON trk.nim = ts.nim
+	    						   JOIN tbl_kelas AS tk ON tk.kd_kelas = trk.kd_kelas
+	    						   LEFT JOIN tbl_referensi AS rp ON rp.kategori = 'PRODI' AND rp.kode = tk.kd_prodi
+	    						   WHERE ts.kd_mode = 'KAMPUS' AND tk.kd_mode = 'KAMPUS' AND ts.nim = ".$this->db->escape($nim)."
+	    						   LIMIT 1");
+	    	return $q->num_rows() > 0 ? $q->row_array() : array();
+	    }
+
+	    private function _ipk_kampus($nim)
+	    {
+	    	$q = $this->db->query("SELECT ROUND(SUM(tn.nilai * tn.sks) / NULLIF(SUM(CASE WHEN tn.nilai > 0 THEN tn.sks END), 0), 2) AS ipk
+	    						   FROM tbl_nilai AS tn
+	    						   JOIN tbl_jadwal AS tj ON tj.id_jadwal = tn.id_jadwal
+	    						   WHERE tn.nim = ".$this->db->escape($nim)." AND tj.kd_mode = 'KAMPUS' AND tn.nilai > 0");
+	    	$r = $q->row_array();
+	    	$ipk = isset($r['ipk']) ? (float) $r['ipk'] : 0;
+	    	return $ipk > 0 ? $ipk : 0;
+	    }
+
+	    private function _predikat($ipk)
+	    {
+	    	if ($ipk >= 3.51) return 'Cumlaude';
+	    	if ($ipk >= 3.01) return 'Sangat Memuaskan';
+	    	if ($ipk >= 2.76) return 'Memuaskan';
+	    	if ($ipk >= 2.00) return 'Cukup';
+	    	return '-';
+	    }
+
+	    private function _kop_kampus($pdf, $judul, $subjudul)
+	    {
+	    	$pdf->SetFont('Arial','B',14);
+	    	$pdf->Cell(0,7,strtoupper(identitas('nama_sekolah')),0,1,'C');
+	    	$pdf->SetFont('Arial','',9);
+	    	$alamat = trim(identitas('alamat'));
+	    	$kontak = array();
+	    	if (trim(identitas('no_telp')) !== '' && stripos($alamat, identitas('no_telp')) === false) {
+	    		$kontak[] = 'Telp. '.identitas('no_telp');
+	    	}
+	    	if (trim(identitas('email')) !== '') 	$kontak[] = 'Email: '.identitas('email');
+	    	if (trim(identitas('website')) !== '') 	$kontak[] = trim(identitas('website'));
+	    	if (trim(identitas('npsn')) !== '') 	$kontak[] = 'NPSN '.identitas('npsn');
+	    	$kop = trim($alamat.(count($kontak) ? ' - '.implode(' - ', $kontak) : ''));
+	    	$pdf->Cell(0,5,$kop,0,1,'C');
+	    	$y = $pdf->GetY() + 2;
+	    	$pdf->SetDrawColor(0,0,0);
+	    	$pdf->SetLineWidth(0.8);
+	    	$pdf->Line(15,$y,195,$y);
+	    	$pdf->SetLineWidth(0.2);
+	    	$pdf->Line(15,$y+1,195,$y+1);
+	    	$pdf->SetY($y+4);
+
+	    	$pdf->SetFont('Arial','B',12);
+	    	$pdf->Cell(0,7,$judul,0,1,'C');
+	    	$pdf->SetFont('Arial','B',9);
+	    	$pdf->Cell(0,5,$subjudul,0,1,'C');
+	    	$pdf->Ln(4);
 	    }
 
 	    private function _identitas_baris($pdf, $lw, $vw, $l1, $v1, $l2, $v2)

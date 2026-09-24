@@ -1,5 +1,5 @@
 <div class="mx-auto max-w-3xl rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-8">
-  <h3 class="mb-6 text-lg font-bold text-slate-800">Form Edit Siswa</h3>
+  <h3 class="mb-6 text-lg font-bold text-slate-800">Edit <?php echo meta_mode_label('label_peserta'); ?></h3>
 
   <?php if (isset($upload_error)): ?>
     <div class="mb-4 flex items-center gap-2 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-semibold text-red-600">
@@ -11,7 +11,7 @@
 
     <div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
       <div>
-        <label class="mb-1.5 block text-sm font-medium text-slate-700">NIM</label>
+        <label class="mb-1.5 block text-sm font-medium text-slate-700"><?php echo meta_label('peserta', 'nomor_induk'); ?></label>
         <input type="text" name="nim" value="<?php echo $siswa['nim']; ?>" readonly
                class="w-full cursor-not-allowed rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-2.5 text-sm text-slate-500">
       </div>
@@ -41,12 +41,17 @@
 
       <div>
         <label class="mb-1.5 block text-sm font-medium text-slate-700">Agama</label>
-        <?php echo cmb_dinamis('agama', 'tbl_agama', 'nama_agama', 'kd_agama', $siswa['kd_agama'], null, "w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-sm text-slate-700 bg-white focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-500/30"); ?>
+        <select name="agama" class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-sm text-slate-700 bg-white focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-500/30">
+          <option value="">-- Pilih --</option>
+          <?php foreach (meta_ref('AGAMA') as $code => $nm): ?>
+            <option value="<?php echo $code; ?>" <?php echo ((string) $siswa['kd_agama'] === (string) $code) ? 'selected' : ''; ?>><?php echo $nm; ?></option>
+          <?php endforeach; ?>
+        </select>
       </div>
 
       <div>
-        <label class="mb-1.5 block text-sm font-medium text-slate-700">Kelas</label>
-        <?php echo cmb_dinamis('kelas', 'tbl_kelas', 'nama_kelas', 'kd_kelas', $siswa['kd_kelas'], null, "w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-sm text-slate-700 bg-white focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-500/30"); ?>
+        <label class="mb-1.5 block text-sm font-medium text-slate-700"><?php echo meta_mode_label('label_rombongan'); ?></label>
+        <?php echo cmb_dinamis('kelas', 'tbl_kelas', 'nama_kelas', 'kd_kelas', $siswa['kd_kelas'], null, "w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-sm text-slate-700 bg-white focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-500/30", array('kd_mode' => meta_mode())); ?>
       </div>
 
       <div>
@@ -64,6 +69,8 @@
         <p id="foto-name" class="mt-1.5 hidden text-xs font-semibold text-sky-600"></p>
       </div>
     </div>
+
+    <?php $this->load->view('common/_eav_fields'); ?>
 
     <div class="mt-7 flex flex-wrap items-center gap-3">
       <button type="submit" name="submit"

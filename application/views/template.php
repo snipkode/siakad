@@ -36,14 +36,36 @@
   }
   function _seg($link) { return strtolower(trim(explode('/', (string)$link)[0])); }
 
+  // Label menu dinamis mengikuti mode aktif (KAMPUS => Mahasiswa/Dosen/Mata Kuliah, dst.)
+  function _mode_menu_label($link) {
+      $map = array(
+          'siswa'          => 'Data '.meta_mode_label('label_peserta'),
+          'siswa/siswa_aktif' => meta_mode_label('label_peserta'),
+          'guru'           => 'Data '.meta_mode_label('label_staf'),
+          'mapel'          => meta_mode_label('label_mata_ajar'),
+          'kelas'          => meta_mode_label('label_rombongan'),
+          'walikelas'      => meta_mode_label('label_staf').' / Pembimbing',
+          'jadwal'         => 'Jadwal '.meta_mode_label('label_mata_ajar'),
+          'laporan_nilai'  => 'Laporan '.meta_mode_label('label_mata_ajar'),
+      );
+      $seg = _seg($link);
+      return isset($map[$seg]) ? $map[$seg] : null;
+  }
+  function _menu_nama($nama, $link) {
+      $dyn = _mode_menu_label($link);
+      return ($dyn !== null) ? $dyn : $nama;
+  }
+
   $menus = array();
   if ($id_level_user > 0) {
-      $sql_menu = "SELECT * FROM `tabel_menu` WHERE id IN(SELECT id_menu FROM tbl_user_rule WHERE id_level_user = $id_level_user) AND is_main_menu = 0";
+      $meta = &get_instance()->meta;
+      $mode = (string)$meta->mode();
+      $sql_menu = "SELECT * FROM `tabel_menu` WHERE id IN(SELECT id_menu FROM tbl_user_rule WHERE id_level_user = $id_level_user) AND is_main_menu = 0 AND (`berlaku_mode` = 'ALL' OR FIND_IN_SET(".$this->db->escape($mode).", `berlaku_mode`))";
       $main_menu = $this->db->query($sql_menu)->result();
       foreach ($main_menu as $main) {
           $m = array('id' => $main->id, 'nama' => $main->nama_menu, 'link' => $main->link, 'icon' => $main->icon, 'subs' => array());
           if ($main->link === '#') {
-              $subs = $this->db->get_where('tabel_menu', array('is_main_menu' => $main->id));
+              $subs = $this->db->query("SELECT * FROM tabel_menu WHERE is_main_menu = ".$main->id." AND (`berlaku_mode` = 'ALL' OR FIND_IN_SET(".$this->db->escape($mode).", `berlaku_mode`))");
               foreach ($subs->result() as $s) { $m['subs'][] = array('nama' => $s->nama_menu, 'link' => $s->link, 'icon' => $s->icon); }
           } elseif ($main->link !== '') {
               $m['subs'] = $m['subs']; /* tidak punya submenu */
@@ -54,9 +76,9 @@
 
   $page_title = 'Dashboard';
   foreach ($menus as $m) {
-      if (_seg($m['link']) === $active_segment) { $page_title = $m['nama']; break; }
+      if (_seg($m['link']) === $active_segment) { $page_title = _menu_nama($m['nama'], $m['link']); break; }
       foreach ($m['subs'] as $s) {
-          if (_seg($s['link']) === $active_segment) { $page_title = $s['nama']; break 2; }
+          if (_seg($s['link']) === $active_segment) { $page_title = _menu_nama($s['nama'], $s['link']); break 2; }
       }
   }
 
@@ -138,7 +160,7 @@
             <li>
               <a href="<?php echo site_url($item['link']); ?>" class="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-100 hover:text-slate-900 <?php echo _seg($item['link']) === $active_segment ? 'bg-sky-50 text-sky-700 font-semibold' : ''; ?>">
                 <i class="<?php echo $item['icon']; ?> w-5 text-center text-slate-400"></i>
-                <span><?php echo $item['nama']; ?></span>
+                <span><?php echo _menu_nama($item['nama'], $item['link']); ?></span>
               </a>
             </li>
           <?php endforeach; ?>
@@ -210,7 +232,7 @@
     <?php foreach ($tabs as $t):
         $t_active = _seg($t['link']) === $active_segment;
         $has_subs = count($t['subs']) > 0;
-        $label = ($t['id'] === 0) ? 'Beranda' : _short_label($t['nama']);
+        $label = ($t['id'] === 0) ? 'Beranda' : _short_label(_menu_nama($t['nama'], $t['link']));
         if ($has_subs):
     ?>
       <button type="button" onclick="openSheet('sheet-tab-<?php echo $t['id']; ?>')"
@@ -248,11 +270,11 @@
   <div id="sheet-tab-<?php echo $t['id']; ?>" class="mobile-sheet fixed inset-x-0 bottom-0 z-50 translate-y-full transition-transform duration-300 lg:hidden">
     <div class="mx-auto mb-0.5 mt-1.5 h-1 w-10 rounded-full bg-slate-300"></div>
     <div class="max-h-[78vh] overflow-y-auto rounded-t-3xl bg-white px-2 pb-3 shadow-2xl">
-      <p class="px-4 pb-1.5 pt-2 text-sm font-bold text-slate-700"><?php echo $t['nama']; ?></p>
+      <p class="px-4 pb-1.5 pt-2 text-sm font-bold text-slate-700"><?php echo _menu_nama($t['nama'], $t['link']); ?></p>
       <?php if (isset($t['link']) && $t['link'] !== '#'): ?>
         <a href="<?php echo site_url($t['link']); ?>" onclick="closeSheet()" class="flex items-center gap-3.5 rounded-xl px-4 py-2.5 text-slate-700 active:bg-slate-100">
           <i class="<?php echo $t['icon']; ?> w-6 text-center text-sky-500"></i>
-          <span class="text-sm font-medium"><?php echo $t['nama']; ?></span>
+          <span class="text-sm font-medium"><?php echo _menu_nama($t['nama'], $t['link']); ?></span>
           <i class="fa fa-chevron-right ml-auto text-xs text-slate-300"></i>
         </a>
         <div class="mx-4 my-1 h-px bg-slate-100"></div>
@@ -260,7 +282,7 @@
       <?php foreach ($t['subs'] as $s): ?>
         <a href="<?php echo site_url($s['link']); ?>" onclick="closeSheet()" class="flex items-center gap-3.5 rounded-xl px-4 py-2.5 text-slate-700 active:bg-slate-100">
           <i class="<?php echo $s['icon']; ?> w-6 text-center text-sky-500"></i>
-          <span class="text-sm font-medium"><?php echo $s['nama']; ?></span>
+          <span class="text-sm font-medium"><?php echo _menu_nama($s['nama'], $s['link']); ?></span>
           <i class="fa fa-chevron-right ml-auto text-xs text-slate-300"></i>
         </a>
       <?php endforeach; ?>
@@ -276,19 +298,19 @@
       <?php foreach ($tab_more as $t): ?>
         <?php if (count($t['subs']) > 0): ?>
           <p class="px-4 pb-0.5 pt-1.5 text-[10px] font-semibold uppercase tracking-wider text-slate-400">
-            <i class="<?php echo $t['icon']; ?> mr-1.5"></i><?php echo $t['nama']; ?>
+            <i class="<?php echo $t['icon']; ?> mr-1.5"></i><?php echo _menu_nama($t['nama'], $t['link']); ?>
           </p>
           <?php foreach ($t['subs'] as $s): ?>
             <a href="<?php echo site_url($s['link']); ?>" onclick="closeSheet()" class="flex items-center gap-3.5 rounded-xl px-4 py-2.5 text-slate-700 active:bg-slate-100">
               <i class="<?php echo $s['icon']; ?> w-6 text-center text-slate-400"></i>
-              <span class="text-sm font-medium"><?php echo $s['nama']; ?></span>
+              <span class="text-sm font-medium"><?php echo _menu_nama($s['nama'], $s['link']); ?></span>
               <i class="fa fa-chevron-right ml-auto text-xs text-slate-300"></i>
             </a>
           <?php endforeach; ?>
         <?php else: ?>
           <a href="<?php echo site_url($t['link']); ?>" onclick="closeSheet()" class="flex items-center gap-3.5 rounded-xl px-4 py-2.5 text-slate-700 active:bg-slate-100">
             <i class="<?php echo $t['icon']; ?> w-6 text-center text-slate-400"></i>
-            <span class="text-sm font-medium"><?php echo $t['nama']; ?></span>
+            <span class="text-sm font-medium"><?php echo _menu_nama($t['nama'], $t['link']); ?></span>
             <i class="fa fa-chevron-right ml-auto text-xs text-slate-300"></i>
           </a>
         <?php endif; ?>

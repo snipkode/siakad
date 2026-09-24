@@ -47,7 +47,8 @@
 						'id_guru'			=> 0, 
 						'jam'				=> '', 
 						'kd_ruangan'		=> '000', 
-						'hari'				=> ''
+						'hari'				=> '',
+						'kd_mode'			=> get_instance()->meta->mode()
 					);
 					$this->db->insert('tbl_jadwal', $data);
 				}
@@ -181,6 +182,7 @@
 	 						'jam'               => $j,
 	 						'kd_ruangan'        => $ruangan,
 	 						'hari'              => $h,
+	 						'kd_mode'           => get_instance()->meta->mode(),
 	 					));
 	 				}
 	 			}

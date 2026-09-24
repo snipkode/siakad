@@ -45,6 +45,7 @@
 			$whereAll  = "id_tahun_akademik = ".(int) get_tahun_akademik('id_tahun_akademik');
 			$whereAll .= " AND semester = ".$this->db->escape(get_tahun_akademik('semester'));
 			$whereAll .= " AND TRIM(hari) <> '' AND TRIM(jam) <> ''";
+			$whereAll .= " AND kd_mode = ".$this->db->escape(meta_mode());
 			// Guru (id_level_user 3) hanya melihat jadwal yang diampunya.
 			if ($this->session->userdata('id_level_user') == 3) {
 				$whereAll .= " AND id_guru = ".(int) $this->session->userdata('id_guru');
@@ -99,7 +100,8 @@
 			$parameter 	= array(
 							'nim' => $nim,
 							'id_jadwal' => $idjadwal,
-							'nilai' => $nilai
+							'nilai' => $nilai,
+							'kd_mode' => meta_mode()
 						);
 
 			$validasi 	= array(

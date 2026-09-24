@@ -18,7 +18,7 @@
 				$sql = "SELECT tj.id_jadwal, tk.nama_kelas, tju.nama_jurusan, ttk.nama_tingkatan, tm.nama_mapel, tj.jam, 
 						tr.nama_ruangan, tj.hari, tj.semester 
 						FROM tbl_jadwal AS tj, tbl_kelas AS tk, tbl_jurusan AS tju, tbl_ruangan AS tr, tbl_mapel AS tm, tbl_tingkatan_kelas AS ttk
-						WHERE tj.kd_kelas = tk.kd_kelas AND tj.kd_jurusan = tju.kd_jurusan AND tj.kd_ruangan = tr.kd_ruangan AND tj.kd_mapel = tm.kd_mapel AND tj.kd_tingkatan = ttk.kd_tingkatan AND tj.id_guru =".$this->session->userdata('id_guru')." ORDER BY tj.kd_kelas, tj.kd_mapel";
+						WHERE tj.kd_kelas = tk.kd_kelas AND tj.kd_jurusan = tju.kd_jurusan AND tj.kd_ruangan = tr.kd_ruangan AND tj.kd_mapel = tm.kd_mapel AND tj.kd_tingkatan = ttk.kd_tingkatan AND tj.id_guru =".$this->session->userdata('id_guru')." AND tj.kd_mode = '".meta_mode()."' ORDER BY tj.kd_kelas, tj.kd_mapel";
 				$data['jadwal'] =$this->db->query($sql);
 				// load daftar ngajar guru
 				$this->template->load('template', 'jadwal/jadwal_ajar_guru', $data);
@@ -73,7 +73,7 @@
 							   LEFT JOIN tbl_mapel AS tm ON tj.kd_mapel = tm.kd_mapel
 							   LEFT JOIN tbl_guru AS tg ON tj.id_guru = tg.id_guru
 							   LEFT JOIN tbl_ruangan AS tr ON tj.kd_ruangan = tr.kd_ruangan
-							   WHERE tj.kd_jurusan = '$kode_jurusan' AND tj.kd_kelas = '$kelas'";
+							   WHERE tj.kd_jurusan = '$kode_jurusan' AND tj.kd_kelas = '$kelas' AND tj.kd_mode = '".meta_mode()."'";
 			$data_jadwal	= $this->db->query($sql_datajadwal)->result();
 			$no = 1;
 			$jam_pelajaran	= $this->model_jadwal->jamPelajaran();
@@ -233,7 +233,7 @@
 				 LEFT JOIN tbl_mapel AS tm ON tj.kd_mapel  = tm.kd_mapel
 				 LEFT JOIN tbl_guru AS tg  ON tj.id_guru   = tg.id_guru
 				 LEFT JOIN tbl_ruangan AS tr ON tj.kd_ruangan = tr.kd_ruangan
-				 WHERE tj.kd_kelas = '$kelas'
+				 WHERE tj.kd_kelas = '$kelas' AND tj.kd_mode = '".meta_mode()."'
 				 ORDER BY FIELD(tj.hari, 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'), tj.jam";
  		$rincian = $this->db->query($sqlr);
  		if ($rincian->num_rows() > 0) {
@@ -277,7 +277,7 @@
 	 	function getPelajaran($jam, $hari, $kelas) {
 	 		$sql = "SELECT tj.*,tm.nama_mapel
                    FROM tbl_jadwal as tj, tbl_mapel as tm 
-                   WHERE tj.kd_mapel=tm.kd_mapel and tj.kd_kelas='$kelas' and tj.hari='$hari' and tj.jam='$jam'";
+                   WHERE tj.kd_mapel=tm.kd_mapel and tj.kd_kelas='$kelas' and tj.hari='$hari' and tj.jam='$jam' AND tj.kd_mode = '".meta_mode()."'";
 	 		$pelajaran = $this->db->query($sql);
 	 		if ($pelajaran->num_rows()>0) {
 	 			$row = $pelajaran->row_array();
