@@ -20,6 +20,26 @@ th, td { white-space: nowrap; }
 .dataTable thead th { background-color: #f1f5f9; font-size: .75rem; text-transform: uppercase; letter-spacing: .05em; color: #475569; }
 .dataTables_wrapper { font-size: .875rem; }
 
+/* Ringkas di layar kecil: pencarian full-width, kontrol & pager padat */
+.dataTables_filter { margin: 0 0 .75rem; }
+.dataTables_filter input { width: 100%; }
+.dataTables_length { margin: 0 0 .75rem; }
+@media (min-width: 640px) {
+  .dataTables_filter input { width: 200px; }
+}
+.dataTables_filter input, .dataTables_length select {
+  padding: .4rem .75rem;
+  border: 1px solid #cbd5e1;
+  border-radius: .625rem;
+  font-size: .875rem;
+  color: #1e293b;
+}
+.dataTables_paginate.paging_simple_numbers .paginate_button,
+.dataTables_paginate .paginate_button {
+  padding: .3rem .6rem;
+  margin: 0 .1rem;
+}
+
 /* Select/input legacy (.form-control) — dipakai cmb_dinamis & form_dropdown di semua halaman */
 select.form-control, input.form-control {
   width: 100%;

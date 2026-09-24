@@ -1,35 +1,37 @@
 <?php defined('BASEPATH') OR exit('No direct script access allowed'); ?>
 <div class="space-y-4">
-  <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-    <div class="flex flex-wrap items-center justify-between gap-3">
-      <div>
-        <h2 class="text-base font-bold text-slate-800"><?php echo $label_kategori; ?></h2>
-        <p class="text-xs text-slate-500">Kategori: <span class="font-mono text-slate-600"><?php echo $kategori; ?></span></p>
+  <div class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5">
+    <div class="flex flex-wrap items-center justify-between gap-2.5">
+      <div class="min-w-0">
+        <h2 class="truncate text-sm font-bold text-slate-800 sm:text-base"><?php echo $label_kategori; ?></h2>
+        <p class="text-[11px] text-slate-500 sm:text-xs">Kategori: <span class="font-mono text-slate-600"><?php echo $kategori; ?></span></p>
       </div>
-      <div class="flex gap-2">
-        <?php echo anchor('referensi', 'Kembali', array('class' => 'rounded-xl bg-slate-100 px-4 py-2 text-sm font-semibold text-slate-600 hover:bg-slate-200')); ?>
-        <?php echo anchor('referensi/add/'.$kategori, '<i class="fa fa-plus mr-1"></i> Tambah', array('class' => 'inline-flex items-center gap-1.5 rounded-xl bg-sky-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-sky-700')); ?>
+      <div class="flex w-full gap-2 sm:w-auto">
+        <?php echo anchor('referensi', 'Kembali', array('class' => 'inline-flex flex-1 items-center justify-center rounded-xl bg-slate-100 px-3 py-2 text-sm font-semibold text-slate-600 hover:bg-slate-200 sm:flex-none')); ?>
+        <?php echo anchor('referensi/add/'.$kategori, '<i class="fa fa-plus mr-1"></i> Tambah', array('class' => 'inline-flex flex-1 items-center justify-center gap-1.5 rounded-xl bg-sky-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-sky-700 sm:flex-none')); ?>
       </div>
     </div>
 
     <?php if ($msg = $this->session->flashdata('msg_ref')): ?>
-      <div class="mt-4 rounded-xl border border-sky-200 bg-sky-50 px-4 py-3 text-sm font-medium text-sky-800"><?php echo $msg; ?></div>
+      <div class="mt-3 rounded-xl border border-sky-200 bg-sky-50 px-3 py-2.5 text-sm font-medium text-sky-800"><?php echo $msg; ?></div>
     <?php endif; ?>
   </div>
 
-  <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-    <table id="tbl-ref" class="w-full text-sm">
-      <thead>
-        <tr class="border-b border-slate-200 text-left text-[11px] font-semibold uppercase tracking-wide text-slate-500">
-          <th class="px-3 py-2.5">Kode</th>
-          <th class="px-3 py-2.5">Nama</th>
-          <th class="px-3 py-2.5">Atribut</th>
-          <th class="px-3 py-2.5 text-center">Aktif</th>
-          <th class="px-3 py-2.5 text-center">Aksi</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
+  <div class="rounded-2xl border border-slate-200 bg-white p-3 shadow-sm sm:p-5">
+    <div class="overflow-x-auto">
+      <table id="tbl-ref" class="w-full text-sm">
+        <thead>
+          <tr class="border-b border-slate-200 text-left text-[11px] font-semibold uppercase tracking-wide text-slate-500">
+            <th class="px-3 py-2.5">Kode</th>
+            <th class="px-3 py-2.5">Nama</th>
+            <th class="hidden px-3 py-2.5 sm:table-cell">Atribut</th>
+            <th class="px-3 py-2.5 text-center">Aktif</th>
+            <th class="px-3 py-2.5 text-center">Aksi</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
   </div>
 </div>
 
@@ -44,7 +46,7 @@ $(function () {
       { "data": "nama", "class": "px-3 py-2.5" },
       {
         "data": "atribut_json",
-        "class": "px-3 py-2.5 text-xs text-slate-500",
+        "className": "px-3 py-2.5 text-xs text-slate-500 hidden sm:table-cell",
         "render": function (d) {
           if (!d) return '-';
           try { var o = JSON.parse(d); return Object.keys(o).map(function (k) { return k + ': ' + o[k]; }).join(', '); }

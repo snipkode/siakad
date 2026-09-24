@@ -56,31 +56,31 @@
 </div>
 
 <!-- Statistik -->
-<div class="mt-4 grid grid-cols-1 gap-3 sm:gap-4 lg:grid-cols-2">
+<div class="mt-4 grid grid-cols-1 gap-2.5 sm:gap-4 lg:grid-cols-2">
 
-  <div class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5">
-    <div class="mb-3 flex items-center gap-2.5">
-      <span class="flex h-9 w-9 items-center justify-center rounded-xl bg-sky-50 text-sky-600"><i class="fa fa-bar-chart"></i></span>
-      <div>
-        <h3 class="text-sm font-bold text-slate-800"><?php echo $chart1['title']; ?></h3>
-        <p class="text-[11px] text-slate-500"><?php echo $chart1['sub']; ?></p>
+  <div class="rounded-2xl border border-slate-200 bg-white p-3 shadow-sm sm:p-5">
+    <div class="mb-2 flex items-center gap-2 sm:mb-3 sm:gap-2.5">
+      <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-sky-50 text-sm text-sky-600 sm:h-9 sm:w-9 sm:rounded-xl sm:text-base"><i class="fa fa-bar-chart"></i></span>
+      <div class="min-w-0">
+        <h3 class="truncate text-[13px] font-bold text-slate-800 sm:text-sm"><?php echo $chart1['title']; ?></h3>
+        <p class="mt-0.5 truncate text-[10px] text-slate-500 sm:text-[11px]"><?php echo $chart1['sub']; ?></p>
       </div>
     </div>
-    <div class="relative h-64" id="wrap-chart-1">
-      <canvas id="chart1" style="height: 16rem;"></canvas>
+    <div class="relative h-52 sm:h-64" id="wrap-chart-1">
+      <canvas id="chart1" class="h-52 w-full sm:h-64"></canvas>
     </div>
   </div>
 
-  <div class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5">
-    <div class="mb-3 flex items-center gap-2.5">
-      <span class="flex h-9 w-9 items-center justify-center rounded-xl bg-indigo-50 text-indigo-600"><i class="fa fa-pie-chart"></i></span>
-      <div>
-        <h3 class="text-sm font-bold text-slate-800"><?php echo $chart2['title']; ?></h3>
-        <p class="text-[11px] text-slate-500"><?php echo $chart2['sub']; ?></p>
+  <div class="rounded-2xl border border-slate-200 bg-white p-3 shadow-sm sm:p-5">
+    <div class="mb-2 flex items-center gap-2 sm:mb-3 sm:gap-2.5">
+      <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-indigo-50 text-sm text-indigo-600 sm:h-9 sm:w-9 sm:rounded-xl sm:text-base"><i class="fa fa-pie-chart"></i></span>
+      <div class="min-w-0">
+        <h3 class="truncate text-[13px] font-bold text-slate-800 sm:text-sm"><?php echo $chart2['title']; ?></h3>
+        <p class="mt-0.5 truncate text-[10px] text-slate-500 sm:text-[11px]"><?php echo $chart2['sub']; ?></p>
       </div>
     </div>
-    <div class="relative h-64" id="wrap-chart-2">
-      <canvas id="chart2" style="height: 16rem;"></canvas>
+    <div class="relative h-52 sm:h-64" id="wrap-chart-2">
+      <canvas id="chart2" class="h-52 w-full sm:h-64"></canvas>
     </div>
   </div>
 
