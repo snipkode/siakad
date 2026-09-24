@@ -35,3 +35,6 @@ INSERT INTO `tbl_user_rule` (`id_menu`, `id_level_user`) VALUES (19, 1), (20, 1)
 ON DUPLICATE KEY UPDATE `id_level_user` = VALUES(`id_level_user`);
 -- Modul khas sekolah disembunyikan di mode KAMPUS (pengisian nilai kampus via KRS)
 UPDATE `tabel_menu` SET `berlaku_mode` = 'SMA,SMP,SD' WHERE `link` IN ('jadwal', 'nilai');
+-- Admin level 1 ikut melihat menu Nilai & Laporan Nilai (sebelumnya hanya level guru)
+INSERT INTO `tbl_user_rule` (`id_menu`, `id_level_user`) VALUES (17, 1), (18, 1)
+ON DUPLICATE KEY UPDATE `id_level_user` = VALUES(`id_level_user`);
