@@ -25,12 +25,15 @@
 	function identitas($field = '')
 	{
 		$ci  = get_instance();
-		static $row = null;
+		static $cache = array();
 
-		if ($row === null) {
-			$q   = $ci->db->get('tbl_identitas');
-			$row = ($q->num_rows() > 0) ? $q->row_array() : array();
+		$mode = meta_mode();
+		if (!array_key_exists($mode, $cache)) {
+			$q   = $ci->db->where('kd_mode', $mode)->get('tbl_identitas');
+			$cache[$mode] = ($q->num_rows() > 0) ? $q->row_array() : array();
 		}
+
+		$row = $cache[$mode];
 
 		if ($field === '') {
 			return $row;

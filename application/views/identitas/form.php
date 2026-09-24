@@ -5,24 +5,32 @@
   </div>
 <?php endif; ?>
 
+<div class="mb-4 flex flex-wrap items-center gap-2 text-xs">
+  <span class="inline-flex items-center gap-1.5 rounded-full bg-sky-50 px-3 py-1 font-semibold text-sky-700 ring-1 ring-sky-200">
+    <i class="fa fa-filter" aria-hidden="true"></i> Mode aktif: <?php echo $label_instansi; ?>
+  </span>
+  <span class="text-slate-400">Identitas disimpan terpisah per mode — <span class="font-medium text-slate-500"><?php echo $label_instansi; ?></span> ini hanya untuk <?php echo $label_instansi; ?>.</span>
+</div>
+
 <div class="grid grid-cols-1 gap-5 lg:grid-cols-3">
   <form action="<?php echo site_url('identitas/save'); ?>" method="post" role="form" id="form-identitas"
         class="lg:col-span-2">
     <div class="rounded-2xl border border-slate-200 bg-white shadow-sm">
       <div class="border-b border-slate-100 px-4 py-3 sm:px-6">
-        <h3 class="text-sm font-bold text-slate-800">Identitas Sekolah</h3>
-        <p class="text-xs text-slate-500">Informasi dasar yang ditampilkan di kop rapor &amp; dokumen sekolah</p>
+        <h3 class="text-sm font-bold text-slate-800">Identitas <?php echo $label_instansi; ?></h3>
+        <p class="text-xs text-slate-500">Informasi dasar yang ditampilkan di kop dokumen &amp; laporan <?php echo $label_instansi; ?></p>
       </div>
       <div class="space-y-5 p-4 sm:p-6">
         <div>
-          <label for="nama_sekolah" class="mb-1.5 block text-sm font-medium text-slate-700">Nama Sekolah <span class="text-red-500">*</span></label>
+          <label for="nama_sekolah" class="mb-1.5 block text-sm font-medium text-slate-700">Nama <?php echo $label_instansi; ?> <span class="text-red-500">*</span></label>
           <div class="relative">
             <span class="pointer-events-none absolute inset-y-0 left-0 flex w-10 items-center justify-center text-slate-400"><i class="fa fa-university" aria-hidden="true"></i></span>
-            <input type="text" id="nama_sekolah" name="nama_sekolah" value="<?php echo htmlspecialchars((string) @$identitas['nama_sekolah']); ?>" placeholder="Masukkan nama sekolah / yayasan"
+            <input type="text" id="nama_sekolah" name="nama_sekolah" value="<?php echo htmlspecialchars((string) @$identitas['nama_sekolah']); ?>" placeholder="Nama <?php echo $label_instansi; ?>"
                    class="w-full rounded-xl border border-slate-300 py-2.5 pl-10 pr-3.5 text-sm focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-500/30">
           </div>
         </div>
 
+        <?php if (meta_mode() !== 'KAMPUS'): ?>
         <div>
           <label for="npsn" class="mb-1.5 block text-sm font-medium text-slate-700">NPSN</label>
           <div class="relative">
@@ -31,24 +39,27 @@
                    class="w-full rounded-xl border border-slate-300 py-2.5 pl-10 pr-3.5 text-sm focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-500/30">
           </div>
         </div>
+        <?php endif; ?>
 
         <div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
           <div>
-            <label for="kepala_sekolah" class="mb-1.5 block text-sm font-medium text-slate-700">Kepala Sekolah</label>
+            <label for="kepala_sekolah" class="mb-1.5 block text-sm font-medium text-slate-700"><?php echo $label_kepala; ?></label>
             <div class="relative">
               <span class="pointer-events-none absolute inset-y-0 left-0 flex w-10 items-center justify-center text-slate-400"><i class="fa fa-user-circle-o" aria-hidden="true"></i></span>
-              <input type="text" id="kepala_sekolah" name="kepala_sekolah" value="<?php echo htmlspecialchars((string) @$identitas['kepala_sekolah']); ?>" placeholder="Nama Kepala Sekolah"
+              <input type="text" id="kepala_sekolah" name="kepala_sekolah" value="<?php echo htmlspecialchars((string) @$identitas['kepala_sekolah']); ?>" placeholder="Nama <?php echo $label_kepala; ?>"
                      class="w-full rounded-xl border border-slate-300 py-2.5 pl-10 pr-3.5 text-sm focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-500/30">
             </div>
           </div>
+          <?php if (meta_mode() !== 'KAMPUS'): ?>
           <div>
-            <label for="nip_kepala" class="mb-1.5 block text-sm font-medium text-slate-700">NIP Kepala Sekolah</label>
+            <label for="nip_kepala" class="mb-1.5 block text-sm font-medium text-slate-700">NIP <?php echo $label_kepala; ?></label>
             <div class="relative">
               <span class="pointer-events-none absolute inset-y-0 left-0 flex w-10 items-center justify-center text-slate-400"><i class="fa fa-id-badge" aria-hidden="true"></i></span>
-              <input type="text" id="nip_kepala" name="nip_kepala" value="<?php echo htmlspecialchars((string) @$identitas['nip_kepala']); ?>" placeholder="NIP Kepala Sekolah"
+              <input type="text" id="nip_kepala" name="nip_kepala" value="<?php echo htmlspecialchars((string) @$identitas['nip_kepala']); ?>" placeholder="NIP <?php echo $label_kepala; ?>"
                      class="w-full rounded-xl border border-slate-300 py-2.5 pl-10 pr-3.5 text-sm focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-500/30">
             </div>
           </div>
+          <?php endif; ?>
         </div>
       </div>
     </div>
@@ -111,7 +122,7 @@
           <i class="fa fa-eye" aria-hidden="true"></i>
         </span>
         <div class="flex-1">
-          <p class="text-sm font-bold leading-tight">Preview Kop Rapor</p>
+          <p class="text-sm font-bold leading-tight">Preview Kop <?php echo $label_instansi; ?></p>
           <p class="text-[11px] leading-tight text-sky-100">Ter-update saat mengetik</p>
         </div>
         <span class="inline-flex items-center gap-1.5 rounded-full bg-white/20 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide">
@@ -120,9 +131,11 @@
       </div>
 
       <div class="border-b border-slate-100 px-5 py-6 text-center">
-        <p class="text-[10px] uppercase tracking-[0.35em] text-slate-400">Nama Sekolah</p>
+        <p class="text-[10px] uppercase tracking-[0.35em] text-slate-400">Nama <?php echo $label_instansi; ?></p>
         <h2 id="prev-nama_sekolah" class="mt-2 text-lg font-extrabold uppercase leading-snug text-slate-800"><?php echo htmlspecialchars((string) @$identitas['nama_sekolah']); ?></h2>
+        <?php if (meta_mode() !== 'KAMPUS'): ?>
         <p id="prev-npsn" data-prefix="NPSN " class="mt-1 text-[11px] text-slate-400">NPSN <?php echo htmlspecialchars((string) @$identitas['npsn']); ?></p>
+        <?php endif; ?>
         <div class="mx-auto mt-3 h-px w-24 bg-slate-200"></div>
         <p id="prev-alamat" class="mt-3 text-xs leading-relaxed text-slate-500"><?php echo htmlspecialchars((string) @$identitas['alamat']); ?></p>
       </div>

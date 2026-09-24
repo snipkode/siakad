@@ -39,3 +39,7 @@ UPDATE `tabel_menu` SET `berlaku_mode` = 'SMA,SMP,SD,TK' WHERE `link` IN ('jadwa
 -- Admin level 1 ikut melihat menu Nilai & Laporan Nilai (sebelumnya hanya level guru)
 INSERT INTO `tbl_user_rule` (`id_menu`, `id_level_user`) VALUES (17, 1), (18, 1)
 ON DUPLICATE KEY UPDATE `id_level_user` = VALUES(`id_level_user`);
+
+-- Identitas instansi per mode (KAMPUS/SMA/SMP/SD/TK punya kop sendiri)
+ALTER TABLE `tbl_identitas` ADD COLUMN `kd_mode` varchar(10) NOT NULL DEFAULT 'SMP' AFTER `id`;
+UPDATE `tbl_identitas` SET `kd_mode` = 'SMP' WHERE `kd_mode` = '';

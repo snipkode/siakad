@@ -11,12 +11,15 @@
 
 		function index()
 		{
-			$data['identitas'] = $this->db->get('tbl_identitas')->row_array();
+			$data['identitas'] = $this->db->where('kd_mode', meta_mode())->get('tbl_identitas')->row_array();
+			$data['label_instansi'] = meta_mode_label('label_instansi');
+			$data['label_kepala']   = meta_mode_label('label_kepala');
 			$this->template->load('template', 'identitas/form', $data);
 		}
 
 		function save()
 		{
+			$label_instansi = meta_mode_label('label_instansi');
 			$data = array(
 				'nama_sekolah'  => trim((string) $this->input->post('nama_sekolah')),
 				'npsn'          => trim((string) $this->input->post('npsn')),
@@ -25,22 +28,23 @@
 				'email'         => trim((string) $this->input->post('email')),
 				'website'       => trim((string) $this->input->post('website')),
 				'kepala_sekolah'=> trim((string) $this->input->post('kepala_sekolah')),
-				'nip_kepala'    => trim((string) $this->input->post('nip_kepala'))
+				'nip_kepala'    => trim((string) $this->input->post('nip_kepala')),
+				'kd_mode'       => meta_mode()
 			);
 
 			if ($data['nama_sekolah'] === '') {
-				$this->session->set_flashdata('msg_identitas', 'Nama sekolah wajib diisi.');
+				$this->session->set_flashdata('msg_identitas', 'Nama '.$label_instansi.' wajib diisi.');
 				redirect('identitas');
 			}
 
-			if ($this->db->get('tbl_identitas')->num_rows() > 0) {
-				$this->db->where('id', 1);
+			if ($this->db->where('kd_mode', $data['kd_mode'])->get('tbl_identitas')->num_rows() > 0) {
+				$this->db->where('kd_mode', $data['kd_mode']);
 				$this->db->update('tbl_identitas', $data);
 			} else {
 				$this->db->insert('tbl_identitas', $data);
 			}
 
-			$this->session->set_flashdata('msg_identitas', 'Identitas sekolah berhasil disimpan.');
+			$this->session->set_flashdata('msg_identitas', 'Identitas '.$label_instansi.' berhasil disimpan.');
 			redirect('identitas');
 		}
 	}

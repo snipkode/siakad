@@ -88,6 +88,12 @@ if table_exists "tbl_tahun_akademik" && ! column_exists "tbl_tahun_akademik" "kd
   echo "==> tbl_tahun_akademik: kolom kd_mode ditambahkan (default SMP)."
 fi
 
+# identitas: kop dokumen disimpan per mode
+if table_exists "tbl_identitas" && ! column_exists "tbl_identitas" "kd_mode"; then
+  q "ALTER TABLE tbl_identitas ADD COLUMN kd_mode varchar(10) NOT NULL DEFAULT 'SMP' AFTER id;"
+  echo "==> tbl_identitas: kolom kd_mode ditambahkan (default SMP)."
+fi
+
 # menu: filter menu per mode
 if table_exists "tabel_menu" && ! column_exists "tabel_menu" "berlaku_mode"; then
   q "ALTER TABLE tabel_menu ADD COLUMN berlaku_mode varchar(255) NOT NULL DEFAULT 'ALL' AFTER is_main_menu;"
