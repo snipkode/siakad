@@ -29,7 +29,7 @@
 		              'dt' => 'aksi',
 		              'formatter' => function($d) {
 		               		return anchor('ruangan/edit/'.$d, '<i class="fa fa-pencil"></i>', 'class="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-sky-50 text-sky-600 hover:bg-sky-100" data-placement="top" title="Edit"').' 
-		               		'.anchor('ruangan/delete/'.$d, '<i class="fa fa-trash"></i>', 'class="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-red-50 text-red-500 hover:bg-red-100" data-placement="top" title="Delete" onclick=\'return confirm("Yakin ingin menghapus ruangan ini?")\'');
+		               		'.anchor('ruangan/delete/'.$d, '<i class="fa fa-trash"></i>', 'class="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-red-50 text-red-500 hover:bg-red-100" data-placement="top" title="Delete" onclick=\'return confirm("Yakin ingin menghapus '.($this->meta->mode() === 'KAMPUS' ? 'ruangan' : 'ruang kelas').' ini?")\'');
 		            }
 		        )
 		    );

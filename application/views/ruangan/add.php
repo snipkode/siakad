@@ -1,24 +1,24 @@
 <div class="mx-auto max-w-2xl rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-8">
-  <h3 class="mb-6 text-lg font-bold text-slate-800">Form Tambah Ruangan</h3>
+  <h3 class="mb-6 text-lg font-bold text-slate-800">Form Tambah <?php echo meta_mode() === 'KAMPUS' ? 'Ruangan' : 'Ruang Kelas'; ?></h3>
 
   <?php echo form_open('ruangan/add', 'role="form"'); ?>
 
     <div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
       <div>
-        <label class="mb-1.5 block text-sm font-medium text-slate-700">Kode Ruangan</label>
-        <input type="text" name="kd_ruangan" placeholder="Masukkan Kode Ruangan"
+        <label class="mb-1.5 block text-sm font-medium text-slate-700">Kode <?php echo meta_mode() === 'KAMPUS' ? 'Ruangan' : 'Ruang Kelas'; ?></label>
+        <input type="text" name="kd_ruangan" placeholder="Masukkan Kode <?php echo meta_mode() === 'KAMPUS' ? 'Ruangan' : 'Ruang Kelas'; ?>"
                class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-sm focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-500/30">
       </div>
       <div>
-        <label class="mb-1.5 block text-sm font-medium text-slate-700">Nama Ruangan</label>
-        <input type="text" name="nama_ruangan" placeholder="Masukkan Nama Ruangan"
+        <label class="mb-1.5 block text-sm font-medium text-slate-700">Nama <?php echo meta_mode() === 'KAMPUS' ? 'Ruangan' : 'Ruang Kelas'; ?></label>
+        <input type="text" name="nama_ruangan" placeholder="Masukkan Nama <?php echo meta_mode() === 'KAMPUS' ? 'Ruangan' : 'Ruang Kelas'; ?>"
                class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-sm focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-500/30">
       </div>
     </div>
 
     <div class="mt-5 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-xs text-amber-700">
       <p class="font-semibold"><i class="fa fa-warning"></i> Catatan</p>
-      <p class="mt-1">Di akhir Kode Ruangan harus ditambahkan angka 1/2.<br>Contoh : VIIA1 untuk Ruangan Kelas VII-A IPA &amp; VIIA2 untuk Ruangan Kelas VII-A IPS.</p>
+      <p class="mt-1">Di akhir Kode <?php echo meta_mode() === 'KAMPUS' ? 'Ruangan' : 'Ruang Kelas'; ?> harus ditambahkan angka 1/2.<br>Contoh : VIIA1 untuk Ruangan Kelas VII-A IPA &amp; VIIA2 untuk Ruangan Kelas VII-A IPS.</p>
     </div>
 
     <div class="mt-7 flex flex-wrap items-center gap-3">

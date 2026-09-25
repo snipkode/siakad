@@ -5,7 +5,7 @@
         <i class="fa fa-building-o"></i>
       </span>
       <div>
-        <h3 class="text-sm font-bold text-slate-800">Data Ruangan</h3>
+        <h3 class="text-sm font-bold text-slate-800">Data <?php echo meta_mode() === 'KAMPUS' ? 'Ruangan' : 'Ruang Kelas'; ?></h3>
         <p class="text-xs text-slate-500">
           Total
           <span id="total-ruangan" class="inline-flex items-center justify-center rounded-full bg-orange-100 text-orange-700 px-2 py-0.5 text-[11px] font-bold">0</span>
@@ -23,7 +23,7 @@
     <table id="mytable" class="dataTable w-full text-[13px] sm:text-sm">
       <thead>
         <tr>
-          <th class="px-3 py-2.5 text-left text-[11px] sm:text-xs font-semibold uppercase tracking-wide text-slate-500">NO</th>          <th class="px-3 py-2.5 text-left text-[11px] sm:text-xs font-semibold uppercase tracking-wide text-slate-500">KODE RUANGAN</th>          <th class="px-3 py-2.5 text-left text-[11px] sm:text-xs font-semibold uppercase tracking-wide text-slate-500">NAMA RUANGAN</th>          <th class="px-3 py-2.5 text-left text-[11px] sm:text-xs font-semibold uppercase tracking-wide text-slate-500">AKSI</th>
+          <th class="px-3 py-2.5 text-left text-[11px] sm:text-xs font-semibold uppercase tracking-wide text-slate-500">NO</th>          <th class="px-3 py-2.5 text-left text-[11px] sm:text-xs font-semibold uppercase tracking-wide text-slate-500">KODE <?php echo mb_strtoupper(meta_mode() === 'KAMPUS' ? 'Ruangan' : 'Ruang Kelas'); ?></th>          <th class="px-3 py-2.5 text-left text-[11px] sm:text-xs font-semibold uppercase tracking-wide text-slate-500">NAMA <?php echo mb_strtoupper(meta_mode() === 'KAMPUS' ? 'Ruangan' : 'Ruang Kelas'); ?></th>          <th class="px-3 py-2.5 text-left text-[11px] sm:text-xs font-semibold uppercase tracking-wide text-slate-500">AKSI</th>
         </tr>
       </thead>
     </table>
@@ -42,7 +42,7 @@
       "initComplete": function (settings, json) {
         $('#total-ruangan').text(json.recordsTotal);
         var $sf = $("#mytable_wrapper").parents(".rounded-2xl").first().find(".dataTables_filter input");
-        $sf.attr("placeholder", "Cari ruangan / kode...");
+        $sf.attr("placeholder", "Cari <?php echo mb_strtolower(meta_mode() === 'KAMPUS' ? 'ruangan' : 'ruang kelas'); ?> / kode...");
         $sf.css("min-width", "200px");
       },
       "columns": [
