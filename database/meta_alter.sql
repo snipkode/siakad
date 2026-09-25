@@ -6,24 +6,24 @@
 -- =============================================================
 
 -- peserta & guru: mode pemilik data
-ALTER TABLE `tbl_siswa` ADD COLUMN `kd_mode` varchar(10) NOT NULL DEFAULT 'SMP' AFTER `kd_kelas`;
+ALTER TABLE `tbl_siswa` ADD COLUMN `kd_mode` varchar(10) NOT NULL DEFAULT 'KAMPUS' AFTER `kd_kelas`;
 ALTER TABLE `tbl_siswa` ADD COLUMN `nisn` varchar(20) NOT NULL DEFAULT '' AFTER `nim`;
-ALTER TABLE `tbl_guru` ADD COLUMN `kd_mode` varchar(10) NOT NULL DEFAULT 'SMP' AFTER `password`;
+ALTER TABLE `tbl_guru` ADD COLUMN `kd_mode` varchar(10) NOT NULL DEFAULT 'KAMPUS' AFTER `password`;
 
 -- rombongan belajar
-ALTER TABLE `tbl_kelas` ADD COLUMN `kd_mode` varchar(10) NOT NULL DEFAULT 'SMP' AFTER `kd_jurusan`;
+ALTER TABLE `tbl_kelas` ADD COLUMN `kd_mode` varchar(10) NOT NULL DEFAULT 'KAMPUS' AFTER `kd_jurusan`;
 ALTER TABLE `tbl_kelas` ADD COLUMN `kd_prodi` varchar(20) NOT NULL DEFAULT '' AFTER `kd_jurusan`;
 ALTER TABLE `tbl_kelas` ADD COLUMN `angkatan` varchar(10) NOT NULL DEFAULT '' AFTER `kd_prodi`;
 
 -- jadwal & nilai (nilai juga menyimpan sks per pemain)
-ALTER TABLE `tbl_jadwal` ADD COLUMN `kd_mode` varchar(10) NOT NULL DEFAULT 'SMP' AFTER `hari`;
-ALTER TABLE `tbl_nilai` ADD COLUMN `kd_mode` varchar(10) NOT NULL DEFAULT 'SMP' AFTER `nilai`;
+ALTER TABLE `tbl_jadwal` ADD COLUMN `kd_mode` varchar(10) NOT NULL DEFAULT 'KAMPUS' AFTER `hari`;
+ALTER TABLE `tbl_nilai` ADD COLUMN `kd_mode` varchar(10) NOT NULL DEFAULT 'KAMPUS' AFTER `nilai`;
 ALTER TABLE `tbl_nilai` ADD COLUMN `sks` int(11) NOT NULL DEFAULT 0 AFTER `nilai`;
 
-ALTER TABLE `tbl_pembayaran` ADD COLUMN `kd_mode` varchar(10) NOT NULL DEFAULT 'SMP' AFTER `keterangan`;
-ALTER TABLE `tbl_riwayat_kelas` ADD COLUMN `kd_mode` varchar(10) NOT NULL DEFAULT 'SMP';
-ALTER TABLE `tbl_walikelas` ADD COLUMN `kd_mode` varchar(10) NOT NULL DEFAULT 'SMP';
-ALTER TABLE `tbl_tahun_akademik` ADD COLUMN `kd_mode` varchar(10) NOT NULL DEFAULT 'SMP' AFTER `semester`;
+ALTER TABLE `tbl_pembayaran` ADD COLUMN `kd_mode` varchar(10) NOT NULL DEFAULT 'KAMPUS' AFTER `keterangan`;
+ALTER TABLE `tbl_riwayat_kelas` ADD COLUMN `kd_mode` varchar(10) NOT NULL DEFAULT 'KAMPUS';
+ALTER TABLE `tbl_walikelas` ADD COLUMN `kd_mode` varchar(10) NOT NULL DEFAULT 'KAMPUS';
+ALTER TABLE `tbl_tahun_akademik` ADD COLUMN `kd_mode` varchar(10) NOT NULL DEFAULT 'KAMPUS' AFTER `semester`;
 ALTER TABLE `tabel_menu` ADD COLUMN `berlaku_mode` varchar(255) NOT NULL DEFAULT 'ALL' AFTER `is_main_menu`;
 -- menu baru multi-mode
 INSERT INTO `tabel_menu` (`id`, `nama_menu`, `link`, `icon`, `is_main_menu`, `berlaku_mode`) VALUES
@@ -41,11 +41,11 @@ INSERT INTO `tbl_user_rule` (`id_menu`, `id_level_user`) VALUES (17, 1), (18, 1)
 ON DUPLICATE KEY UPDATE `id_level_user` = VALUES(`id_level_user`);
 
 -- Identitas instansi per mode (KAMPUS/SMA/SMP/SD/TK punya kop sendiri)
-ALTER TABLE `tbl_identitas` ADD COLUMN `kd_mode` varchar(10) NOT NULL DEFAULT 'SMP' AFTER `id`;
-UPDATE `tbl_identitas` SET `kd_mode` = 'SMP' WHERE `kd_mode` = '';
+ALTER TABLE `tbl_identitas` ADD COLUMN `kd_mode` varchar(10) NOT NULL DEFAULT 'KAMPUS' AFTER `id`;
+UPDATE `tbl_identitas` SET `kd_mode` = 'KAMPUS' WHERE `kd_mode` = '';
 
 -- Ruangan: data kelas per mode (data lama default SMP supaya tetap tampil)
-ALTER TABLE `tbl_ruangan` ADD COLUMN `kd_mode` varchar(10) NOT NULL DEFAULT 'SMP' AFTER `nama_ruangan`;
+ALTER TABLE `tbl_ruangan` ADD COLUMN `kd_mode` varchar(10) NOT NULL DEFAULT 'KAMPUS' AFTER `nama_ruangan`;
 INSERT INTO `tbl_ruangan` (`kd_ruangan`, `nama_ruangan`, `kd_mode`) VALUES
 ('SD1A','Ruang Kelas 1A','SD'),('SD1B','Ruang Kelas 1B','SD'),
 ('SD2A','Ruang Kelas 2A','SD'),('SD2B','Ruang Kelas 2B','SD'),
@@ -63,7 +63,7 @@ INSERT INTO `tbl_ruangan` (`kd_ruangan`, `nama_ruangan`, `kd_mode`) VALUES
 ON DUPLICATE KEY UPDATE `nama_ruangan` = VALUES(`nama_ruangan`), `kd_mode` = VALUES(`kd_mode`);
 
 -- Mapel: nama pelajaran per mode (data lama default SMP)
-ALTER TABLE `tbl_mapel` ADD COLUMN `kd_mode` varchar(10) NOT NULL DEFAULT 'SMP' AFTER `nama_mapel`;
+ALTER TABLE `tbl_mapel` ADD COLUMN `kd_mode` varchar(10) NOT NULL DEFAULT 'KAMPUS' AFTER `nama_mapel`;
 INSERT INTO `tbl_mapel` (`kd_mapel`, `nama_mapel`, `kd_mode`) VALUES
 ('BID1','Bahasa Indonesia 1','SMP'),('BID2','Bahasa Indonesia 2','SMP'),('BID3','Bahasa Indonesia 3','SMP'),
 ('BIO1','Biologi 1','SMP'),('BIO2','Biologi 2','SMP'),('BIO3','Biologi 3','SMP'),

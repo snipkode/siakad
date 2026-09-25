@@ -60,7 +60,7 @@ CREATE TABLE IF NOT EXISTS `tbl_pengaturan` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 INSERT INTO `tbl_pengaturan` (`kunci`,`nilai`,`deskripsi`) VALUES
-('mode_aktif','SMP','Mode berjalan: KAMPUS/SMA/SMP/SD/TK'),
+('mode_aktif','KAMPUS','Mode berjalan: KAMPUS/SMA/SMP/SD/TK'),
 ('kkm_default','75','KKM global (dipakai bila mode menyetel punya_kkm=Y)'),
 ('judul_aplikasi','SIAKAD','Judul aplikasi pada header/login');
 

@@ -64,7 +64,7 @@ class Meta
 		if (!in_array($aktif, $list, true)) {
 			$aktif = (string) $this->ci->config->item('mode_default');
 			if (!in_array($aktif, $list, true)) {
-				$aktif = 'SMP';
+				$aktif = 'KAMPUS';
 			}
 		}
 

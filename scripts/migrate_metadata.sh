@@ -7,7 +7,7 @@
 #   1. Membuat tabel metadata (tbl_mode, tbl_pengaturan, tbl_field,
 #      tbl_entitas_atribut, tbl_referensi, tbl_krs, tbl_identitas).
 #   2. Menambahkan kolom kd_mode pada tabel mode-spesifik & mengisi
-#      default 'SMP' untuk data lama supaya tetap tampil.
+#      default 'KAMPUS' untuk data lama supaya tetap tampil.
 #   3. Menyambungkan tabel Kurikulum dengan referensi (opsional).
 #
 # Penggunaan:
@@ -69,7 +69,7 @@ fi
 # peserta & guru: mode pemilik data
 for tbl in tbl_siswa tbl_guru tbl_kelas tbl_jadwal tbl_nilai tbl_pembayaran; do
   if table_exists "$tbl" && ! column_exists "$tbl" "kd_mode"; then
-    q "ALTER TABLE $tbl ADD COLUMN kd_mode varchar(10) NOT NULL DEFAULT 'SMP' AFTER $(case $tbl in tbl_siswa) echo "kd_kelas";; tbl_guru) echo "password";; tbl_kelas) echo "kd_jurusan";; tbl_jadwal) echo "hari";; tbl_nilai) echo "nilai";; tbl_pembayaran) echo "keterangan";; esac);"
+    q "ALTER TABLE $tbl ADD COLUMN kd_mode varchar(10) NOT NULL DEFAULT 'KAMPUS' AFTER $(case $tbl in tbl_siswa) echo "kd_kelas";; tbl_guru) echo "password";; tbl_kelas) echo "kd_jurusan";; tbl_jadwal) echo "hari";; tbl_nilai) echo "nilai";; tbl_pembayaran) echo "keterangan";; esac);"
     echo "==> $tbl: kolom kd_mode ditambahkan (default SMP)."
   fi
 done
@@ -77,20 +77,20 @@ done
 # riwayat kelas & walikelas (referensi rombel lama)
 for tbl in tbl_riwayat_kelas tbl_walikelas; do
   if table_exists "$tbl" && ! column_exists "$tbl" "kd_mode"; then
-    q "ALTER TABLE $tbl ADD COLUMN kd_mode varchar(10) NOT NULL DEFAULT 'SMP';"
+    q "ALTER TABLE $tbl ADD COLUMN kd_mode varchar(10) NOT NULL DEFAULT 'KAMPUS';"
     echo "==> $tbl: kolom kd_mode ditambahkan (default SMP)."
   fi
 done
 
 # tahun akademik: masing-masing mode punya tahun sendiri
 if table_exists "tbl_tahun_akademik" && ! column_exists "tbl_tahun_akademik" "kd_mode"; then
-  q "ALTER TABLE tbl_tahun_akademik ADD COLUMN kd_mode varchar(10) NOT NULL DEFAULT 'SMP' AFTER semester;"
+  q "ALTER TABLE tbl_tahun_akademik ADD COLUMN kd_mode varchar(10) NOT NULL DEFAULT 'KAMPUS' AFTER semester;"
   echo "==> tbl_tahun_akademik: kolom kd_mode ditambahkan (default SMP)."
 fi
 
 # ruangan: data kelas per mode
 if table_exists "tbl_ruangan" && ! column_exists "tbl_ruangan" "kd_mode"; then
-  q "ALTER TABLE tbl_ruangan ADD COLUMN kd_mode varchar(10) NOT NULL DEFAULT 'SMP' AFTER nama_ruangan;"
+  q "ALTER TABLE tbl_ruangan ADD COLUMN kd_mode varchar(10) NOT NULL DEFAULT 'KAMPUS' AFTER nama_ruangan;"
   echo "==> tbl_ruangan: kolom kd_mode ditambahkan (default SMP untuk data lama)."
 fi
 if table_exists "tbl_ruangan"; then
@@ -116,7 +116,7 @@ fi
 
 # mapel: nama pelajaran per mode
 if table_exists "tbl_mapel" && ! column_exists "tbl_mapel" "kd_mode"; then
-  q "ALTER TABLE tbl_mapel ADD COLUMN kd_mode varchar(10) NOT NULL DEFAULT 'SMP' AFTER nama_mapel;"
+  q "ALTER TABLE tbl_mapel ADD COLUMN kd_mode varchar(10) NOT NULL DEFAULT 'KAMPUS' AFTER nama_mapel;"
   echo "==> tbl_mapel: kolom kd_mode ditambahkan (default SMP untuk data lama)."
 fi
 if table_exists "tbl_mapel"; then
@@ -143,7 +143,7 @@ fi
 
 # identitas: kop dokumen disimpan per mode
 if table_exists "tbl_identitas" && ! column_exists "tbl_identitas" "kd_mode"; then
-  q "ALTER TABLE tbl_identitas ADD COLUMN kd_mode varchar(10) NOT NULL DEFAULT 'SMP' AFTER id;"
+  q "ALTER TABLE tbl_identitas ADD COLUMN kd_mode varchar(10) NOT NULL DEFAULT 'KAMPUS' AFTER id;"
   echo "==> tbl_identitas: kolom kd_mode ditambahkan (default SMP)."
 fi
 

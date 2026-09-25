@@ -13,7 +13,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 | nilai fallback di bawah ini.
 | -------------------------------------------------------------------
 */
-$config['mode_default'] = 'SMP';
+$config['mode_default'] = 'KAMPUS';
 $config['kkm_default']  = 75;
 
 /*
