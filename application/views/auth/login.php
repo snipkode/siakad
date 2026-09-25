@@ -68,16 +68,14 @@
 </head>
 <body class="relative flex min-h-[100vh] flex-col bg-[#0a0e27] font-sans antialiased"
       style="background:
-        radial-gradient(60rem circle at 15% -10%, rgba(26,115,232,.55) 0%, rgba(26,115,232,0) 45%),
-        radial-gradient(50rem circle at 110% 115%, rgba(108,60,224,.5) 0%, rgba(108,60,224,0) 45%),
-        radial-gradient(40rem circle at 85% -15%, rgba(108,60,224,.35) 0%, transparent 55%),
+        radial-gradient(55rem circle at 15% -10%, rgba(26,115,232,.45) 0%, rgba(26,115,232,0) 45%),
+        radial-gradient(35rem circle at 90% -15%, rgba(108,60,224,.3) 0%, transparent 55%),
         linear-gradient(180deg, #141a3d 0%, #0a0e27 55%, #070a1c 100%);">
 
-  <!-- ===== Latar: blob gradient biru-ungu ===== -->
+  <!-- ===== Latar: blob gradient (atas saja, bawah sengaja bersih untuk footer) ===== -->
   <div class="pointer-events-none absolute inset-0 overflow-hidden">
-    <div class="absolute -left-16 -top-20 h-72 w-72 rounded-full bg-[#1a73e8]/40 blur-3xl"></div>
-    <div class="absolute -bottom-28 -right-16 h-80 w-80 rounded-full bg-[#6c3ce0]/40 blur-3xl"></div>
-    <div class="absolute left-1/2 top-1/2 h-72 w-72 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#1a73e8]/10 blur-3xl"></div>
+    <div class="absolute -left-16 -top-20 h-72 w-72 rounded-full bg-[#1a73e8]/30 blur-3xl"></div>
+    <div class="absolute right-0 top-1/3 h-72 w-72 rounded-full bg-[#6c3ce0]/20 blur-3xl"></div>
   </div>
 
   <!-- ===== Konten: penuh tinggi, branding di atas, footer menempel dasar, tanpa space kosong ===== -->
@@ -204,9 +202,9 @@
     </div>
   </div>
 
-  <!-- ===== Footer: full-width, penuh sampai dasar layar (safe-area aman) ===== -->
-  <footer class="fade-in relative z-10 mt-auto w-full text-center text-[10px] tracking-wide text-slate-600"
-          style="animation-delay:.24s; padding: 1rem 1rem calc(env(safe-area-inset-bottom) + 0.75rem);">
+  <!-- ===== Footer: bar solid hitam-gelap, penuh ke dasar layar (bukan transparan) ===== -->
+  <footer class="fade-in relative z-10 mt-auto w-full border-t border-white/5 bg-[#070a1c] px-4 py-3 text-center text-[10px] tracking-wide text-slate-500"
+          style="animation-delay:.24s; padding-bottom: calc(env(safe-area-inset-bottom) + 0.5rem);">
     &copy; <?php echo date('Y'); ?> SIAKAD &middot; Sistem Informasi Akademik
   </footer>
 
