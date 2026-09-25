@@ -25,7 +25,7 @@
   <meta name="theme-color" content="#14161c">
   <title>Masuk | SIAKAD</title>
 
-  <link rel="stylesheet" href="<?php echo base_url(); ?>assets/custom/css/app.css">
+  <link rel="stylesheet" href="<?php echo base_url(); ?>assets/custom/css/app.css?v=<?php echo @filemtime(FCPATH.'assets/custom/css/app.css'); ?>">
 
   <style>
     body {
