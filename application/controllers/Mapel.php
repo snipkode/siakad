@@ -41,8 +41,10 @@
 				'host' => $this->db->hostname
 		    );
 
+		    $whereAll = "kd_mode = ".$this->db->escape($this->meta->mode());
+
 		    echo json_encode(
-		     	SSP::simple($_GET, $sql_details, $table, $primaryKey, $columns)
+		     	SSP::complex($_GET, $sql_details, $table, $primaryKey, $columns, null, $whereAll)
 		     );
 
 		}
@@ -69,7 +71,8 @@
 				redirect('mapel');
 			} else {
 				$kd_mapel 		= $this->uri->segment(3);
-				$data['mapel'] 	= $this->db->get_where('tbl_mapel', array('kd_mapel' => $kd_mapel))->row_array();
+				$data['mapel'] 	= $this->db->get_where('tbl_mapel', array('kd_mapel' => $kd_mapel, 'kd_mode' => $this->meta->mode()))->row_array();
+				if (empty($data['mapel'])) { show_404(); }
 				$this->template->load('template', 'mapel/edit', $data);
 			}
 		}
@@ -79,6 +82,7 @@
 			$kode_mapel = $this->uri->segment(3);
 			if (!empty($kode_mapel)) {
 				$this->db->where('kd_mapel', $kode_mapel);
+				$this->db->where('kd_mode', $this->meta->mode());
 				$this->db->delete('tbl_mapel');
 			}
 			redirect('mapel');

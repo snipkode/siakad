@@ -114,6 +114,33 @@ SQL
   echo "==> tbl_ruangan: ruangan per mode di-seed."
 fi
 
+# mapel: nama pelajaran per mode
+if table_exists "tbl_mapel" && ! column_exists "tbl_mapel" "kd_mode"; then
+  q "ALTER TABLE tbl_mapel ADD COLUMN kd_mode varchar(10) NOT NULL DEFAULT 'SMP' AFTER nama_mapel;"
+  echo "==> tbl_mapel: kolom kd_mode ditambahkan (default SMP untuk data lama)."
+fi
+if table_exists "tbl_mapel"; then
+  cat <<'SQL' | run_sql >/dev/null
+INSERT INTO tbl_mapel (kd_mapel, nama_mapel, kd_mode) VALUES
+('BID1','Bahasa Indonesia 1','SMP'),('BID2','Bahasa Indonesia 2','SMP'),('BID3','Bahasa Indonesia 3','SMP'),
+('BIO1','Biologi 1','SMP'),('BIO2','Biologi 2','SMP'),('BIO3','Biologi 3','SMP'),
+('MTK1','Matematika 1','SMP'),('MTK2','Matematika 2','SMP'),('MTK3','Matematika 3','SMP'),
+('PAI1','PAI 1','SMP'),('PAI2','PAI 2','SMP'),('PAI3','PAI 3','SMP'),
+('SDBIN','Bahasa Indonesia','SD'),('SDMTK','Matematika','SD'),
+('SDIPA','Ilmu Pengetahuan Alam','SD'),('SDIPS','Ilmu Pengetahuan Sosial','SD'),
+('SDPAI','Pendidikan Agama Islam','SD'),('SDPJO','PJOK','SD'),('SDSEN','Seni Budaya','SD'),('SDBIG','Bahasa Inggris','SD'),
+('SABIN','Bahasa Indonesia','SMA'),('SAMTK','Matematika','SMA'),('SABIG','Bahasa Inggris','SMA'),
+('SAFIS','Fisika','SMA'),('SAKIM','Kimia','SMA'),('SABIO','Biologi','SMA'),
+('SASEJ','Sejarah','SMA'),('SAGEO','Geografi','SMA'),('SAEKO','Ekonomi','SMA'),
+('TKBHS','Bahasa & Bercerita','TK'),('TKMTK','Berhitung','TK'),
+('TKAGM','Agama & Moral','TK'),('TKSEN','Seni & Motorik','TK'),
+('KABIN','Bahasa Indonesia','KAMPUS'),('KAMTK','Matematika','KAMPUS'),('KABIG','Bahasa Inggris','KAMPUS'),
+('KAPRG','Pemrograman Web','KAMPUS'),('KADB','Basis Data','KAMPUS'),('KAJAR','Jaringan Komputer','KAMPUS'),('KAAK','Akuntansi Keuangan','KAMPUS')
+ON DUPLICATE KEY UPDATE nama_mapel = VALUES(nama_mapel), kd_mode = VALUES(kd_mode);
+SQL
+  echo "==> tbl_mapel: mapel per mode di-seed."
+fi
+
 # identitas: kop dokumen disimpan per mode
 if table_exists "tbl_identitas" && ! column_exists "tbl_identitas" "kd_mode"; then
   q "ALTER TABLE tbl_identitas ADD COLUMN kd_mode varchar(10) NOT NULL DEFAULT 'SMP' AFTER id;"
