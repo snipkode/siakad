@@ -66,7 +66,7 @@
     }
   </style>
 </head>
-<body class="relative flex min-h-[100vh] flex-col bg-[#0a0e27] font-sans antialiased"
+<body class="relative flex min-h-dvh flex-col bg-[#0a0e27] font-sans antialiased"
       style="background:
         radial-gradient(55rem circle at 15% -10%, rgba(26,115,232,.45) 0%, rgba(26,115,232,0) 45%),
         radial-gradient(35rem circle at 90% -15%, rgba(108,60,224,.3) 0%, transparent 55%),
@@ -202,9 +202,9 @@
     </div>
   </div>
 
-  <!-- ===== Footer: bar solid hitam-gelap, penuh ke dasar layar (bukan transparan) ===== -->
-  <footer class="fade-in relative z-10 mt-auto w-full border-t border-white/5 bg-[#070a1c] px-4 py-3 text-center text-[10px] tracking-wide text-slate-500"
-          style="animation-delay:.24s; padding-bottom: calc(env(safe-area-inset-bottom) + 0.5rem);">
+  <!-- ===== Footer: bar solid, menempel dasar, tanpa padding berlebih ===== -->
+  <footer class="fade-in relative z-10 mt-auto w-full border-t border-white/5 bg-[#070a1c] py-2.5 text-center text-[10px] tracking-wide text-slate-500"
+          style="animation-delay:.24s; padding-bottom: calc(env(safe-area-inset-bottom) + 0.25rem);">
     &copy; <?php echo date('Y'); ?> SIAKAD &middot; Sistem Informasi Akademik
   </footer>
 
