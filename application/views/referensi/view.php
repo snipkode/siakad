@@ -32,6 +32,13 @@
         <tbody></tbody>
       </table>
     </div>
+    <div id="ref-empty" class="hidden py-14 text-center">
+      <div class="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-full bg-slate-100 text-slate-400">
+        <i class="fa fa-inbox"></i>
+      </div>
+      <p class="text-sm font-semibold text-slate-600">Belum ada data <?php echo mb_strtolower($label_kategori); ?></p>
+      <p class="mt-1 text-xs text-slate-400">Klik tombol "Tambah" untuk mengisi data pertama.</p>
+    </div>
   </div>
 </div>
 
@@ -61,5 +68,18 @@ $(function () {
   });
 
   $('#tbl-ref_wrapper').closest('.rounded-2xl').find('.dataTables_filter input').attr("placeholder", 'Cari kode / nama...');
+
+  function toggleEmpty() {
+    var total = tbl.page.info().recordsTotal;
+    if (total === 0) {
+      $('#tbl-ref_wrapper').hide();
+      $('#ref-empty').removeClass('hidden');
+    } else {
+      $('#tbl-ref_wrapper').show();
+      $('#ref-empty').addClass('hidden');
+    }
+  }
+  tbl.on('draw.dt', toggleEmpty);
+  toggleEmpty();
 });
 </script>
