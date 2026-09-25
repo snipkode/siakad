@@ -43,13 +43,13 @@
   <div class="group flex flex-col overflow-hidden rounded-2xl shadow-sm ring-1 ring-slate-200 transition hover:-translate-y-0.5 hover:shadow-lg hover:ring-amber-200">
     <?php echo anchor('ruangan', '<div class="flex flex-1 items-center justify-between gap-2 bg-gradient-to-br from-amber-400 to-orange-500 px-4 pb-3 pt-4 sm:px-5">
       <div>
-        <p class="text-xs font-semibold text-amber-100">Ruangan Kelas</p>
+        <p class="text-xs font-semibold text-amber-100"><?php echo $label_ruangan; ?></p>
         <p class="mt-1 text-3xl font-extrabold leading-8 text-white">'.$ruangan['hasil'].'</p>
       </div>
       <span class="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-white/15 text-white"><i class="fa fa-building text-lg"></i></span>
     </div>
     <div class="flex items-center justify-center gap-1.5 bg-white px-4 py-2.5 text-xs font-semibold text-amber-600 transition group-hover:bg-amber-50">
-      Kelola Ruangan <i class="fa fa-arrow-right text-[10px]"></i>
+      Kelola <?php echo $label_ruangan; ?> <i class="fa fa-arrow-right text-[10px]"></i>
     </div>', array('class' => 'flex h-full flex-col')); ?>
   </div>
 

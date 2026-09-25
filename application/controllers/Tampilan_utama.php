@@ -24,12 +24,13 @@
 			$qguru = "SELECT COUNT(*) AS hasil FROM tbl_guru WHERE kd_mode = $esc";
 			$data['guru'] = $this->db->query($qguru)->row_array();
 
-			$qruangan = 'SELECT COUNT(*) AS hasil FROM tbl_ruangan';
+			$qruangan = "SELECT COUNT(*) AS hasil FROM tbl_ruangan WHERE kd_mode = $esc";
 			$data['ruangan'] = $this->db->query($qruangan)->row_array();
 
 			// Label kartu mengikuti mode.
 			$data['label_peserta'] = meta_mode_label('label_peserta');
 			$data['label_staf']    = meta_mode_label('label_staf');
+			$data['label_ruangan']= ($mode === 'KAMPUS') ? 'Ruangan' : 'Ruang Kelas';
 
 			if ($mode === 'KAMPUS') {
 				// Chart batang: mahasiswa per angkatan.
