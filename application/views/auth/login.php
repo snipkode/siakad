@@ -82,7 +82,7 @@
 
   <!-- ===== Konten: penuh tinggi, branding di atas, footer menempel dasar, tanpa space kosong ===== -->
   <div class="relative z-10 mx-auto flex w-full max-w-md flex-1 flex-col px-4"
-       style="padding-top: calc(env(safe-area-inset-top) + 1.25rem); padding-bottom: env(safe-area-inset-bottom);">
+       style="padding-top: calc(env(safe-area-inset-top) + 1.25rem);">
 
     <!-- ===== Branding kompak (max ~120px) ===== -->
     <div class="fade-in flex items-center gap-2.5 py-4">
@@ -202,10 +202,13 @@
 
     <?php echo form_close(); ?>
     </div>
-
-    <!-- ===== Footer ===== -->
-    <p class="fade-in text-center text-[10px] tracking-wide text-slate-600" style="animation-delay:.24s">&copy; <?php echo date('Y'); ?> SIAKAD &middot; Sistem Informasi Akademik</p>
   </div>
+
+  <!-- ===== Footer: full-width, penuh sampai dasar layar (safe-area aman) ===== -->
+  <footer class="fade-in relative z-10 mt-auto w-full text-center text-[10px] tracking-wide text-slate-600"
+          style="animation-delay:.24s; padding: 1rem 1rem calc(env(safe-area-inset-bottom) + 0.75rem);">
+    &copy; <?php echo date('Y'); ?> SIAKAD &middot; Sistem Informasi Akademik
+  </footer>
 
   <script>
     (function () {
