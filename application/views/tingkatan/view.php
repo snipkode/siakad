@@ -20,13 +20,20 @@
     </div>
   </div>
   <div class="overflow-x-auto p-2 sm:p-4">
-    <table id="mytable" class="dataTable w-full text-sm">
+    <table id="mytable" class="dataTable w-full text-[13px] sm:text-sm">
       <thead>
         <tr>
-          <th class="px-3 py-2.5 text-left text-[11px] font-semibold uppercase tracking-wide text-slate-500">NO</th>          <th class="px-3 py-2.5 text-left text-[11px] font-semibold uppercase tracking-wide text-slate-500">KODE TINGKAT</th>          <th class="px-3 py-2.5 text-left text-[11px] font-semibold uppercase tracking-wide text-slate-500">NAMA TINGKATAN</th>          <th class="px-3 py-2.5 text-left text-[11px] font-semibold uppercase tracking-wide text-slate-500">AKSI</th>
+          <th class="px-3 py-2.5 text-left text-[11px] sm:text-xs font-semibold uppercase tracking-wide text-slate-500">NO</th>          <th class="px-3 py-2.5 text-left text-[11px] sm:text-xs font-semibold uppercase tracking-wide text-slate-500">KODE TINGKAT</th>          <th class="px-3 py-2.5 text-left text-[11px] sm:text-xs font-semibold uppercase tracking-wide text-slate-500">NAMA TINGKATAN</th>          <th class="px-3 py-2.5 text-left text-[11px] sm:text-xs font-semibold uppercase tracking-wide text-slate-500">AKSI</th>
         </tr>
       </thead>
     </table>
+  </div>
+  <div id="empty-state" class="hidden py-14 text-center">
+    <div class="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-full bg-slate-100 text-slate-400">
+      <i class="fa fa-inbox"></i>
+    </div>
+    <p class="text-sm font-semibold text-slate-600">Belum ada data tingkatan</p>
+    <p class="mt-1 text-xs text-slate-400">Klik tombol "Tambah Data" untuk mengisi data pertama.</p>
   </div>
 </div>
 
@@ -59,5 +66,18 @@
         cell.innerHTML = i + 1;
       });
     }).draw();
+
+    function toggleEmpty() {
+      var total = t.page.info().recordsTotal;
+      if (total === 0) {
+        $('#mytable_wrapper').hide();
+        $('#empty-state').removeClass('hidden');
+      } else {
+        $('#mytable_wrapper').show();
+        $('#empty-state').addClass('hidden');
+      }
+    }
+    t.on('draw.dt', toggleEmpty);
+    toggleEmpty();
   });
 </script>
