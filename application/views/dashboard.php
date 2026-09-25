@@ -11,7 +11,7 @@
     </div>
     <div class="flex items-center justify-center gap-1.5 bg-white px-4 py-2.5 text-xs font-semibold text-sky-700 transition group-hover:bg-sky-50">
       Kelola Pengguna <i class="fa fa-arrow-right text-[10px]"></i>
-    </div>', array('class' => 'block')); ?>
+    </div>', array('class' => 'flex h-full flex-col')); ?>
   </div>
 
   <div class="group flex flex-col overflow-hidden rounded-2xl shadow-sm ring-1 ring-slate-200 transition hover:-translate-y-0.5 hover:shadow-lg hover:ring-red-200">
@@ -24,7 +24,7 @@
     </div>
     <div class="flex items-center justify-center gap-1.5 bg-white px-4 py-2.5 text-xs font-semibold text-red-600 transition group-hover:bg-red-50">
       Kelola '.$label_peserta.' <i class="fa fa-arrow-right text-[10px]"></i>
-    </div>', array('class' => 'block')); ?>
+    </div>', array('class' => 'flex h-full flex-col')); ?>
   </div>
 
   <div class="group flex flex-col overflow-hidden rounded-2xl shadow-sm ring-1 ring-slate-200 transition hover:-translate-y-0.5 hover:shadow-lg hover:ring-emerald-200">
@@ -37,7 +37,7 @@
     </div>
     <div class="flex items-center justify-center gap-1.5 bg-white px-4 py-2.5 text-xs font-semibold text-emerald-600 transition group-hover:bg-emerald-50">
       Kelola '.$label_staf.' <i class="fa fa-arrow-right text-[10px]"></i>
-    </div>', array('class' => 'block')); ?>
+    </div>', array('class' => 'flex h-full flex-col')); ?>
   </div>
 
   <div class="group flex flex-col overflow-hidden rounded-2xl shadow-sm ring-1 ring-slate-200 transition hover:-translate-y-0.5 hover:shadow-lg hover:ring-amber-200">
@@ -50,7 +50,7 @@
     </div>
     <div class="flex items-center justify-center gap-1.5 bg-white px-4 py-2.5 text-xs font-semibold text-amber-600 transition group-hover:bg-amber-50">
       Kelola Ruangan <i class="fa fa-arrow-right text-[10px]"></i>
-    </div>', array('class' => 'block')); ?>
+    </div>', array('class' => 'flex h-full flex-col')); ?>
   </div>
 
 </div>
