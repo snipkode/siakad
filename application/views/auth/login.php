@@ -206,13 +206,10 @@
     </div>
   </div>
 
-  <!-- ===== Footer: bar solid lebih tinggi, menempel dasar ===== -->
-  <footer class="fade-in relative z-10 mt-auto flex min-h-[2.75rem] w-full flex-col items-center justify-center bg-[#05060a] py-3 text-center text-[11px] tracking-wide text-slate-500"
-          style="animation-delay:.24s; padding-bottom: calc(env(safe-area-inset-bottom) + 0.25rem);">
-    <span class="flex items-center gap-1.5">
-      <svg class="h-3 w-3 text-slate-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"></path><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>
-      <span>&copy; <?php echo date('Y'); ?> SIAKAD &middot; Sistem Informasi Akademik</span>
-    </span>
+  <!-- ===== Footer: sederhana, tinggi nyaman, menempel dasar ===== -->
+  <footer class="fade-in relative z-10 mt-auto w-full bg-[#05060a] text-center"
+          style="animation-delay:.24s; padding: 1rem 1rem calc(env(safe-area-inset-bottom) + 0.5rem);">
+    <p class="text-[11px] tracking-wide text-slate-500">&copy; <?php echo date('Y'); ?> SIAKAD &middot; Sistem Informasi Akademik</p>
   </footer>
 
   <script>
