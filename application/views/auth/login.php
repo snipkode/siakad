@@ -67,16 +67,17 @@
   </style>
 </head>
 <body class="relative flex min-h-dvh flex-col bg-[#0a0e27] font-sans antialiased"
-      style="background:
-        radial-gradient(55rem circle at 15% -10%, rgba(26,115,232,.45) 0%, rgba(26,115,232,0) 45%),
-        radial-gradient(35rem circle at 90% -15%, rgba(108,60,224,.3) 0%, transparent 55%),
-        linear-gradient(180deg, #141a3d 0%, #0a0e27 55%, #070a1c 100%);">
+      style="background: linear-gradient(180deg, #12173a 0%, #0b1027 45%, #070a1c 100%);">
 
-  <!-- ===== Latar: blob gradient (atas saja, bawah sengaja bersih untuk footer) ===== -->
+  <!-- ===== Latar: glow lembut (anti-banding via noise halus di bawah) ===== -->
   <div class="pointer-events-none absolute inset-0 overflow-hidden">
-    <div class="absolute -left-16 -top-20 h-72 w-72 rounded-full bg-[#1a73e8]/30 blur-3xl"></div>
-    <div class="absolute right-0 top-1/3 h-72 w-72 rounded-full bg-[#6c3ce0]/20 blur-3xl"></div>
+    <div class="absolute -left-20 -top-16 h-64 w-64 rounded-full bg-[#1a73e8]/20 blur-3xl"></div>
+    <div class="absolute -right-16 top-1/4 h-64 w-64 rounded-full bg-[#6c3ce0]/15 blur-3xl"></div>
   </div>
+
+  <!-- ===== Noise halus: memecah gradasi agar tidak terlihat pita/grid ===== -->
+  <div class="pointer-events-none absolute inset-0 opacity-[0.04] mix-blend-overlay"
+       style="background-image:url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22160%22 height=%22160%22><filter id=%22n%22><feTurbulence type=%22fractalNoise%22 baseFrequency=%220.9%22 numOctaves=%222%22/><feColorMatrix type=%22saturate%22 values=%220%22/></filter><rect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23n)%22 opacity=%221%22/></svg>');"></div>
 
   <!-- ===== Konten: penuh tinggi, branding di atas, footer menempel dasar, tanpa space kosong ===== -->
   <div class="relative z-10 mx-auto flex w-full max-w-md flex-1 flex-col px-4"
@@ -203,7 +204,7 @@
   </div>
 
   <!-- ===== Footer: bar solid, menempel dasar, tanpa padding berlebih ===== -->
-  <footer class="fade-in relative z-10 mt-auto w-full border-t border-white/5 bg-[#070a1c] py-2.5 text-center text-[10px] tracking-wide text-slate-500"
+  <footer class="fade-in relative z-10 mt-auto w-full bg-[#070a1c] py-2.5 text-center text-[10px] tracking-wide text-slate-500"
           style="animation-delay:.24s; padding-bottom: calc(env(safe-area-inset-bottom) + 0.25rem);">
     &copy; <?php echo date('Y'); ?> SIAKAD &middot; Sistem Informasi Akademik
   </footer>
