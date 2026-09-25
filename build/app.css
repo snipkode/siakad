@@ -181,9 +181,9 @@ select.form-control:hover:not(:focus), input.form-control:hover:not(:focus) { bo
   .dataTables_wrapper .dataTables_length select { flex: 1; max-width: 4.5rem; padding: .4rem .75rem; border-radius: .8rem; }
 
   .dataTables_wrapper table.dataTable { order: 3; width: 100% !important; }
-  .dataTables_info { order: 4; float: none; width: 100%; margin: .7rem 0 .5rem; text-align: center; }
+  .dataTables_info { order: 4; float: none; width: 100%; margin: .7rem 0 .5rem; text-align: center; font-size: .75rem; }
   .dataTables_paginate.paging_simple_numbers { order: 5; float: none; width: 100%; justify-content: center; }
-  .dataTables_paginate .paginate_button { min-width: 2rem; height: 2rem; padding: .1rem .55rem; font-size: .78rem; }
+  .dataTables_paginate .paginate_button { min-width: 1.9rem; height: 1.9rem; padding: .1rem .45rem; font-size: .72rem; }
 
   /* tombol aksi header tabel: grid 2 kolom kompak di mobile */
   .dt-actions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .5rem; width: 100%; }
