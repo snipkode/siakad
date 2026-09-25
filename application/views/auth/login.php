@@ -22,7 +22,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="theme-color" content="#0a0c11">
+  <meta name="theme-color" content="#0a0e27">
   <title>Masuk | SIAKAD</title>
 
   <link rel="stylesheet" href="<?php echo base_url(); ?>assets/custom/css/app.css">
@@ -66,13 +66,16 @@
     }
   </style>
 </head>
-<body class="relative flex min-h-dvh flex-col bg-[#0a0c11] font-sans antialiased"
-      style="background: linear-gradient(180deg, #151821 0%, #0d1017 45%, #05060a 100%);">
+<body class="relative flex min-h-dvh flex-col bg-[#0a0e27] font-sans antialiased"
+      style="background:
+        radial-gradient(55rem circle at 15% -10%, rgba(26,115,232,.5) 0%, rgba(26,115,232,0) 45%),
+        radial-gradient(45rem circle at 105% 110%, rgba(108,60,224,.35) 0%, rgba(108,60,224,0) 50%),
+        linear-gradient(180deg, #141a3d 0%, #0a0e27 50%, #070a1c 100%);">
 
-  <!-- ===== Latar: cahaya lembut (nyaris tak terlihat, bukan warna biru mencolok) ===== -->
+  <!-- ===== Latar: glow biru-ungu lembut ===== -->
   <div class="pointer-events-none absolute inset-0 overflow-hidden">
-    <div class="absolute -left-20 -top-16 h-64 w-64 rounded-full bg-white/5 blur-3xl"></div>
-    <div class="absolute -right-16 top-1/4 h-64 w-64 rounded-full bg-slate-400/10 blur-3xl"></div>
+    <div class="absolute -left-20 -top-16 h-64 w-64 rounded-full bg-[#1a73e8]/25 blur-3xl"></div>
+    <div class="absolute -right-16 top-1/4 h-64 w-64 rounded-full bg-[#6c3ce0]/20 blur-3xl"></div>
   </div>
 
   <!-- ===== Noise halus: memecah gradasi agar tidak terlihat pita/grid ===== -->
@@ -203,10 +206,13 @@
     </div>
   </div>
 
-  <!-- ===== Footer: bar solid, menempel dasar, tanpa padding berlebih ===== -->
-  <footer class="fade-in relative z-10 mt-auto w-full bg-[#05060a] py-2.5 text-center text-[10px] tracking-wide text-slate-500"
+  <!-- ===== Footer: bar solid lebih tinggi, menempel dasar ===== -->
+  <footer class="fade-in relative z-10 mt-auto flex min-h-[2.75rem] w-full flex-col items-center justify-center bg-[#05060a] py-3 text-center text-[11px] tracking-wide text-slate-500"
           style="animation-delay:.24s; padding-bottom: calc(env(safe-area-inset-bottom) + 0.25rem);">
-    &copy; <?php echo date('Y'); ?> SIAKAD &middot; Sistem Informasi Akademik
+    <span class="flex items-center gap-1.5">
+      <svg class="h-3 w-3 text-slate-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"></path><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>
+      <span>&copy; <?php echo date('Y'); ?> SIAKAD &middot; Sistem Informasi Akademik</span>
+    </span>
   </footer>
 
   <script>
