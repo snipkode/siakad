@@ -23,13 +23,14 @@
 
 		function update()
 		{
+			$kd_mode = $this->_mode();
 			$data = array(
 				'nama_mapel'          => $this->input->post('nama_mapel', TRUE)
 			);
 
 			$kode_mapel	= $this->input->post('kd_mapel');
 			$this->db->where('kd_mapel', $kode_mapel);
-			$this->db->where('kd_mode', $this->_mode());
+			$this->db->where('kd_mode', $kd_mode);
 			$this->db->update($this->table, $data);
 		}
 		

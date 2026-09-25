@@ -81,8 +81,9 @@
 		{
 			$kode_mapel = $this->uri->segment(3);
 			if (!empty($kode_mapel)) {
+				$kd_mode = $this->meta->mode();
 				$this->db->where('kd_mapel', $kode_mapel);
-				$this->db->where('kd_mode', $this->meta->mode());
+				$this->db->where('kd_mode', $kd_mode);
 				$this->db->delete('tbl_mapel');
 			}
 			redirect('mapel');

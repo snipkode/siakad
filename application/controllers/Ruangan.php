@@ -81,8 +81,9 @@
 		{
 			$kode_ruangan = $this->uri->segment(3);
 			if (!empty($kode_ruangan)) {
+				$kd_mode = $this->meta->mode();
 				$this->db->where('kd_ruangan', $kode_ruangan);
-				$this->db->where('kd_mode', $this->meta->mode());
+				$this->db->where('kd_mode', $kd_mode);
 				$this->db->delete('tbl_ruangan');
 			}
 			redirect('ruangan');
