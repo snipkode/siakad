@@ -6,7 +6,7 @@
 		function __construct()
 		{
 			parent::__construct();
-			//checkAksesModule();
+			checkAksesModule();
 			$this->load->library('ssp');
 			$this->load->model('model_user');
 		}

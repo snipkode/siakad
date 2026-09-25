@@ -17,7 +17,7 @@
 		function __construct()
 		{
 			parent::__construct();
-			//checkAksesModule();
+			checkAksesModule();
 			$this->load->library('ssp');
 		}
 

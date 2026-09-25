@@ -77,20 +77,25 @@
 			$url = $controller.'/'.$method;
 		}
 
-		$menu = $ci->db->get_where('tabel_menu', array('link' => $url))->row_array();
 		$level_User = $ci->session->userdata('id_level_user');
 
-		// Untuk mengatasi session yang terhapus karena tidak diapa-apakan lebih dari 30 menit maka dibuat fungsi if bila $level user kosong maka akan me redirect ke halaman login
+		// Bila tidak ada session (belum login / sesi habis > 30 menit) maka tendang ke halaman login.
+		if (empty($level_User)) {
+			redirect('auth/');
+			return;
+		}
 
-		if (!empty($level_User)) {
-			$check = $ci->db->get_where('tbl_user_rule', array('id_level_user' => $level_User, 'id_menu' => $menu['id']));
-		
-			if ($check->num_rows() < 1 AND $method != 'data' AND $method != 'add' AND $method != 'edit' AND $method != 'delete' AND $method != 'upload_foto_siswa' AND $method != 'siswa_aktif' AND $method != 'loadDataSiswa' AND $method != 'export_excel' AND $method != 'upload_foto_siswa') {
-				echo "Anda Tidak Boleh Akses Module Ini";
-				die;
-			}
-		} else {
-			redirect ('auth/');
+		// Menu tidak terdaftar (mis. dashboard/tampilan_utama) => izinkan selama sudah login.
+		$menu = $ci->db->get_where('tabel_menu', array('link' => $url))->row_array();
+		if (empty($menu) || !isset($menu['id'])) {
+			return;
+		}
+
+		$check = $ci->db->get_where('tbl_user_rule', array('id_level_user' => $level_User, 'id_menu' => $menu['id']));
+
+		if ($check->num_rows() < 1 AND $method != 'data' AND $method != 'add' AND $method != 'edit' AND $method != 'delete' AND $method != 'upload_foto_siswa' AND $method != 'siswa_aktif' AND $method != 'loadDataSiswa' AND $method != 'export_excel' AND $method != 'upload_foto_siswa') {
+			echo "Anda Tidak Boleh Akses Module Ini";
+			die;
 		}
 	}
 

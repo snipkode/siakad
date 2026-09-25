@@ -7,7 +7,7 @@
 		{
 			parent::__construct();
 			$this->load->library('ssp');
-			//checkAksesModule();
+			checkAksesModule();
 		}
 		
 		function index()

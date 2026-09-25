@@ -2,7 +2,13 @@
  
 	class Laporan_nilai extends CI_Controller
 	{
-		
+
+		function __construct()
+		{
+			parent::__construct();
+			checkAksesModule();
+		}
+
 		function index()
 		{
 			// KAMPUS: daftar mahasiswa + IP/IPK, aksi KHS & Transkrip

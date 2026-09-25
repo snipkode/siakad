@@ -6,7 +6,7 @@
 		function __construct()
 		{
 			parent::__construct();
-			//checkAksesModule();
+			checkAksesModule();
 		}
 
 		function index()
