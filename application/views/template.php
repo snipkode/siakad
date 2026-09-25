@@ -197,7 +197,7 @@
           <span class="hidden text-sm font-medium text-slate-700 md:block"><?php echo $nama_lengkap; ?></span>
           <i class="fa fa-angle-down text-xs text-slate-400"></i>
         </button>
-        <div id="user-menu" class="absolute right-0 top-full z-[60] mt-1 hidden w-52 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-xl shadow-slate-900/10">
+        <div id="user-menu" class="absolute right-0 top-full z-[100] mt-1 hidden w-52 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-xl shadow-slate-900/10">
           <div class="flex items-center gap-3 border-b border-slate-100 bg-slate-50 px-4 py-3">
             <div class="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-sky-500 to-indigo-600 text-sm font-bold text-white">
               <?php echo strtoupper(substr($nama_lengkap, 0, 1)); ?>
