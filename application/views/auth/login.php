@@ -66,17 +66,7 @@
     }
   </style>
 </head>
-<body class="relative flex min-h-dvh flex-col bg-[#0a0e27] font-sans antialiased"
-      style="background:
-        radial-gradient(55rem circle at 15% -10%, rgba(26,115,232,.5) 0%, rgba(26,115,232,0) 45%),
-        radial-gradient(45rem circle at 105% 110%, rgba(108,60,224,.35) 0%, rgba(108,60,224,0) 50%),
-        linear-gradient(180deg, #141a3d 0%, #0a0e27 50%, #070a1c 100%);">
-
-  <!-- ===== Latar: glow biru-ungu lembut ===== -->
-  <div class="pointer-events-none absolute inset-0 overflow-hidden">
-    <div class="absolute -left-20 -top-16 h-64 w-64 rounded-full bg-[#1a73e8]/25 blur-3xl"></div>
-    <div class="absolute -right-16 top-1/4 h-64 w-64 rounded-full bg-[#6c3ce0]/20 blur-3xl"></div>
-  </div>
+<body class="relative flex min-h-dvh flex-col bg-[#0a0e27] font-sans antialiased">
 
   <!-- ===== Konten: penuh tinggi, branding di atas, footer menempel dasar, tanpa space kosong ===== -->
   <div class="relative z-10 mx-auto flex w-full max-w-md flex-1 flex-col px-4"
@@ -203,7 +193,7 @@
   </div>
 
   <!-- ===== Footer: sederhana, tinggi nyaman, menempel dasar ===== -->
-  <footer class="fade-in relative z-10 mt-auto w-full bg-[#05060a] text-center"
+  <footer class="fade-in relative z-10 mt-auto w-full text-center"
           style="animation-delay:.24s; padding: 1rem 1rem calc(env(safe-area-inset-bottom) + 0.5rem);">
     <p class="text-[11px] tracking-wide text-slate-500">&copy; <?php echo date('Y'); ?> SIAKAD &middot; Sistem Informasi Akademik</p>
   </footer>
