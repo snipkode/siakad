@@ -94,7 +94,7 @@
 							<div class='jadwal-cell'>".cmb_dinamis('guru', 'tbl_guru', 'nama_guru', 'id_guru', $row->id_guru, "id='guru".$row->id_jadwal."' onChange='updateGuru(".$row->id_jadwal.")'")."</div>
 						</td>
 						<td class='px-3 py-2.5' data-label='Ruangan'>
-							<div class='jadwal-cell'>".cmb_dinamis('ruangan', 'tbl_ruangan', 'nama_ruangan', 'kd_ruangan', $row->kd_ruangan, "id='ruangan".$row->id_jadwal."' onChange='updateRuangan(".$row->id_jadwal.")'")."</div>
+							<div class='jadwal-cell'>".cmb_dinamis('ruangan', 'tbl_ruangan', 'nama_ruangan', 'kd_ruangan', $row->kd_ruangan, "id='ruangan".$row->id_jadwal."' onChange='updateRuangan(".$row->id_jadwal.")'", 'form-control', array('kd_mode' => meta_mode()))."</div>
 						</td>
 						<td class='px-3 py-2.5' data-label='Hari'>
 							<div class='jadwal-cell'>".form_dropdown('hari', $hari, $row->hari, "class='form-control jadwal-inline' id='hari".$row->id_jadwal."' onChange='updateHari(".$row->id_jadwal.")'")."</div>
