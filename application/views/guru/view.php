@@ -20,14 +20,14 @@
     </div>
   </div>
   <div class="overflow-x-auto p-2 sm:p-4">
-    <table id="mytable" class="dataTable w-full text-sm">
+    <table id="mytable" class="dataTable w-full text-[13px] sm:text-sm">
       <thead>
         <tr>
-          <th class="px-3 py-2.5 text-left text-[11px] font-semibold uppercase tracking-wide text-slate-500">NO</th>
-          <th class="px-3 py-2.5 text-left text-[11px] font-semibold uppercase tracking-wide text-slate-500"><?php echo mb_strtoupper(meta_label('guru', 'nomor_induk', 'NUPTK')); ?></th>
-          <th class="px-3 py-2.5 text-left text-[11px] font-semibold uppercase tracking-wide text-slate-500">NAMA <?php echo mb_strtoupper(meta_mode_label('label_staf')); ?></th>
-          <th class="px-3 py-2.5 text-left text-[11px] font-semibold uppercase tracking-wide text-slate-500">GENDER</th>
-          <th class="px-3 py-2.5 text-left text-[11px] font-semibold uppercase tracking-wide text-slate-500">AKSI</th>
+          <th class="px-3 py-2.5 text-left text-[11px] sm:text-xs font-semibold uppercase tracking-wide text-slate-500">NO</th>
+          <th class="px-3 py-2.5 text-left text-[11px] sm:text-xs font-semibold uppercase tracking-wide text-slate-500"><?php echo mb_strtoupper(meta_label('guru', 'nomor_induk', 'NUPTK')); ?></th>
+          <th class="px-3 py-2.5 text-left text-[11px] sm:text-xs font-semibold uppercase tracking-wide text-slate-500">NAMA <?php echo mb_strtoupper(meta_mode_label('label_staf')); ?></th>
+          <th class="px-3 py-2.5 text-left text-[11px] sm:text-xs font-semibold uppercase tracking-wide text-slate-500">GENDER</th>
+          <th class="px-3 py-2.5 text-left text-[11px] sm:text-xs font-semibold uppercase tracking-wide text-slate-500">AKSI</th>
         </tr>
       </thead>
     </table>
@@ -45,7 +45,7 @@
       "lengthMenu": [[10, 25, 50, 100, -1], [10, 25, 50, 100, "Semua"]],
       "initComplete": function (settings, json) {
         $('#total-guru').text(json.recordsTotal);
-        $("#mytable_wrapper").parents(".rounded-2xl").first().find(".dataTables_filter input").attr("placeholder", "Cari <?php echo mb_strtolower(meta_mode_label('label_staf')); ?> / NUPTK...");
+        $("#mytable_wrapper").parents(".rounded-2xl").first().find(".dataTables_filter input").attr("placeholder", "Cari <?php echo mb_strtolower(meta_mode_label('label_staf')); ?> / <?php echo meta_label('guru', 'nomor_induk', 'NUPTK'); ?>...");
         $("#mytable_wrapper").parents(".rounded-2xl").first().find(".dataTables_filter input").css("min-width", "200px");
       },
       "columns": [
