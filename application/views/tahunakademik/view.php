@@ -5,7 +5,7 @@
         <i class="fa fa-calendar"></i>
       </span>
       <div>
-        <h3 class="text-sm font-bold text-slate-800">Data Tahun Akademik</h3>
+        <h3 class="text-sm font-bold text-slate-800">Data <?php echo meta_mode_label('label_tahun'); ?></h3>
         <p class="text-xs text-slate-500">
           Total
           <span id="total-tahunakademik" class="inline-flex items-center justify-center rounded-full bg-emerald-100 text-emerald-700 px-2 py-0.5 text-[11px] font-bold">0</span>
@@ -20,10 +20,10 @@
     </div>
   </div>
   <div class="overflow-x-auto p-2 sm:p-4">
-    <table id="mytable" class="dataTable w-full text-sm">
+    <table id="mytable" class="dataTable w-full text-[13px] sm:text-sm">
       <thead>
         <tr>
-          <th class="px-3 py-2.5 text-left text-[11px] font-semibold uppercase tracking-wide text-slate-500">NO</th>          <th class="px-3 py-2.5 text-left text-[11px] font-semibold uppercase tracking-wide text-slate-500">TAHUN AKADEMIK</th>          <th class="px-3 py-2.5 text-left text-[11px] font-semibold uppercase tracking-wide text-slate-500">STATUS</th>          <th class="px-3 py-2.5 text-left text-[11px] font-semibold uppercase tracking-wide text-slate-500">AKSI</th>
+          <th class="px-3 py-2.5 text-left text-[11px] sm:text-xs font-semibold uppercase tracking-wide text-slate-500">NO</th>          <th class="px-3 py-2.5 text-left text-[11px] sm:text-xs font-semibold uppercase tracking-wide text-slate-500"><?php echo mb_strtoupper(meta_mode_label('label_tahun')); ?></th>          <th class="px-3 py-2.5 text-left text-[11px] sm:text-xs font-semibold uppercase tracking-wide text-slate-500">STATUS</th>          <th class="px-3 py-2.5 text-left text-[11px] sm:text-xs font-semibold uppercase tracking-wide text-slate-500">AKSI</th>
         </tr>
       </thead>
     </table>
@@ -42,7 +42,7 @@
       "initComplete": function (settings, json) {
         $('#total-tahunakademik').text(json.recordsTotal);
         var $sf = $("#mytable_wrapper").parents(".rounded-2xl").first().find(".dataTables_filter input");
-        $sf.attr("placeholder", "Cari tahun akademik...");
+        $sf.attr("placeholder", "Cari <?php echo mb_strtolower(meta_mode_label('label_tahun')); ?>...");
         $sf.css("min-width", "200px");
       },
       "columns": [
