@@ -22,7 +22,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="theme-color" content="#0a0e27">
+  <meta name="theme-color" content="#0a0c11">
   <title>Masuk | SIAKAD</title>
 
   <link rel="stylesheet" href="<?php echo base_url(); ?>assets/custom/css/app.css">
@@ -66,13 +66,13 @@
     }
   </style>
 </head>
-<body class="relative flex min-h-dvh flex-col bg-[#0a0e27] font-sans antialiased"
-      style="background: linear-gradient(180deg, #12173a 0%, #0b1027 45%, #070a1c 100%);">
+<body class="relative flex min-h-dvh flex-col bg-[#0a0c11] font-sans antialiased"
+      style="background: linear-gradient(180deg, #151821 0%, #0d1017 45%, #05060a 100%);">
 
-  <!-- ===== Latar: glow lembut (anti-banding via noise halus di bawah) ===== -->
+  <!-- ===== Latar: cahaya lembut (nyaris tak terlihat, bukan warna biru mencolok) ===== -->
   <div class="pointer-events-none absolute inset-0 overflow-hidden">
-    <div class="absolute -left-20 -top-16 h-64 w-64 rounded-full bg-[#1a73e8]/20 blur-3xl"></div>
-    <div class="absolute -right-16 top-1/4 h-64 w-64 rounded-full bg-[#6c3ce0]/15 blur-3xl"></div>
+    <div class="absolute -left-20 -top-16 h-64 w-64 rounded-full bg-white/5 blur-3xl"></div>
+    <div class="absolute -right-16 top-1/4 h-64 w-64 rounded-full bg-slate-400/10 blur-3xl"></div>
   </div>
 
   <!-- ===== Noise halus: memecah gradasi agar tidak terlihat pita/grid ===== -->
@@ -204,7 +204,7 @@
   </div>
 
   <!-- ===== Footer: bar solid, menempel dasar, tanpa padding berlebih ===== -->
-  <footer class="fade-in relative z-10 mt-auto w-full bg-[#070a1c] py-2.5 text-center text-[10px] tracking-wide text-slate-500"
+  <footer class="fade-in relative z-10 mt-auto w-full bg-[#05060a] py-2.5 text-center text-[10px] tracking-wide text-slate-500"
           style="animation-delay:.24s; padding-bottom: calc(env(safe-area-inset-bottom) + 0.25rem);">
     &copy; <?php echo date('Y'); ?> SIAKAD &middot; Sistem Informasi Akademik
   </footer>
