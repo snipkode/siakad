@@ -24,17 +24,17 @@
     </div>
   </div>
   <div class="overflow-x-auto p-2 sm:p-4">
-    <table id="mytable" class="dataTable w-full text-sm">
+    <table id="mytable" class="dataTable w-full text-[13px] sm:text-sm">
       <thead>
         <tr>
-          <th class="px-3 py-2.5 text-left text-[11px] font-semibold uppercase tracking-wide text-slate-500">NO</th>
-          <th class="px-3 py-2.5 text-left text-[11px] font-semibold uppercase tracking-wide text-slate-500">FOTO</th>
-          <th class="px-3 py-2.5 text-left text-[11px] font-semibold uppercase tracking-wide text-slate-500"><?php echo meta_label('peserta', 'nomor_induk'); ?></th>
-          <th class="px-3 py-2.5 text-left text-[11px] font-semibold uppercase tracking-wide text-slate-500">NAMA</th>
-          <th class="dt-hide-xs px-3 py-2.5 text-left text-[11px] font-semibold uppercase tracking-wide text-slate-500"><?php echo mb_strtoupper(meta_mode_label('label_rombongan')); ?></th>
-          <th class="dt-hide-xs px-3 py-2.5 text-left text-[11px] font-semibold uppercase tracking-wide text-slate-500">TEMPAT LAHIR</th>
-          <th class="dt-hide-xs px-3 py-2.5 text-left text-[11px] font-semibold uppercase tracking-wide text-slate-500">TANGGAL LAHIR</th>
-          <th class="px-3 py-2.5 text-left text-[11px] font-semibold uppercase tracking-wide text-slate-500">AKSI</th>
+          <th class="px-3 py-2.5 text-left text-[11px] sm:text-xs font-semibold uppercase tracking-wide text-slate-500">NO</th>
+          <th class="px-3 py-2.5 text-left text-[11px] sm:text-xs font-semibold uppercase tracking-wide text-slate-500">FOTO</th>
+          <th class="px-3 py-2.5 text-left text-[11px] sm:text-xs font-semibold uppercase tracking-wide text-slate-500"><?php echo meta_label('peserta', 'nomor_induk'); ?></th>
+          <th class="px-3 py-2.5 text-left text-[11px] sm:text-xs font-semibold uppercase tracking-wide text-slate-500">NAMA <?php echo mb_strtoupper(meta_mode_label('label_peserta')); ?></th>
+          <th class="dt-hide-xs px-3 py-2.5 text-left text-[11px] sm:text-xs font-semibold uppercase tracking-wide text-slate-500"><?php echo mb_strtoupper(meta_mode_label('label_rombongan')); ?></th>
+          <th class="dt-hide-xs px-3 py-2.5 text-left text-[11px] sm:text-xs font-semibold uppercase tracking-wide text-slate-500">TEMPAT LAHIR</th>
+          <th class="dt-hide-xs px-3 py-2.5 text-left text-[11px] sm:text-xs font-semibold uppercase tracking-wide text-slate-500">TANGGAL LAHIR</th>
+          <th class="px-3 py-2.5 text-left text-[11px] sm:text-xs font-semibold uppercase tracking-wide text-slate-500">AKSI</th>
         </tr>
       </thead>
     </table>
