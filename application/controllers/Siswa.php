@@ -43,7 +43,7 @@
 		              'formatter' => function($d) {
 		               		return "<div class='inline-flex gap-1.5'>".
 		               			"<button type='button' onclick=\"openEditModal('".$d."')\" class='inline-flex h-8 w-8 items-center justify-center rounded-lg bg-sky-50 text-sky-600 hover:bg-sky-100' data-placement='top' title='Edit'><i class='fa fa-pencil'></i></button>".
-		               			anchor('siswa/delete/'.$d, '<i class="fa fa-trash"></i>', 'class="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-red-50 text-red-500 hover:bg-red-100" data-placement="top" title="Delete" onclick=\'return confirm("Yakin ingin menghapus siswa ini?")\'')."</div>";
+		               			anchor('siswa/delete/'.$d, '<i class="fa fa-trash"></i>', 'class="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-red-50 text-red-500 hover:bg-red-100" data-placement="top" title="Delete" onclick=\'return confirm("Yakin ingin menghapus '.$this->meta->mode_label('label_peserta').' ini?")\'')."</div>";
 		            }
 		        )
 		    );

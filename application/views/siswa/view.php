@@ -17,7 +17,9 @@
       <?php
         echo anchor('siswa/add', '<i class="fa fa-plus"></i> Tambah Data', array('class'=>'inline-flex items-center gap-1.5 rounded-xl bg-sky-600 px-3 py-2 text-xs font-semibold text-white shadow-sm hover:bg-sky-700'));
         echo '<button type="button" onclick="openImportModal()" class="inline-flex items-center gap-1.5 rounded-xl bg-amber-500 px-3 py-2 text-xs font-semibold text-white shadow-sm hover:bg-amber-600"><i class="fa fa-upload"></i> Import Data</button>';
-        echo anchor('siswa/naik_kelas', '<i class="fa fa-level-up"></i> Naik Kelas', array('class'=>'inline-flex items-center gap-1.5 rounded-xl bg-emerald-600 px-3 py-2 text-xs font-semibold text-white shadow-sm hover:bg-emerald-700'));
+        if (meta_punya('punya_naik_kelas')) {
+          echo anchor('siswa/naik_kelas', '<i class="fa fa-level-up"></i> Naik Kelas', array('class'=>'inline-flex items-center gap-1.5 rounded-xl bg-emerald-600 px-3 py-2 text-xs font-semibold text-white shadow-sm hover:bg-emerald-700'));
+        }
       ?>
     </div>
   </div>
@@ -80,7 +82,7 @@
       "lengthMenu": [[10, 25, 50, 100, -1], [10, 25, 50, 100, "Semua"]],
       "initComplete": function (settings, json) {
         $('#total-siswa').text(json.recordsTotal);
-        $("#mytable_wrapper").parents(".rounded-2xl").first().find(".dataTables_filter input").attr("placeholder", "Cari siswa / NIM...");
+        $("#mytable_wrapper").parents(".rounded-2xl").first().find(".dataTables_filter input").attr("placeholder", "Cari <?php echo mb_strtolower(meta_mode_label('label_peserta')); ?> / <?php echo meta_label('peserta', 'nomor_induk', 'NIM'); ?>...");
         $("#mytable_wrapper").parents(".rounded-2xl").first().find(".dataTables_filter input").css("min-width", "200px");
       },
       "columns": [
