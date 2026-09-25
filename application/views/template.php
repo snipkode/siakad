@@ -208,6 +208,9 @@
             </div>
           </div>
           <div class="p-2">
+            <?php echo anchor('profil/update_profile', '<i class="fa fa-user"></i>  Update Profil', array('class'=>'flex w-full items-center gap-2 rounded-xl px-3 py-2 text-sm text-slate-700 hover:bg-sky-50 hover:text-sky-700')); ?>
+            <?php echo anchor('profil/change_password', '<i class="fa fa-key"></i>  Ganti Password', array('class'=>'flex w-full items-center gap-2 rounded-xl px-3 py-2 text-sm text-slate-700 hover:bg-sky-50 hover:text-sky-700')); ?>
+            <div class="my-1.5 h-px bg-slate-100"></div>
             <?php echo anchor('auth/logout', '<i class="fa fa-sign-out"></i>  Keluar', array('class'=>'flex w-full items-center gap-2 rounded-xl px-3 py-2 text-sm text-slate-700 hover:bg-red-50 hover:text-red-600')); ?>
           </div>
         </div>

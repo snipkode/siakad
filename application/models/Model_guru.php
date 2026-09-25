@@ -104,6 +104,27 @@
       return $user;
     }
 
+    // profil akun guru yang sedang login (menu Profil -> Update Profil)
+    function update_profil()
+    {
+      $data = array(
+        'nama_guru'   => $this->input->post('nama_lengkap', TRUE),
+        'username'    => $this->input->post('username', TRUE),
+      );
+      if (empty($data['nama_guru']) || empty($data['username'])) { return; }
+      $id = $this->session->userdata('id_guru');
+      $this->db->where('id_guru', $id);
+      $this->db->update($this->table, $data);
+      $this->session->set_userdata('nama_lengkap', $data['nama_guru']);
+      $this->session->set_userdata('username', $data['username']);
+    }
+
+    function set_password($hash)
+    {
+      $this->db->where('id_guru', $this->session->userdata('id_guru'));
+      $this->db->update($this->table, array('password' => $hash));
+    }
+
   }
  
 ?>

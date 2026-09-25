@@ -59,6 +59,26 @@
 			$this->db->update($this->table, $data);
 		}
 
+		// profil akun yang sedang login (menu Profil -> Update Profil)
+		function update_profil()
+		{
+			$data = array(
+				'nama_lengkap' => $this->input->post('nama_lengkap', TRUE),
+				'username'     => $this->input->post('username', TRUE),
+			);
+			if (empty($data['nama_lengkap']) || empty($data['username'])) { return; }
+			$id = $this->session->userdata('id_user');
+			$this->db->where('id_user', $id);
+			$this->db->update($this->table, $data);
+			$this->session->set_userdata(array('nama_lengkap' => $data['nama_lengkap'], 'username' => $data['username']));
+		}
+
+		function set_password($hash)
+		{
+			$this->db->where('id_user', $this->session->userdata('id_user'));
+			$this->db->update($this->table, array('password' => $hash));
+		}
+
 	}
 
 ?>
