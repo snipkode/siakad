@@ -233,7 +233,7 @@ select.form-control:hover:not(:focus), input.form-control:hover:not(:focus) { bo
   #table_daftarpelajaran .jadwal-inline { width: auto; min-width: 110px; max-width: 195px; }
 
   /* sel tabel lebih padat di mobile (semua halaman, termasuk tabel manual) */
-  th, td { padding: .4rem .5rem !important; font-size: .8rem !important; }
+  th, td { padding: .375rem .5rem !important; font-size: .75rem !important; }
 
   /* kolom yang disembunyikan di layar kecil (DataTables) */
   .dt-hide-xs { display: none !important; }
