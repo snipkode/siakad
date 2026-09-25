@@ -62,7 +62,7 @@
         'nama_guru'   => $this->input->post('nama_guru', TRUE),
         'gender'      => $this->input->post('gender', TRUE),
         'username'    => $this->input->post('username', TRUE),
-        'password'    => md5($this->input->post('password', TRUE)),
+        'password'    => hash_password($this->input->post('password', TRUE)),
         'kd_mode'     => $this->_mode(),
       );
       $this->db->insert($this->table, $data);
@@ -81,7 +81,7 @@
       );
       $password = (string) $this->input->post('password');
       if ($password !== '') {
-        $data['password'] = md5($password);
+        $data['password'] = hash_password($password);
       }
       $id_guru = $this->input->post('id_guru');
       $this->db->where('id_guru', $id_guru);
@@ -92,8 +92,15 @@
     function login($username, $password)
     {
       $this->db->where('username', $username);
-      $this->db->where('password', md5($password));
       $user = $this->db->get('tbl_guru')->row_array();
+      if (empty($user)) { return null; }
+      if (!check_password($password, $user['password'])) { return null; }
+      // hash legacy (MD5) langsung diupgrade ke SHA-256 saat login sukses
+      if (!hash_equals($user['password'], hash_password($password))) {
+        $up = hash_password($password);
+        $this->db->where('id_guru', $user['id_guru'])->update('tbl_guru', array('password' => $up));
+        $user['password'] = $up;
+      }
       return $user;
     }
 

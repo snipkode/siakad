@@ -1,5 +1,19 @@
 <?php
 
+	// --- Hash & verifikasi password (SHA-256), dengan dukungan legacy MD5 ---
+	function hash_password($plain)
+	{
+		return hash('sha256', (string) $plain);
+	}
+
+	function check_password($plain, $hash)
+	{
+		if (!is_string($hash) || $hash === '') { return false; }
+		if (hash_equals($hash, hash_password($plain))) { return true; }
+		// kompatibilitas hash lama (MD5) sebelum migrasi SHA-256
+		return hash_equals($hash, md5($plain));
+	}
+
 	function cmb_dinamis($name, $table, $field, $pk, $selected=null, $extra=null, $class='form-control', $where=null)
 	{
 		$ci   = get_instance();

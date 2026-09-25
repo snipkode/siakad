@@ -103,7 +103,7 @@ CREATE TABLE `tbl_guru` (
 
 INSERT INTO `tbl_guru` (`id_guru`, `nuptk`, `nama_guru`, `gender`, `username`, `password`) VALUES
 (0, '00000000000', 'Default', 'W', '', ''),
-(1, '00000000001', 'Fajri, S.Pd.I', 'P', 'fajri', 'e10adc3949ba59abbe56e057f20f883e'),
+(1, '00000000001', 'Fajri, S.Pd.I', 'P', 'fajri', '8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92'),
 (2, '00000000002', 'Teuku Tommy Yanuar Satria, S.Pd.I', 'P', '', ''),
 (3, '00000000003', 'Mariyadi, A.Md', 'P', '', '');
 
@@ -493,9 +493,9 @@ CREATE TABLE `tbl_user` (
 --
 
 INSERT INTO `tbl_user` (`id_user`, `nama_lengkap`, `username`, `password`, `id_level_user`, `foto`) VALUES
-(1, 'Muhammad Zuhri', 'zuhri', 'e10adc3949ba59abbe56e057f20f883e', 1, 'user-siluet2.jpg'),
-(2, 'Muhammad Mulvi', 'mulvi', 'e10adc3949ba59abbe56e057f20f883e', 1, 'user-siluet1.jpg'),
-(3, 'Ika Nurul Fadhila', 'ika', 'e10adc3949ba59abbe56e057f20f883e', 4, 'user-siluet3.jpg');
+(1, 'Muhammad Zuhri', 'zuhri', '8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92', 1, 'user-siluet2.jpg'),
+(2, 'Muhammad Mulvi', 'mulvi', '8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92', 1, 'user-siluet1.jpg'),
+(3, 'Ika Nurul Fadhila', 'ika', '8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92', 4, 'user-siluet3.jpg');
 
 -- --------------------------------------------------------
 
