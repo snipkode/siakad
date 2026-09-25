@@ -1,4 +1,21 @@
 <!DOCTYPE html>
+<!--
+  ⚠️ PERINGATAN KEAMANAN (untuk Developer)
+  ------------------------------------------------------------
+  Halaman ini saat ini diakses via IP Address (contoh: 2.60.237.147:8081)
+  dan protokol HTTP (tidak terenkripsi).
+
+  Risiko:
+  - Username & password dikirim dalam teks polos (dapat disadap).
+  - Browser menampilkan peringatan "Not Secure" / "Connection is not private".
+
+  SARAN (WAJIB dilakukan sebelum produksi):
+  - Gunakan nama domain resmi (misal: https://siakad.nama-sekolah.sch.id).
+  - Pasang SSL/HTTPS (Let's Encrypt gratis / sertifikat dari ISP).
+  - Dengan HTTPS, kredensial terenkripsi dan alamat domain lebih dipercaya user.
+  - Nonaktifkan akses via IP di production (blokir di Reverse Proxy / firewall).
+  ------------------------------------------------------------
+-->
 <html lang="id">
 <head>
   <meta charset="utf-8">
@@ -27,6 +44,26 @@
       caret-color: #1e293b;
       transition: background-color 9999s ease-in-out 0s;
     }
+    /* ===== Custom checkbox "Ingat saya" ===== */
+    .cc-input:checked + .cc-box {
+      background: linear-gradient(135deg, #1a73e8, #6c3ce0);
+      border-color: transparent;
+      box-shadow: 0 0 0 3px rgba(26, 115, 232, 0.25);
+    }
+    .cc-input:checked + .cc-box .cc-check { transform: scale(1); }
+    .cc-input:focus-visible + .cc-box {
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(26, 115, 232, 0.4);
+    }
+    /* ===== Animasi masuk halaman (fade-in) ===== */
+    @keyframes fade-up {
+      from { opacity: 0; transform: translateY(12px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .fade-in { animation: fade-up 0.5s ease-out both; }
+    @media (prefers-reduced-motion: reduce) {
+      .fade-in { animation: none; }
+    }
   </style>
 </head>
 <body class="relative flex min-h-[100vh] flex-col bg-[#0a0e27] font-sans antialiased"
@@ -48,7 +85,7 @@
        style="padding-top: calc(env(safe-area-inset-top) + 1.25rem); padding-bottom: env(safe-area-inset-bottom);">
 
     <!-- ===== Branding kompak (max ~120px) ===== -->
-    <div class="flex items-center gap-2.5 py-4">
+    <div class="fade-in flex items-center gap-2.5 py-4">
       <div class="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-[#1a73e8] to-[#6c3ce0] text-lg font-bold text-white shadow-lg shadow-[#6c3ce0]/30">S</div>
       <div>
         <p class="text-[15px] font-bold leading-tight text-white">SIAKAD</p>
@@ -57,7 +94,7 @@
     </div>
 
     <!-- ===== Blok form: isi tinggi area tengah (proporsional) ===== -->
-    <div class="flex flex-1 flex-col justify-center py-6">
+    <div class="fade-in flex flex-1 flex-col justify-center py-6" style="animation-delay:.12s">
 
     <!-- ===== Heading ===== -->
     <div class="mb-6 mt-1">
@@ -118,16 +155,19 @@
 
       <!-- ===== Ingat saya / Lupa password ===== -->
       <div class="flex items-center justify-between pt-1">
-        <label class="flex h-11 cursor-pointer select-none items-center gap-2 text-[13px] text-slate-300">
-          <input type="checkbox" name="remember" class="h-4 w-4 cursor-pointer rounded accent-[#1a73e8]">
+        <label for="remember" class="flex h-11 cursor-pointer select-none items-center gap-2.5 text-[13px] text-slate-300">
+          <input type="checkbox" name="remember" id="remember" class="cc-input sr-only">
+          <span class="cc-box flex h-5 w-5 shrink-0 items-center justify-center rounded-md border border-white/25 bg-white/5 transition-all duration-200">
+            <svg class="cc-check h-3 w-3 scale-0 text-white transition-transform duration-200" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg>
+          </span>
           Ingat saya
         </label>
-        <a href="#" class="flex h-11 items-center text-[13px] font-medium text-[#8ab4ff]">Lupa password?</a>
+        <a href="#" class="flex h-11 items-center text-[13px] font-medium text-[#8ab4ff] transition-colors hover:text-[#a8c7ff] hover:underline">Lupa password?</a>
       </div>
 
-      <!-- ===== Tombol Masuk ===== -->
+      <!-- ===== Tombol Masuk (disabled sampai kedua kolom terisi) ===== -->
       <button type="submit" name="submit" id="btnSubmit"
-              class="flex h-11 w-full items-center justify-center gap-2 rounded-[12px] bg-gradient-to-r from-[#1a73e8] to-[#6c3ce0] text-[15px] font-semibold text-white shadow-lg shadow-[#1a73e8]/25 transition-all hover:brightness-110 focus:outline-none focus:ring-4 focus:ring-[#6c3ce0]/30 active:scale-[.98]">
+              class="flex h-11 w-full items-center justify-center gap-2 rounded-[12px] bg-gradient-to-r from-[#1a73e8] to-[#6c3ce0] text-[15px] font-semibold text-white shadow-lg shadow-[#1a73e8]/25 transition-all hover:brightness-110 focus:outline-none focus:ring-4 focus:ring-[#6c3ce0]/30 active:scale-[.98] disabled:cursor-not-allowed disabled:opacity-40 disabled:saturate-50 disabled:hover:brightness-100">
         <span class="btn-label inline-flex items-center gap-2">
           Masuk
           <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
@@ -148,17 +188,23 @@
         <div class="h-px flex-1 bg-white/10"></div>
       </div>
 
-      <!-- ===== Link sekunder (kompak) ===== -->
-      <p class="pb-1 text-center text-[13px] text-slate-400">
-        Belum punya akun?
-        <a href="#" class="font-medium text-[#8ab4ff]">Hubungi admin</a>
-      </p>
+      <!-- ===== Belum punya akun? → Hubungi admin (tombol WhatsApp) ===== -->
+      <!-- Ganti 6281234567890 dengan nomor admin aktif, contoh: https://wa.me/62xxx -->
+      <div class="flex flex-col items-center gap-2.5 pb-1 pt-1">
+        <p class="text-[13px] text-slate-400">Belum punya akun?</p>
+        <a href="https://wa.me/6281234567890?text=Halo%20admin%2C%20saya%20membutuhkan%20akun%20SIAKAD"
+           target="_blank" rel="noopener"
+           class="inline-flex h-11 items-center justify-center gap-2 rounded-xl border border-[#8ab4ff]/30 bg-[#8ab4ff]/10 px-5 text-[13px] font-medium text-[#8ab4ff] transition-all hover:bg-[#8ab4ff]/20 active:scale-[.97]">
+          <svg class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor"><path d="M17.5 14.4c-.3-.15-1.76-.87-2.03-.97-.27-.1-.47-.15-.67.15-.2.3-.77.96-.94 1.16-.17.2-.35.22-.65.07-.3-.15-1.26-.46-2.4-1.48-.89-.79-1.49-1.77-1.66-2.07-.17-.3-.02-.46.13-.61.14-.13.3-.35.45-.52.15-.17.2-.3.3-.5.1-.2.05-.37-.03-.52-.07-.15-.67-1.62-.92-2.22-.24-.58-.49-.5-.67-.51h-.57c-.2 0-.52.07-.8.37-.27.3-1.04 1.02-1.04 2.5 0 1.47 1.07 2.9 1.22 3.1.15.2 2.1 3.2 5.1 4.49.71.3 1.27.49 1.7.63.72.23 1.37.2 1.88.12.58-.09 1.76-.72 2.01-1.42.25-.7.25-1.29.17-1.42-.07-.13-.27-.2-.57-.35z"></path><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18a8 8 0 0 1-4.1-1.1l-.3-.2-3 .8.8-2.9-.2-.3A8 8 0 1 1 12 20z"></path></svg>
+          Hubungi admin
+        </a>
+      </div>
 
     <?php echo form_close(); ?>
     </div>
 
     <!-- ===== Footer ===== -->
-    <p class="text-center text-[10px] tracking-wide text-slate-600">&copy; <?php echo date('Y'); ?> SIAKAD &middot; Sistem Informasi Akademik</p>
+    <p class="fade-in text-center text-[10px] tracking-wide text-slate-600" style="animation-delay:.24s">&copy; <?php echo date('Y'); ?> SIAKAD &middot; Sistem Informasi Akademik</p>
   </div>
 
   <script>
@@ -176,8 +222,19 @@
         toggle.classList.toggle('text-sky-600', showing);
       });
 
+      /* ===== Validasi dasar: tombol "Masuk" aktif hanya jika kedua kolom terisi ===== */
       var btn = document.getElementById('btnSubmit');
+      var usernameEl = document.getElementById('username');
       var submitting = false;
+
+      function updateSubmitState() {
+        btn.disabled = !(usernameEl.value.trim() !== '' && pwd.value !== '');
+      }
+      usernameEl.addEventListener('input', updateSubmitState);
+      pwd.addEventListener('input', updateSubmitState);
+      updateSubmitState();
+
+      /* ===== Anti submit ganda + indikator loading ===== */
       document.querySelector('form').addEventListener('submit', function () {
         if (submitting) return;
         submitting = true;
