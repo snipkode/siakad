@@ -128,8 +128,8 @@
 	 			'IXB1' => 'Ruangan Kelas IX-B IPA',
 	 			'IXB2' => 'Ruangan Kelas IX-B IPS'
 	 		) as $kd => $nama) {
-	 			if ($this->db->get_where('tbl_ruangan', array('kd_ruangan' => $kd))->num_rows() == 0) {
-	 				$this->db->insert('tbl_ruangan', array('kd_ruangan' => $kd, 'nama_ruangan' => $nama));
+	 			if ($this->db->get_where('tbl_ruangan', array('kd_ruangan' => $kd, 'kd_mode' => get_instance()->meta->mode()))->num_rows() == 0) {
+	 				$this->db->insert('tbl_ruangan', array('kd_ruangan' => $kd, 'nama_ruangan' => $nama, 'kd_mode' => get_instance()->meta->mode()));
 	 			}
 	 		}
 

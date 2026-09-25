@@ -41,8 +41,10 @@
 				'host' => $this->db->hostname
 		    );
 
+		    $whereAll = "kd_mode = ".$this->db->escape($this->meta->mode());
+
 		    echo json_encode(
-		     	SSP::simple($_GET, $sql_details, $table, $primaryKey, $columns)
+		     	SSP::complex($_GET, $sql_details, $table, $primaryKey, $columns, null, $whereAll)
 		     );
 
 		}
@@ -69,7 +71,8 @@
 				redirect('ruangan');
 			} else {
 				$kode_ruangan	 = $this->uri->segment(3);
-				$data['ruangan'] = $this->db->get_where('tbl_ruangan', array('kd_ruangan' => $kode_ruangan))->row_array();
+				$data['ruangan'] = $this->db->get_where('tbl_ruangan', array('kd_ruangan' => $kode_ruangan, 'kd_mode' => $this->meta->mode()))->row_array();
+				if (empty($data['ruangan'])) { show_404(); }
 				$this->template->load('template', 'ruangan/edit', $data);
 			}
 		}
@@ -79,6 +82,7 @@
 			$kode_ruangan = $this->uri->segment(3);
 			if (!empty($kode_ruangan)) {
 				$this->db->where('kd_ruangan', $kode_ruangan);
+				$this->db->where('kd_mode', $this->meta->mode());
 				$this->db->delete('tbl_ruangan');
 			}
 			redirect('ruangan');

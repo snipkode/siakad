@@ -43,3 +43,21 @@ ON DUPLICATE KEY UPDATE `id_level_user` = VALUES(`id_level_user`);
 -- Identitas instansi per mode (KAMPUS/SMA/SMP/SD/TK punya kop sendiri)
 ALTER TABLE `tbl_identitas` ADD COLUMN `kd_mode` varchar(10) NOT NULL DEFAULT 'SMP' AFTER `id`;
 UPDATE `tbl_identitas` SET `kd_mode` = 'SMP' WHERE `kd_mode` = '';
+
+-- Ruangan: data kelas per mode (data lama default SMP supaya tetap tampil)
+ALTER TABLE `tbl_ruangan` ADD COLUMN `kd_mode` varchar(10) NOT NULL DEFAULT 'SMP' AFTER `nama_ruangan`;
+INSERT INTO `tbl_ruangan` (`kd_ruangan`, `nama_ruangan`, `kd_mode`) VALUES
+('SD1A','Ruang Kelas 1A','SD'),('SD1B','Ruang Kelas 1B','SD'),
+('SD2A','Ruang Kelas 2A','SD'),('SD2B','Ruang Kelas 2B','SD'),
+('SD3A','Ruang Kelas 3A','SD'),('SD3B','Ruang Kelas 3B','SD'),
+('SD4A','Ruang Kelas 4A','SD'),('SD4B','Ruang Kelas 4B','SD'),
+('SD5A','Ruang Kelas 5A','SD'),('SD5B','Ruang Kelas 5B','SD'),
+('SD6A','Ruang Kelas 6A','SD'),('SD6B','Ruang Kelas 6B','SD'),
+('SX1A','Ruang Kelas X-1','SMA'),('SX2A','Ruang Kelas X-2','SMA'),
+('SX3A','Ruang Kelas XI-1','SMA'),('SX4A','Ruang Kelas XI-2','SMA'),
+('SX5A','Ruang Kelas XII-1','SMA'),('SX6A','Ruang Kelas XII-2','SMA'),
+('SLAB','Lab Komputer','SMA'),
+('TKA','Taman Kanak-Kanak','TK'),('TKB','Ruang Bermain','TK'),
+('RUA1','Ruang Kuliah A','KAMPUS'),('RUA2','Ruang Kuliah B','KAMPUS'),
+('RSID','Ruang Sidang','KAMPUS'),('RLAB','Lab Komputer','KAMPUS')
+ON DUPLICATE KEY UPDATE `nama_ruangan` = VALUES(`nama_ruangan`), `kd_mode` = VALUES(`kd_mode`);
