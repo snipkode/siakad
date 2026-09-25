@@ -22,7 +22,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="theme-color" content="#0a0e27">
+  <meta name="theme-color" content="#14161c">
   <title>Masuk | SIAKAD</title>
 
   <link rel="stylesheet" href="<?php echo base_url(); ?>assets/custom/css/app.css">
@@ -66,7 +66,7 @@
     }
   </style>
 </head>
-<body class="relative flex min-h-dvh flex-col bg-[#0a0e27] font-sans antialiased">
+<body class="relative flex min-h-dvh flex-col bg-[#14161c] font-sans antialiased">
 
   <!-- ===== Konten: penuh tinggi, branding di atas, footer menempel dasar, tanpa space kosong ===== -->
   <div class="relative z-10 mx-auto flex w-full max-w-md flex-1 flex-col px-4"
